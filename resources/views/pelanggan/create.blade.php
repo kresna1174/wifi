@@ -1,4 +1,4 @@
-{!! Form::open(['class' => 'form-create']) !!}
+{!! Form::open(['id' => 'form-create']) !!}
 @include('pelanggan.form')
 <div class="float-right">
     <button type="button" class="btn btn-secondary" onclick="bootbox.hideAll()">Cancel</button>

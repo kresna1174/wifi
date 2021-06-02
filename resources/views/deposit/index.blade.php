@@ -1,7 +1,7 @@
 @extends('layout.main')
 @section('content')
 <h1 class="page-header">
-        Pembayaran
+        Deposit
         <div class="pull-right">
             <div class="form-inline">
                 <div class="form-group">
@@ -16,10 +16,9 @@
             <thead>
                 <tr>
                     <th>Nama Pelanggan</th>
-                    <th>Bayar</th>
-                    <th>Tarif</th>
-                    <th>Alamat Pemasangan</th>
-                    <th>Tanggal Bayar</th>
+                    <th>Jumlah Deposit</th>
+                    <th>Tanggal Deposit</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -35,20 +34,23 @@
         let dataTable;
         $(function() {
             dataTable = $('#table').DataTable({
-                ajax: '<?= route('pembayaran.get') ?>',
+                ajax: '<?= route('deposit.get') ?>',
                 columns: [
                     {data: 'nama_pelanggan', name: 'nama_pelanggan'},
-                    {data: 'bayar', name: 'bayar'},
-                    {data: 'tarif', name: 'tarif'},
-                    {data: 'alamat_pemasangan', name: 'alamat_pemasangan'},
-                    {data: 'tanggal_bayar', name: 'tanggal_bayar'},
+                    {data: 'jumlah_deposit', name: 'jumlah_deposit'},
+                    {data: 'tanggal', name: 'tanggal'},
+                    {data: 'id', name: 'deposit.id', width: '200px', searchable: false, orderable: false, class: 'text-center nowrap',mRender: function(data){
+                    return '<button id="btn-view" type="button" class="btn btn-info btn-sm" onclick="view('+data+')">view</button> \n\
+                            <button id="btn-edit" type="button" class="btn btn-warning btn-sm" onclick="edit('+data+')">edit</button>\n\
+                            <button type="button" class="btn btn-danger btn-sm" onclick="destroy('+data+')">delete</button>';
+                }}
                 ]
             })
         })
 
         function create() {
             $.ajax({
-                url: '<?= route('pelanggan.create') ?>',
+                url: '<?= route('deposit.create') ?>',
                 success: function(response) {
                     bootbox.dialog({
                         title: 'Create Pelanggan',
@@ -60,7 +62,7 @@
 
         function edit(id) {
             $.ajax({
-                url: '<?= route('pelanggan.edit') ?>/'+id,
+                url: '<?= route('deposit.edit') ?>/'+id,
                 success: function(response) {
                     bootbox.dialog({
                         title: 'Edit Pelanggan',
@@ -72,7 +74,7 @@
         
         function view(id) {
             $.ajax({
-                url: '<?= route('pelanggan.view') ?>/'+id,
+                url: '<?= route('deposit.view') ?>/'+id,
                 success: function(response) {
                     bootbox.dialog({
                         title: 'View Pelanggan',
@@ -85,7 +87,7 @@
         function store() {
             $('#form-create .alert').remove()
             $.ajax({
-                url: '<?= route('pelanggan.store') ?>',
+                url: '<?= route('deposit.store') ?>',
                 dataType: 'json',
                 type: 'post',
                 data: $('#form-create').serialize(),
@@ -114,7 +116,7 @@
         function update(id) {
             $('#form-edit .alert').remove()
             $.ajax({
-                url: '<?= route('pelanggan.update') ?>/'+id,
+                url: '<?= route('deposit.update') ?>/'+id,
                 dataType: 'json',
                 type: 'post',
                 data: $('#form-edit').serialize(),
@@ -142,7 +144,7 @@
 
         function destroy(id) {
             $.ajax({
-                url: '<?= route('pelanggan.delete') ?>/'+id,
+                url: '<?= route('deposit.delete') ?>/'+id,
                 success: function(response) {
                     alert(response);
                 }
