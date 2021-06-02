@@ -72,7 +72,7 @@
 			<ul class="navbar-nav navbar-right">
 				<li class="dropdown navbar-user">
 					<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-						<span class="d-none d-md-inline">{{ Auth::user()->username }}</span>
+					
 					</a>
 					<div class="dropdown-menu dropdown-menu-right">
 						<a href="javascript:;" class="dropdown-item">Setting</a>
@@ -125,7 +125,7 @@
 						</a>
 					</li>
 					<li>
-                        <a href="javascript:;">
+                        <a href="{!! route('UserService') !!}">
 							<i class="material-icons">inbox</i>
 							<span>User Service</span>
 						</a>
