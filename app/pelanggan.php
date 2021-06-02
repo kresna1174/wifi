@@ -10,4 +10,12 @@ class pelanggan extends Model
     protected $primary_key = 'id';
     protected $guarded = [];
     public $timestamps = true;
+
+    public function deposit() {
+        return $this->hasMany(deposit::class, 'id_pelanggan', 'id');
+    }
+
+    public function pembayaran() {
+        return $this->hasManyThrough(pembayaran::class, pemasangan::class, 'id_pelanggan', 'id_pemasangan');
+    }
 }

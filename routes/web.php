@@ -36,6 +36,8 @@ Route::group(['prefix' => 'deposit'], function() {
     Route::get('delete/{id?}', 'DepositController@delete')->name('deposit.delete');
     Route::post('update/{id?}', 'DepositController@update')->name('deposit.update');
     Route::post('store', 'DepositController@store')->name('deposit.store');
+    Route::get('get', 'DepositController@get')->name('deposit.get');
+    Route::get('view/{id?}', 'DepositController@view')->name('deposit.view');
 });
 
 Route::group(['prefix' => 'pembayaran'], function() {
@@ -45,6 +47,7 @@ Route::group(['prefix' => 'pembayaran'], function() {
     Route::get('delete/{id?}', 'PembayaranController@delete')->name('pembayaran.delete');
     Route::post('update/{id?}', 'PembayaranController@update')->name('pembayaran.update');
     Route::post('store', 'PembayaranController@store')->name('pembayaran.store');
+    Route::get('get', 'PembayaranController@get')->name('pembayaran.get');
 });
 
 Route::group(['prefix' => 'pemasangan'], function() {

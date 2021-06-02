@@ -5,7 +5,7 @@
 <!--<![endif]-->
 <head>
 	<meta charset="utf-8" />
-	<title>Color Admin | Dashboard</title>
+	<title><?= isset($title) ? $title : 'wifiger' ?></title>
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
 	<meta content="" name="description" />
 	<meta content="" name="author" />
@@ -18,6 +18,7 @@
 	<link href="{{ asset('assets') }}/plugins/font-awesome/5.3/css/all.min.css" rel="stylesheet" />
 	<link href="{{ asset('assets') }}/plugins/animate/animate.min.css" rel="stylesheet" />
 	<link href="{{ asset('assets') }}/css/material/style.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="{{ asset('assets') }}/plugins/jquery.growl/css/jquery.growl.css">
 	<!-- <link href="{{ asset('assets') }}/plugins/DataTables/media/css/dataTables.bootstrap4.min.css" rel="stylesheet"> -->
 	<link href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 	<link href="{{ asset('assets') }}/css/material/style-responsive.min.css" rel="stylesheet" />
@@ -104,7 +105,7 @@
 						</a>
 						<ul class="sub-menu">
 							<li><a href="{!! route('pelanggan') !!}">pelanggan</a></li>
-							<li><a href="{!! route('pelanggan') !!}">deposit</a></li>
+							<li><a href="{!! route('deposit') !!}">deposit</a></li>
 						</ul>
 					</li>
 					<li class="has-sub">
@@ -114,7 +115,7 @@
 							<span>Transaksi</span> 
 						</a>
 						<ul class="sub-menu">
-							<li><a href="{!! route('pelanggan') !!}">Pembayaran</a></li>
+							<li><a href="{!! route('pembayaran') !!}">Pembayaran</a></li>
 							<li><a href="{!! route('pelanggan') !!}">Tagihan</a></li>
 						</ul>
 					</li>
@@ -173,6 +174,7 @@
 	<script src="{{ asset('assets') }}/plugins/jquery-jvectormap/jquery-jvectormap-world-mill-en.js"></script>
 	<script src="{{ asset('assets') }}/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 	<script src="{{ asset('assets') }}/plugins/bootbox/bootbox.all.min.js"></script>
+	<script src="{{ asset('assets') }}/plugins/jquery.growl/js/jquery.growl.js"></script>
 	<script src="{{ asset('assets') }}/js/demo/dashboard.min.js"></script>
 	<!-- ================== END PAGE LEVEL JS ================== -->
 	
