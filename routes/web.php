@@ -58,3 +58,13 @@ Route::group(['prefix' => 'pemasangan'], function() {
     Route::post('update/{id?}', 'PemasanganController@update')->name('pemasangan.update');
     Route::post('store', 'PemasanganController@store')->name('pemasangan.store');
 });
+
+Route::group(['prefix' => 'UserService'], function() {
+    Route::get('/', 'UserServiceController@index')->name('UserService');
+    Route::get('create', 'UserServiceController@create')->name('UserService.create');
+    Route::get('get', 'UserServiceController@get')->name('UserService.get');
+    Route::get('edit/{id?}', 'UserServiceController@edit')->name('UserService.edit');
+    Route::get('delete/{id?}', 'UserServiceController@delete')->name('UserService.delete');
+    Route::post('update/{id?}', 'UserServiceController@update')->name('UserService.update');
+    Route::post('store', 'UserServiceController@store')->name('UserService.store');
+});
