@@ -5,7 +5,7 @@
         <div class="pull-right">
             <div class="form-inline">
                 <div class="form-group">
-                    <button type="button" id="btn-create" class="btn btn-primary" onclick="create()">Create</button>
+                    <button type="button" id="btn-create" class="btn btn-primary" onclick="document.location.href='<?= route('pembayaran.create') ?>'">Create</button>
                 </div>
             </div>
         </div>
