@@ -24,4 +24,8 @@ class PembayaranController extends Controller
         return DataTables::of($pelanggan)
             ->make(true);
     }
+
+    public function create() {
+        return view('pembayaran.create');
+    }
 }
