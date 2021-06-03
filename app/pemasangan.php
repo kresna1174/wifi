@@ -14,4 +14,8 @@ class pemasangan extends Model
     public function pembayaran() {
         return $this->hasMany(pembayaran::class, 'id_pemasangan', 'id');
     }
+
+    public function tagihan() {
+        return $this->hasMany(tagihan::class, 'id_pemasangan', 'id');
+    }
 }
