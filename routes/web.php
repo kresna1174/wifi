@@ -48,6 +48,7 @@ Route::group(['prefix' => 'pembayaran'], function() {
     Route::post('update/{id?}', 'PembayaranController@update')->name('pembayaran.update');
     Route::post('store', 'PembayaranController@store')->name('pembayaran.store');
     Route::get('get', 'PembayaranController@get')->name('pembayaran.get');
+    Route::get('get_pembayaran', 'PembayaranController@get_pembayaran')->name('pembayaran.get_pembayaran');
 });
 
 Route::group(['prefix' => 'pemasangan'], function() {
