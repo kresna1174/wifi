@@ -53,10 +53,12 @@ Route::group(['prefix' => 'pembayaran'], function() {
 Route::group(['prefix' => 'pemasangan'], function() {
     Route::get('/', 'PemasanganController@index')->name('pemasangan');
     Route::get('create', 'PemasanganController@create')->name('pemasangan.create');
+    Route::get('get', 'PemasanganController@get')->name('pemasangan.get');
     Route::get('edit/{id?}', 'PemasanganController@edit')->name('pemasangan.edit');
     Route::get('delete/{id?}', 'PemasanganController@delete')->name('pemasangan.delete');
     Route::post('update/{id?}', 'PemasanganController@update')->name('pemasangan.update');
     Route::post('store', 'PemasanganController@store')->name('pemasangan.store');
+    Route::get('get_pemasangan', 'PemasanganController@get_pemasangan')->name('pemasangan.get_pemasangan');
 });
 
 Route::group(['prefix' => 'UserService'], function() {

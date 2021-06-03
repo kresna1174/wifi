@@ -16,7 +16,6 @@
             <thead>
                 <tr>
                     <th>Username</th>
-                    <th>Dibuat</th>
                     <th></th>
                 </tr>
             </thead>
