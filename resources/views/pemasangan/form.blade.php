@@ -2,21 +2,26 @@
     <div class="col-6">
         <div class='form-group'>
             <label>Pilih Pelanggan</label>
-            {!! Form::select('pilih_pelanggan', ['' => 'select', '0' => 'pelanggan lama', '1' => 'pelanggan baru'], null, ['class' => 'form-control', 'id' => 'pilih_pelanggan']) !!}
+            <div class="pilih_pelanggan"></div>
+            {!! Form::select('pilih_pelanggan', ['' => 'select', '0' => 'pelanggan lama', '1' => 'pelanggan baru'], isset($pelanggan->id_pelanggan) ? 0 : null, ['class' => 'form-control', 'id' => 'pilih_pelanggan']) !!}
         </div>
     </div>
     <div class="col-6">
-    
-<div class='form-group'>
-    <label>No Telepon</label>
-    {!! Form::text('no_telepon', isset($pelanggan->no_telepon) ? $pelanggan->no_telepon : null, ['class' => 'form-control', 'id' => 'no_telepon']) !!}
-</div>
+        <div class='form-group'>
+            <label>No Telepon</label>
+            {!! Form::text('no_telepon', isset($pelanggan->no_telepon) ? $pelanggan->no_telepon : null, ['class' => 'form-control', 'id' => 'no_telepon']) !!}
+        </div>
     </div>
 </div>
-<div class='nama'></div>
+
+<div class='form-group'>
+    <label>Nama Pelanggan</label>
+    <div class="nama_pelanggan"></div>
+    {!! Form::select('nama_pelanggan', ['' => 'select'] + $pelanggan->nama_pelanggan->toArray(), null, ['class' => 'form-control', 'id' => 'nama_pelanggan']) !!}
+</div>
 <div class='form-group'>
     <label>No Identitas</label>
-    {!! Form::text('no_ktp', isset($pelanggan->no_ktp) ? $pelanggan->no_ktp : null, ['class' => 'form-control', 'id' => 'no_ktp']) !!}
+    {!! Form::text('no_identitas', isset($pelanggan->no_identitas) ? $pelanggan->no_identitas : null, ['class' => 'form-control', 'id' => 'no_identitas']) !!}
 </div>
 <div class='form-group'>
     <label>Alamat</label>
