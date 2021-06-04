@@ -4,5 +4,5 @@
 </div>
 <div class="form-group">
     <label>Password</label>
-    {!! Form::text('password', null, ['class' => 'form-control', 'id' => "password"]) !!}
+    {!! Form::password('password', ['class' => 'form-control', 'id' => "password"]) !!}
 </div>

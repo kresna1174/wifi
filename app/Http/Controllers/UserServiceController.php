@@ -42,6 +42,8 @@ class UserServiceController extends Controller
             'username' => $request->username,
             'password' => bcrypt($request->password),
             'deleted' => 0,
+            'created_at' => date('Y-m-d'),
+            'created_by' => Auth::user()->username,
         ];
         if(userServices::create($data)) {
             return [
@@ -69,7 +71,9 @@ class UserServiceController extends Controller
         $data = [
             'username' => $request->username,
             'password' => bcrypt($request('password')),
-            'deleted' => 0,
+            'deleted'  => 0,
+            'updated_at'  => date('Y-m-d'),
+            'updated_by' => Auth::user()->username,
         ];
         $userSurvices = userServices::findOrFail($id);
         if($userSurvices->update($data)) {

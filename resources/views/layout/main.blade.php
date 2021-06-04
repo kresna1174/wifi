@@ -109,7 +109,7 @@
 						</ul>
 					</li>
 					<li>
-                        <a href="javascript:;">
+                        <a href="{!! route('pemasangan') !!}">
 							<i class="material-icons">inbox</i>
 							<span>Pemasangan</span>
 						</a>
