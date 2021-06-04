@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DataTables;
 use App\pelanggan;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class PelangganController extends Controller
@@ -46,9 +47,11 @@ class PelangganController extends Controller
         $data = [
             'nama_pelanggan' => $request->nama_pelanggan,
             'no_telepon' => $request->no_telepon,
-            'no_ktp' => $request->no_ktp,
+            'no_identitas' => $request->no_identitas,
             'alamat' => $request->alamat,
             'deleted' => 0,
+            'created_at' => date('Y-m-d'),
+            'created_by' => Auth::user()->name
         ];
         if(pelanggan::create($data)) {
             return [
@@ -70,15 +73,17 @@ class PelangganController extends Controller
         if($validator->fails()) {
             return response()->json([
                 'message' => 'Terjadi Kesalahan Input',
-                'errors' => $validator->messages
+                'errors' => $validator->messages()
             ], 400);
         }
         $data = [
             'nama_pelanggan' => $request->nama_pelanggan,
             'no_telepon' => $request->no_telepon,
-            'no_ktp' => $request->no_ktp,
+            'no_identitas' => $request->no_identitas,
             'alamat' => $request->alamat,
             'deleted' => 0,
+            'updated_at' => date('Y-m-d'),
+            'updated_by' => Auth::user()->username
         ];
         $pelanggan = pelanggan::findOrFail($id);
         if($pelanggan->update($data)) {
@@ -119,8 +124,8 @@ class PelangganController extends Controller
     public function validation() {
         return [
             'nama_pelanggan' => 'required',
-            'no_telepon' => 'required|numeric|max:12',
-            'no_ktp' => 'required',
+            'no_telepon' => 'required|numeric',
+            'no_identitas' => 'required',
             'alamat' => 'required',
         ];
     }
@@ -129,8 +134,8 @@ class PelangganController extends Controller
         $messages = [];
         $messages['nama_pelanggan.required'] = 'Nama Pelanggan Harus Di Isi';
         $messages['no_telepon.required'] = 'No Telepon Harus Di Isi';
-        $messages['no_telepon.numeric|max:12'] = 'No Telepon Harus Angka';
-        $messages['no_ktp.required'] = 'No Identitas Harus Di Isi';
+        $messages['no_telepon.numeric'] = 'No Telepon Harus Angka';
+        $messages['no_identitas.required'] = 'No Identitas Harus Di Isi';
         $messages['alamat.required'] = 'Alamat Harus Di Isi';
         return $messages;
     }

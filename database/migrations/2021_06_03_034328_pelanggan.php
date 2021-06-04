@@ -22,8 +22,8 @@ class Pelanggan extends Migration
             $table->integer('deleted');
             $table->timestamp('created_at');
             $table->string('created_by', 255);
-            $table->timestamp('updated_at');
-            $table->string('updated_by', 255);
+            $table->timestamp('updated_at')->nullable();
+            $table->string('updated_by', 255)->nullable();
         });
     }
 

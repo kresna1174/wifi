@@ -12,7 +12,7 @@
     <tr>
         <th>No Identitas</th>
         <th class="text-center">:</th>
-        <th class="text-center">{!! $model->no_ktp !!}</th>
+        <th class="text-center">{!! $model->no_identitas !!}</th>
     </tr>
     <tr>
         <th>Alamat</th>

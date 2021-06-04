@@ -8,7 +8,7 @@
 </div>
 <div class="form-group">
     <label>No Indentitas</label>
-    {!! Form::text('no_ktp', null, ['class' => 'form-control', 'id' => "no_ktp"]) !!}
+    {!! Form::text('no_identitas', null, ['class' => 'form-control', 'id' => "no_identitas"]) !!}
 </div>
 <div class="form-group">
     <label>Alamat</label>

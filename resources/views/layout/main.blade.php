@@ -16,6 +16,7 @@
 	<link href="{{ asset('assets') }}/plugins/animate/animate.min.css" rel="stylesheet" />
 	<link href="{{ asset('assets') }}/css/material/style.min.css" rel="stylesheet" />
 	<link rel="stylesheet" href="{{ asset('assets') }}/plugins/jquery.growl/css/jquery.growl.css">
+	<link rel="stylesheet" href="{{ asset('assets') }}/plugins/sweetalert-dark/dark.css">
 	<link href="{{ asset('assets') }}/css/material/style-responsive.min.css" rel="stylesheet" />
 	<link href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 	<link href="{{ asset('assets') }}/css/material/theme/default.css" rel="stylesheet" id="theme" />
@@ -61,12 +62,12 @@
 			<ul class="navbar-nav navbar-right">
 				<li class="dropdown navbar-user">
 					<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-					
+						{!! Auth::user()->name !!}
 					</a>
 					<div class="dropdown-menu dropdown-menu-right">
 						<a href="javascript:;" class="dropdown-item">Setting</a>
 						<div class="dropdown-divider"></div>
-						<a href="javascript:;" class="dropdown-item">Log Out</a>
+						<a href="{!! route('logout') !!}" class="dropdown-item">Log Out</a>
 					</div>
 				</li>
 			</ul>
@@ -147,10 +148,6 @@
 	<script src="{{ asset('assets') }}/plugins/js-cookie/js.cookie.js"></script>
 	<script src="{{ asset('assets') }}/js/theme/material.min.js"></script>
 	<script src="{{ asset('assets') }}/js/apps.min.js"></script>
-
-	
-
-
 	<script src="{{ asset('assets') }}/plugins/flot/jquery.flot.min.js"></script>
 	<script src="{{ asset('assets') }}/plugins/flot/jquery.flot.time.min.js"></script>
 	<script src="{{ asset('assets') }}/plugins/flot/jquery.flot.resize.min.js"></script>
@@ -161,6 +158,7 @@
 	<script src="{{ asset('assets') }}/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 	<script src="{{ asset('assets') }}/plugins/bootbox/bootbox.all.min.js"></script>
 	<script src="{{ asset('assets') }}/plugins/jquery.growl/js/jquery.growl.js"></script>
+	<script src="{{ asset('assets') }}/plugins/sweetalert-dark/sweetalert.min.js"></script>
 	<script src="{{ asset('assets') }}/js/demo/dashboard.min.js"></script>
 
 	

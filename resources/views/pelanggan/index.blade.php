@@ -39,7 +39,7 @@
                 columns: [
                     {data: 'nama_pelanggan', name: 'nama_pelanggan'},
                     {data: 'no_telepon', name: 'no_telepon'},
-                    {data: 'no_ktp', name: 'no_ktp'},
+                    {data: 'no_identitas', name: 'no_identitas'},
                     {data: 'alamat', name: 'alamat'},
                     {data: 'id', name: 'id', width: '200px', searchable: false, orderable: false, class: 'text-center nowrap',mRender: function(data){
                     return '<button id="btn-view" type="button" class="btn btn-info btn-sm" onclick="view('+data+')">view</button> \n\
