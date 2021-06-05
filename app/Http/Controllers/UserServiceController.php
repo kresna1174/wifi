@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DataTables;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use App\userServices;
 use Illuminate\Support\Facades\Validator;
 // use App\Http\Controllers\Validation;
@@ -27,6 +29,35 @@ class UserServiceController extends Controller
         $model = userServices::findOrFail($id);
         return view('userServices.edit', ['model' => $model]);
     } 
+    
+    // public function post()
+    // {
+    //   return view('UserServices.change-password');
+    // }
+    public function showChangePassword(){
+        return view('userServices.change-password');
+      }
+        
+        
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+          'current_password' => 'required',
+          'password' => 'required|string|min:6|confirmed',
+          'password_confirmation' => 'required',
+        ]);
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->with('error', 'Current password does not match!');
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return back()->with('success', 'Password successfully changed!');
+    }
 
     public function store(Request $request) {
         $rules = self::validation($request->all());
@@ -123,5 +154,6 @@ class UserServiceController extends Controller
         $messages['username.required'] = 'Username Harus Di Isi';
         $messages['password.required'] = 'Password Harus Di Isi';
         return $messages;
-    } 
+    }
+     
 }

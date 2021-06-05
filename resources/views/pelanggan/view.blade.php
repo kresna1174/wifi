@@ -20,3 +20,10 @@
         <th class="text-center">{!! $model->alamat !!}</th>
     </tr>
 </table>
+
+<table width="100%" border="1">
+   <tr>
+     <td ></td>
+   
+   </tr>
+</table>

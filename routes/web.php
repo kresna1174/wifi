@@ -18,6 +18,7 @@ Route::get('login', 'AuthController@index')->name('login-index');
 Route::get('logout', 'AuthController@logout')->name('logout');
 Route::post('login', 'AuthController@login')->name('login');
 
+
 Route::middleware(['auth'])->group(function() {
     Route::get('dashboard', 'DashboardController@index')->name('dashboard');
     Route::group(['prefix' => 'pelanggan'], function() {
@@ -73,5 +74,8 @@ Route::middleware(['auth'])->group(function() {
         Route::get('delete/{id?}', 'UserServiceController@delete')->name('UserService.delete');
         Route::post('update/{id?}', 'UserServiceController@update')->name('UserService.update');
         Route::post('store', 'UserServiceController@store')->name('UserService.store');
+        Route::get('change-password', 'UserServiceController@showChangePassword');
+        Route::post('change-password', 'UserServiceController@changePassword')->name('change.password');
     });
+
 });

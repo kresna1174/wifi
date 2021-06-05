@@ -65,7 +65,7 @@
 						{!! Auth::user()->name !!}
 					</a>
 					<div class="dropdown-menu dropdown-menu-right">
-						<a href="javascript:;" class="dropdown-item">Setting</a>
+						<a href="{!! route('change.password') !!}" class="dropdown-item">Changepassword</a>
 						<div class="dropdown-divider"></div>
 						<a href="{!! route('logout') !!}" class="dropdown-item">Log Out</a>
 					</div>
@@ -89,7 +89,7 @@
 					<li class="has-sub">
 						<a href="javascript:;">
                             <b class="caret"></b>
-							<i class="material-icons">inbox</i>
+							<i class="fa fa-database"></i>
 							<span>Master</span>
 						</a>
 						<ul class="sub-menu">
@@ -100,7 +100,7 @@
 					<li class="has-sub">
 						<a href="javascript:;">
 							<b class="caret"></b>
-							<i class="material-icons">toys</i>
+							<i class="fa fa-exchange-alt"></i>
 							<span>Transaksi</span> 
 						</a>
 						<ul class="sub-menu">
@@ -110,17 +110,16 @@
 					</li>
 					<li>
                         <a href="{!! route('pemasangan') !!}">
-							<i class="material-icons">inbox</i>
+							<i class="fa fa-shopping-cart"></i>
 							<span>Pemasangan</span>
 						</a>
 					</li>
 					<li>
                         <a href="{!! route('UserService') !!}">
-							<i class="material-icons">inbox</i>
+							<i class="fa fa-users"></i>
 							<span>User Service</span>
 						</a>
 					</li>
-
 					<li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>
 
 				</ul>
