@@ -144,14 +144,36 @@
             })
         }
 
-        function destroy(id) {
-            $.ajax({
-                url: '<?= route('pelanggan.delete') ?>/'+id,
-                success: function(response) {
-                    alert(response);
+        function destroy(id){
+            Swal.fire({
+            title: 'Delete',
+            text: 'Apakah anda yakin akan menghapus data ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#929ba1',
+            confirmButtonText: 'Oke'
+            }).then((result) => {
+                if (result.value) {         
+                    $.ajax({
+                        url: '<?= route('pelanggan.delete') ?>/'+id,
+                        success: function(response){
+                            if(response.success) {
+                                $.growl.notice({
+                                    title : 'success',
+                                    message : response.message
+                                });
+                                dataTable.ajax.reload();
+                            } else {
+                                $.growl.error({
+                                    title : 'failed',
+                                    message : response.message
+                                });
+                            }
+                        }
+                    });
                 }
-            })
-            dataTable.ajax.reload()
+            });
         }
 
         function validation(errors) {

@@ -22,8 +22,4 @@ class pelanggan extends Model
     public function pembayaran() {
         return $this->hasManyThrough(pembayaran::class, pemasangan::class, 'id_pelanggan', 'id_pemasangan');
     }
-
-    public function pemasangan() {
-        return $this->hasMany(pemasangan::class, 'id_pelanggan', 'id');
-    }
 }

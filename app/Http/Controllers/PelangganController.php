@@ -50,7 +50,7 @@ class PelangganController extends Controller
             'no_identitas' => $request->no_identitas,
             'alamat' => $request->alamat,
             'deleted' => 0,
-            'created_at' => date('Y-m-d'),
+            'created_at' => date('Y-m-d H:i:s'),
             'created_by' => Auth::user()->name
         ];
         if(pelanggan::create($data)) {
@@ -82,8 +82,8 @@ class PelangganController extends Controller
             'no_identitas' => $request->no_identitas,
             'alamat' => $request->alamat,
             'deleted' => 0,
-            'updated_at' => date('Y-m-d'),
-            'updated_by' => Auth::user()->username
+            'updated_at' => date('Y-m-d H:i:s'),
+            'updated_by' => Auth::user()->name
         ];
         $pelanggan = pelanggan::findOrFail($id);
         if($pelanggan->update($data)) {

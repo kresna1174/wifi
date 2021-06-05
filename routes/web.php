@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('login');
+    return redirect()->route('dashboard');
 });
 Route::get('login', 'AuthController@index')->name('login-index');
 Route::get('logout', 'AuthController@logout')->name('logout');
@@ -60,6 +60,9 @@ Route::middleware(['auth'])->group(function() {
         Route::get('delete/{id?}', 'PemasanganController@delete')->name('pemasangan.delete');
         Route::post('update/{id?}', 'PemasanganController@update')->name('pemasangan.update');
         Route::post('store', 'PemasanganController@store')->name('pemasangan.store');
+        Route::get('get', 'PemasanganController@get')->name('pemasangan.get');
+        Route::get('get_pemasangan', 'PemasanganController@get_pemasangan')->name('pemasangan.get_pemasangan');
+        Route::get('get_id_pemasangan', 'PemasanganController@get_id_pemasangan')->name('pemasangan.get_id_pemasangan');
     });
     
     Route::group(['prefix' => 'UserService'], function() {

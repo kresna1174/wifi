@@ -34,8 +34,7 @@
             dataTable = $('#table').DataTable({
                 ajax: '<?= route('UserService.get') ?>',
                 columns: [
-                    // {data: 'id', name: 'id'},
-                    {data: 'username', name: 'username'},
+                    {data: 'name', name: 'name'},
                     {data: 'id', name: 'id', width: '200px', searchable: false, orderable: false, class: 'text-center nowrap',mRender: function(data){
                     return '<button id="btn-view" type="button" class="btn btn-info btn-sm" onclick="view('+data+')">view</button> \n\
                             <button id="btn-edit" type="button" class="btn btn-warning btn-sm" onclick="edit('+data+')">edit</button>\n\
@@ -67,14 +66,14 @@
                 data: $('#form-create').serialize(),
                 success: function(response) {
                     if(response.success) {
-                       $.growl.notice({
+                        $.growl.notice({
                             title : 'success',
-                            message : 'Data Berhasil di Update'
+                            message : response.message
                         });
                     } else {
-                       $.growl.notice({
-                            title : 'false',
-                            message : 'Data Gagal di Update'
+                        $.growl.error({
+                            title : 'failed',
+                            message : response.message
                         });
                     }
                     bootbox.hideAll()
@@ -98,12 +97,12 @@
                     if(response.success) {
                         $.growl.notice({
                             title : 'success',
-                            message : 'Data Berhasil di Update'
+                            message : response.message
                         });
                     } else {
-                        $.growl.notice({
-                            title : 'false',
-                            message : 'Data Gagal di Update'
+                        $.growl.error({
+                            title : 'failed',
+                            message : response.message
                         });
                     }
                     bootbox.hideAll()
@@ -128,15 +127,36 @@
             })
         }
         
-
-        function destroy(id) {
-            $.ajax({
-                url: '<?= route('UserService.delete') ?>/'+id,
-                success: function(response) {
-                    alert(response);
+        function destroy(id){
+            Swal.fire({
+            title: 'Delete',
+            text: 'Apakah anda yakin akan menghapus data ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#929ba1',
+            confirmButtonText: 'Oke'
+            }).then((result) => {
+                if (result.value) {         
+                    $.ajax({
+                        url: '<?= route('UserService.delete') ?>/'+id,
+                        success: function(response){
+                            if(response.success) {
+                                $.growl.notice({
+                                    title : 'success',
+                                    message : response.message
+                                });
+                                dataTable.ajax.reload();
+                            } else {
+                                $.growl.error({
+                                    title : 'failed',
+                                    message : response.message
+                                });
+                            }
+                        }
+                    });
                 }
-            })
-            dataTable.ajax.reload()
+            });
         }
 
         function validation(errors) {

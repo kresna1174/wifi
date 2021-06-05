@@ -162,14 +162,14 @@
                             if(response.success) {
                                 $.growl.notice({
                                     title : 'success',
-                                    message : 'Data Berhasil di Tambahkan'
-                                }); 
+                                    message : response.message
+                                });
                                 return document.location.href='<?= route('pembayaran') ?>'
                             } else {
-                                $.growl.notice({
+                                $.growl.error({
                                     title : 'failed',
-                                    message : 'Data Gagal di Tambahkan'
-                                }); 
+                                    message : response.message
+                                });
                             }
                         }
                     })

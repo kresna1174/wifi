@@ -18,49 +18,125 @@
 
 @section('script')
     <script>
-    let data = '<?= json_encode($pelanggan) ?>'
-        $('#pilih_pelanggan').change(function() {
-            if($('#pilih_pelanggan').val() == '0') {
-                let html = '<div class="form-group">';
-                html += '<label>Nama Pelanggan</label>';
-                html += '<select class="form-control" name="nama_pelanggan" id="nama_pelanggan">'
-                    $.each(JSON.parse(data), function(data, row) {
+    let pelanggan = '<?= json_encode($pelanggan->data) ?>'
+    // $('#pilih_pelanggan').change(function() {
+    //     if($('#pilih_pelanggan').val() == 0) {
+    //         $.ajax({
+    //             url: '<?= route('pemasangan.get_pemasangan') ?>?id_pelanggan=' + $('#nama_pelanggan').val(),
+    //             success: function(response) {
+    //                 if(!$.trim(response)) {
+    //                     $('#nama_pelanggan').remove()
+    //                     $('#no_telepon').val('')
+    //                     $('#no_identitas').val('')
+    //                     $('#alamat').val('')
+    //                     $('#tarif').val('')
+    //                     $('#tanggal_pemasangan').val('')
+    //                     $('#alamat_pemasangan').val('')
+    //                     let html = '<select name="nama_pelanggan" id="nama_pelanggan" class="form-control">'
+    //                     html += '<option value="">select</option>'
+    //                     $.each(JSON.parse(pelanggan), function(key, row) {
+    //                         html += '<option value="'+row.id+'">'+row.nama_pelanggan+'</option>'
+    //                     })
+    //                     html += '</select>'
+    //                     $('.nama_pelanggan').html(html)
+    //                     $('#nama_pelanggan').change(function() {
+    //                         $.ajax({
+    //                             url: '<?= route('pemasangan.get_pemasangan') ?>?id_pelanggan=' + $('#nama_pelanggan').val(),
+    //                             success: function(response) {
+    //                                 if(!$.trim(response)) {
+    //                                     $('#no_telepon').val('')
+    //                                     $('#no_identitas').val('')
+    //                                     $('#alamat').val('')
+    //                                     $('#tarif').val('')
+    //                                     $('#tanggal_pemasangan').val('')
+    //                                     $('#alamat_pemasangan').val('')
+    //                                 } else {
+    //                                     $.each(response, function(data, row) {
+    //                                         $('#no_telepon').val(row.no_telepon)
+    //                                         $('#no_identitas').val(row.no_identitas)
+    //                                         $('#alamat').val(row.alamat)
+    //                                         $('#tarif').val('')
+    //                                         $('#tanggal_pemasangan').val('')
+    //                                         $('#alamat_pemasangan').val('')
+    //                                     })
+    //                                 }
+    //                             }
+    //                         })
+    //                     })
+    //                 } else {
+    //                     let html = '<select name="nama_pelanggan" id="nama_pelanggan" class="form-control">'
+    //                     $.each(response, function(data, row) {
+    //                         $('#no_telepon').val(row.no_telepon)
+    //                         $('#no_identitas').val(row.no_identitas)
+    //                         $('#alamat').val(row.alamat)
+    //                         $('#tarif').val('')
+    //                         $('#tanggal_pemasangan').val('')
+    //                         $('#alamat_pemasangan').val('')
+    //                         html += '<option value="'+row.id_pelanggan+'">'+row.nama_pelanggan+'</option>'
+    //                     })
+    //                     html += '</select>'
+    //                     $('.nama_pelanggan').html(html)
+    //                 }
+    //             }
+    //         })
+    //     }
+
+    //     if($('#pilih_pelanggan').val() == 1) {
+    //         $('#nama_pelanggan').remove()
+    //         $('#no_telepon').val('')
+    //         $('#no_identitas').val('')
+    //         $('#alamat').val('')
+    //         $('#tarif').val('')
+    //         $('#tanggal_pemasangan').val('')
+    //         $('#alamat_pemasangan').val('')
+    //         let html = '<input type="text" name="nama_pelanggan" class="form-control">'
+    //         $('.nama_pelanggan').html(html)
+    //     }
+    // })
+
+    function pilih() {
+        if($('#pilih_pelanggan').val() == 1) {
+            $.ajax({
+                url: '<?= route('pemasangan.get_pemasangan') ?>',
+                success: function(response) {
+                    let html = '<select class="form-control" name="nama_pelanggan" id="nama_pelanggan" onchange="change_pelanggan()">'
+                    html += '<option value="">select</option>'
+                    $.each(response, function(data, row) {
                         html += '<option value="'+row.id+'">'+row.nama_pelanggan+'</option>'
                     })
-                html += '</select>'
-                html += '</div>'
-                $('.nama').html(html)
-            } 
-            if($('#pilih_pelanggan').val() == '1') {
-                let html = '<div class="form-group">';
-                html += '<label>Nama Pelanggan</label>';
-                html += '<input name="nama_pelanggan" id="nama_pelanggan" class="form-control">'
-                html += '</div>'
-                $('.nama').html(html)
-            }
-            if($('#pilih_pelanggan').val() == '') {
-                $('.nama').html('')
-                $('#no_telepon').val('')
-                $('#no_ktp').val('')
-                $('#alamat').val('')
-            }
-        if($('#nama_pelanggan').val() != null) {
-            $.ajax({
-                url: '<?= route('pemasangan.get_pemasangan') ?>?id_pelanggan=' + $('#nama_pelanggan').val(),
-                success: function(response) {
-                    if (!$.trim(response)){
-                        $('#no_telepon').val('')
-                        $('#no_ktp').val('')
-                        $('#alamat').val('')
-                    } else {
-                        $('#no_telepon').val(response.no_telepon)
-                        $('#no_ktp').val(response.no_ktp)
-                        $('#alamat').val(response.alamat)
-                    }
+                    html +='</select>'
+                    $('#nama_pelanggan').remove()
+                    $('.nama_pelanggan').html(html)
                 }
             })
         } 
-    })
+
+        if($('#pilih_pelanggan').val() == 2) {
+            let html = '<input type="text" class="form-control" name="nama_pelanggan" id="nama_pelanggan">'
+            $('#nama_pelanggan').remove()
+            $('.nama_pelanggan').html(html)
+            $('#no_telepon').val('').prop('readonly', false)
+            $('#no_identitas').val('').prop('readonly', false)
+            $('#alamat').val('').prop('readonly', false)
+        }
+
+        if($('#pilih_pelanggan').val() == '') {
+            $('#no_telepon').val('').prop('readonly', false)
+            $('#no_identitas').val('').prop('readonly', false)
+            $('#alamat').val('').prop('readonly', false)
+        }
+    }
+
+    function change_pelanggan() {
+        $.ajax({
+            url: '<?= route('pemasangan.get_pemasangan') ?>?id_pelanggan=' + $('#nama_pelanggan').val(),
+            success: function(response) {
+                $('#no_telepon').val(response.no_telepon).prop('readonly', true)
+                $('#no_identitas').val(response.no_identitas).prop('readonly', true)
+                $('#alamat').val(response.alamat).prop('readonly', true)
+            }
+        })
+    }
 
     function store() {
         $('#form-create .alert').remove()
@@ -73,12 +149,13 @@
                 if(response.success) {
                     $.growl.notice({
                         title : 'success',
-                        message : 'Data Berhasil di Update'
+                        message : response.message
                     });
+                    return document.location.href='<?= route('pemasangan') ?>'
                 } else {
-                    $.growl.notice({
-                        title : 'false',
-                        message : 'Data Gagal di Update'
+                    $.growl.error({
+                        title : 'failed',
+                        message : response.message
                     });
                 }
                 bootbox.hideAll()
@@ -89,6 +166,16 @@
                 $('#form-create').prepend(validation(response));
             }
         })
+    }
+
+    function validation(errors) {
+        var validations = '<div class="alert alert-danger">';
+            validations += '<p><b>'+errors.message+'</b></p>';
+            $.each(errors.errors, function(i, error){
+                validations += error[0]+'<br>';
+            });
+            validations += '</div>';
+        return validations;
     }
     
 

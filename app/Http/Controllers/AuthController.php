@@ -8,10 +8,16 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
     public function index() {
+        if(Auth::check() == true) {
+            return redirect()->back();
+        }
         return view('login');
     }
 
     public function login(Request $request) {
+        if(Auth::check() == true) {
+            return redirect()->back();
+        }
         if(Auth::attempt(['name' => $request->username, 'password' => $request->password])) {
             return redirect()->route('dashboard');
         } else {

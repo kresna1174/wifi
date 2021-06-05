@@ -49,55 +49,36 @@
             })
         })
 
-        
-
-        
-        
-
-        function update(id) {
-            $('#form-edit .alert').remove()
-            $.ajax({
-                url: '<?= route('pemasangan.update') ?>/'+id,
-                dataType: 'json',
-                type: 'post',
-                data: $('#form-edit').serialize(),
-                success: function(response) {
-                    if(response.success) {
-                        $.growl.notice({
-                            title : 'success',
-                            message : 'Data Berhasil di Update'
-                        });
-                    } else {
-                        $.growl.notice({
-                            title : 'false',
-                            message : 'Data Gagal di Update'
-                        });
-                    }
-                    bootbox.hideAll()
-                    dataTable.ajax.reload()
-                },
-                error: function(xhr) {
-                    let response = JSON.parse(xhr.responseText);
-                    $('#form-edit').prepend(validation(response));
+        function destroy(id){
+            Swal.fire({
+            title: 'Delete',
+            text: 'Apakah anda yakin akan menghapus data ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#929ba1',
+            confirmButtonText: 'Oke'
+            }).then((result) => {
+                if (result.value) {         
+                    $.ajax({
+                        url: '<?= route('pemasangan.delete') ?>/'+id,
+                        success: function(response){
+                            if(response.success) {
+                                $.growl.notice({
+                                    title : 'success',
+                                    message : response.message
+                                });
+                                dataTable.ajax.reload();
+                            } else {
+                                $.growl.error({
+                                    title : 'failed',
+                                    message : response.message
+                                });
+                            }
+                        }
+                    });
                 }
-            })
+            });
         }
-
-
-        
-
-        function destroy(id) {
-            $.ajax({
-                url: '<?= route('pemasangan.delete') ?>/'+id,
-                success: function(response) {
-                    alert(response);
-                }
-            })
-            dataTable.ajax.reload()
-        }
-
-        
-
-
     </script>
 @endsection

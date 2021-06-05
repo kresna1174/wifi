@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\pemasangan;
 use App\pelanggan;
+use App\tagihan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -20,27 +21,53 @@ class PemasanganController extends Controller
     public function get() {
         $pelanggan = DB::table('pemasangan')
            ->join('pelanggan', 'pemasangan.id_pelanggan', '=', 'pelanggan.id')
+           ->select('pelanggan.nama_pelanggan', 'pemasangan.alamat_pemasangan', 'pemasangan.tarif', 'pemasangan.tanggal_pemasangan', 'pemasangan.id')
            ->get();
         return DataTables::of($pelanggan)
            ->make(true); 
     } 
 
     public function get_pemasangan(Request $request) {
-        return pelanggan::with('pemasangan')->where('pelanggan.id', $request->id_pelanggan)->first();
-    } 
+        // $pelanggan = DB::table('pelanggan')
+        // ->join('pemasangan', 'pelanggan.id', 'pemasangan.id')
+        // ->join('tagihan', 'pemasangan.id', 'tagihan.id_pemasangan')
+        // ->where('pelanggan.id', $request->id_pelanggan)
+        // ->get();
+        // return $pelanggan;
+        if(isset($request->id_pelanggan)) {
+            return pelanggan::findOrFail($request->id_pelanggan);
+        } else {
+            return pelanggan::get();
+        }
+    }
+
+    // public function get_id_pemasangan(Request $request) {
+    //     $pelanggan = DB::table('pemasangan')
+    //         ->join('pelanggan', 'pemasangan.id_pelanggan', 'pelanggan.id')
+    //         ->join('tagihan', 'pemasangan.id', 'tagihan.id_pemasangan')
+    //         ->where('pemasangan.id', $request->id_pemasangan)
+    //         ->first();
+    //     return response()->json($pelanggan);
+    // }
 
     public function create() {
         $pelanggan = pelanggan::with('pemasangan')->get();
+        $pelanggan->data = pelanggan::get();
+        // $pelanggan->data = DB::table('pemasangan')
+        // ->join('pelanggan', 'pemasangan.id_pelanggan', 'pelanggan.id')
+        // ->join('tagihan', 'pemasangan.id', 'tagihan.id_pemasangan')
+        // ->get();
+        // $pelanggan->nama_pelanggan = pelanggan::pluck('nama_pelanggan', 'id');
         return view('pemasangan.create', ['pelanggan' => $pelanggan]); 
     } 
 
     public function edit($id) {
-        $pelanggan = pelanggan::with('pemasangan')->where('pelanggan.id', $id)->first();
-        foreach($pelanggan->pemasangan as $key => $row) {
-            $pelanggan->tarif = $row->tarif;
-            $pelanggan->alamat_pemasangan = $row->alamat_pemasangan;
-            $pelanggan->tanggal_pemasangan = $row->tanggal_pemasangan;
-        }
+        $pelanggan = DB::table('pemasangan')
+            ->join('pelanggan', 'pemasangan.id_pelanggan', 'pelanggan.id')
+            ->join('tagihan', 'pemasangan.id', 'tagihan.id_pemasangan')
+            ->where('pemasangan.id', $id)
+            ->first();
+        $pelanggan->nama_pelanggan = pelanggan::pluck('nama_pelanggan', 'id');
         return view('pemasangan.edit', ['pelanggan' => $pelanggan]);
     } 
 
@@ -54,73 +81,120 @@ class PemasanganController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         }
-        if($request->pilih_pelanggan == '1') {
+        if($request->pilih_pelanggan == 1) {
             $data = [
-                'nama_pelanggan' => $request->nama_pelanggan,
-                'no_telepon' => $request->no_telepon,
-                'no_ktp' => $request->no_ktp,
-                'alamat' => $request->alamat,
-                'created_at'  => date('Y-m-d'),
-                'created_by' => Auth::user()->username,
-            ];
-        }
-        if($pelanggan = pelanggan::create($data)) {
-            if(pemasangan::create([
-                'id_pelanggan' => $pelanggan->id, 
+                'id_pelanggan' => $request->nama_pelanggan,
                 'alamat_pemasangan' => $request->alamat_pemasangan,
                 'tarif' => $request->tarif,
                 'tanggal_pemasangan' => $request->tanggal_pemasangan,
-                'deleted' => 0
-            ])) {
+                'deleted' => 0,
+                'created_at'  => date('Y-m-d H:i:s'),
+                'created_by' => Auth::user()->name,
+            ];
+            if($pemasangan = pemasangan::create($data)) {
+                if(tagihan::create([
+                    'id_pemasangan' => $pemasangan->id,
+                    'tanggal_tagihan' => $request->tanggal_pemasangan,
+                    'status_bayar' => 0,
+                    'deleted' => 0,
+                    'created_at'  => date('Y-m-d H:i:s'),
+                    'created_by' => Auth::user()->name,
+                    ])) {
+                        return [
+                            'success' => true,
+                            'message' => 'Data Berhasil di Tambahkan'
+                        ];
+                    }
+            } else {
                 return [
-                    'success' => true,
-                    'message' => 'Data Berhasil di Tambahkan'
+                    'success' => false,
+                    'message' => 'Data Gagal di Tambahkan'
                 ];
             }
         } else {
-            return [
-                'success' => false,
-                'message' => 'Data Gagal di Tambahkan'
+            $data = [
+                'nama_pelanggan' => $request->nama_pelanggan,
+                'no_telepon' => $request->no_telepon,
+                'no_identitas' => $request->no_identitas,
+                'alamat' => $request->alamat,
+                'deleted' => 0,
+                'created_at' => date('Y-m-d H:i:s'),
+                'created_by' => Auth::user()->name
             ];
+            if($pelanggan = pelanggan::create($data)) {
+                if($pemasangan = pemasangan::create([
+                    'id_pelanggan' => $pelanggan->id, 
+                    'alamat_pemasangan' => $request->alamat_pemasangan,
+                    'tarif' => $request->tarif,
+                    'tanggal_pemasangan' => $request->tanggal_pemasangan,
+                    'deleted' => 0,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'created_by' => Auth::user()->name
+                ])) {
+                    if(tagihan::create([
+                        'id_pemasangan' => $pemasangan->id,
+                        'tanggal_tagihan' => $request->tanggal_pemasangan,
+                        'status_bayar' => 0,
+                        'deleted' => 0,
+                        'created_at'  => date('Y-m-d H:i:s'),
+                        'created_by' => Auth::user()->name,
+                        ])) {
+                            return [
+                                'success' => true,
+                                'message' => 'Data Berhasil di Tambahkan'
+                            ];
+                        }
+                }
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'Data Gagal di Tambahkan'
+                ];
+            }
         }
     } 
 
-     public function update(Request $request, $id) {
-         $rules = self::validation($request->all());
-         $messages = self::validation_messages($request->all());
-         $validator = Validator::make($request->all(), $rules, $messages);
-         if($validator->fails()) {
-             return response()->json([
-                 'message' => 'Terjadi Kesalahan Input',
-                 'errors' => $validator->messages()
-             ], 400);
-         }
-         $data = [
-            'id_pelanggan' => $request->nama_pelanggan,
-            'no_telepon' => $request->no_telepon,
-            'no_ktp' => $request->no_ktp,
-            'alamat' => $request->alamat,
-            'alamat_pemasangan' => $request->alamat_pemasangan,
-            'alamat_pemasangan'=> $request->alamat_pemasangan,
-            'tarif' => $request->tarif,
-            'tanggal_pemasangan' => $request->tanggal_pemasangan,
-            'deleted' => 0, 
-            'updated_at'  => date('Y-m-d'),
-            'updated_by' => Auth::user()->username, 
-         ];
-         $pelanggan = pemasangan::whereid_pelanggan($id)->first();
-         if($pelanggan->update($data)) {
-             return [
-                 'success' => true,
-                 'message' => 'Data Berhasil di Update'
-             ];
-         } else {
-             return [
-                 'success' => false,
-                 'message' => 'Data Gagal di Update'
-             ];
-         }
-     } 
+    public function update(Request $request, $id) {
+        $rules = self::validation($request->all());
+        $messages = self::validation_message($request->all());
+        $validator = Validator::make($request->all(), $rules, $messages);
+        if($validator->fails()) {
+            return response()->json([
+                'message' => 'Terjadi Kesalahan Input',
+                'errors' => $validator->messages()
+            ], 400);
+        }
+            $data = [
+                'id_pelanggan' => $request->nama_pelanggan,
+                'alamat_pemasangan' => $request->alamat_pemasangan,
+                'tarif' => $request->tarif,
+                'tanggal_pemasangan' => $request->tanggal_pemasangan,
+                'deleted' => 0,
+                'updated_at'  => date('Y-m-d H:i:s'),
+                'updated_by' => Auth::user()->name,
+            ];
+            $pemasangan = pemasangan::find($id);
+            if($pemasangan->update($data)) {
+                if(tagihan::where('id_pemasangan', $pemasangan->id)->update([
+                    'id_pemasangan' => $pemasangan->id,
+                    'tanggal_tagihan' => $request->tanggal_pemasangan,
+                    'status_bayar' => 0,
+                    'deleted' => 0,
+                    'updated_at'  => date('Y-m-d H:i:s'),
+                    'updated_by' => Auth::user()->name,
+                    ])) {
+                        return [
+                            'success' => true,
+                            'message' => 'Data Berhasil di Perbarui'
+                        ];
+                    }
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'Data Gagal di Perbarui'
+                ];
+            }
+    } 
 
      public function delete($id) {
          $model = pemasangan::findOrFail($id);
@@ -148,7 +222,7 @@ class PemasanganController extends Controller
         return [ 
             'nama_pelanggan' => 'required',
             'no_telepon' => 'required|numeric',
-            'no_ktp' => 'required|numeric',
+            'no_identitas' => 'required|numeric',
             'alamat' => 'required',
             'alamat_pemasangan' => 'required', 
             'tarif' => 'required|numeric',
@@ -161,8 +235,8 @@ class PemasanganController extends Controller
         $messages['nama_pelanggan.required'] = 'Nama Pelanggan Harus Di Isi';
         $messages['no_telepon.required'] = 'No Telepon Harus Di Isi';
         $messages['no_telepon.numeric'] = 'No Telepon Harus Angka';
-        $messages['no_ktp.required'] = 'No Identitas Harus Di Isi';
-        $messages['no_ktp.numeric'] = 'No Identitas Harus Angka';
+        $messages['no_identitas.required'] = 'No Identitas Harus Di Isi';
+        $messages['no_identitas.numeric'] = 'No Identitas Harus Angka';
         $messages['alamat.required'] =  'Alamat Pelanggan Harus Di Isi';
         $messages['alamat_pemasangan.required'] = 'Alamat Pemasangan Harus Di Isi';
         $messages['tarif.required'] = 'Tarif Harus Di Isi';

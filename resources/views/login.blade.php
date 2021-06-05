@@ -25,7 +25,6 @@
     </style>
 </head>
 <body class="pace-top">
-
 	<div id="page-loader" class="fade show">
 		<div class="material-loader">
 			<svg class="circular" viewBox="25 25 50 50">

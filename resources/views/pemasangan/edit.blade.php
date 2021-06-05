@@ -9,7 +9,7 @@
 @include('pemasangan.form')
 <div class="float-right">
     <button type="button" class="btn btn-secondary" onclick="document.location.href='<?= route('pemasangan') ?>'">Cancel</button>
-    <button type="button" class="btn btn-primary" onclick="update('<?= $pelanggan->id ?>')">Update</button>
+    <button type="button" class="btn btn-primary" onclick="update('<?= $pelanggan->id_pemasangan ?>')">Update</button>
 </div>
 {!! Form::close() !!}
 </div>
@@ -18,80 +18,46 @@
 
 @section('script')
     <script>
-    let data = '<?= json_encode($pelanggan) ?>'
-        $('#pilih_pelanggan').change(function() {
-            if($('#pilih_pelanggan').val() == '0') {
-                let html = '<div class="form-group">';
-                html += '<label>Nama Pelanggan</label>';
-                html += '<select class="form-control" name="nama_pelanggan" id="nama_pelanggan">'
-                    $.each(JSON.parse(data), function(data, row) {
-                        html += '<option value="'+row.id+'">'+row.nama_pelanggan+'</option>'
-                    })
-                html += '</select>'
-                html += '</div>'
-                // $('.customer_name').remove()
-                $('.nama').html(html)
-               
-            } 
-            if($('#pilih_pelanggan').val() == '1') {
-                let html = '<div class="form-group">';
-                html += '<label>Nama Pelanggan</label>';
-                html += '<input name="nama_pelanggan" id="nama_pelanggan" class="form-control">'
-                html += '</div>'
-                // $('.customer_name').remove()
-                $('.nama').html(html)
-
-            }
-            if($('#pilih_pelanggan').val() == '') {
-                $('.nama').html('')
-                // $('.customer_name').remove()
-                $('#no_telepon').val('')
-                $('#no_ktp').val('')
-                $('#alamat').val('')
-            }
-        if($('#nama_pelanggan').val() != null) {
-            $.ajax({
-                url: '<?= route('pemasangan.get_pemasangan') ?>?id_pelanggan=' + $('#nama_pelanggan').val(),
-                success: function(response) {
-                    if (!$.trim(response)){
-                        $('#no_telepon').val('')
-                        $('#no_ktp').val('')
-                        $('#alamat').val('')
-                    } else {
-                        $('#no_telepon').val(response.no_telepon)
-                        $('#no_ktp').val(response.no_ktp)
-                        $('#alamat').val(response.alamat)
-                    }
-                }
-            })
-        } 
+    $(function() {
+        $('#pilih_pelanggan').prop('readonly', true)
+        $('#no_telepon').prop('readonly', true)
+        $('#nama_pelanggan').prop('readonly', true)
+        $('#no_identitas').prop('readonly', true)
+        $('#alamat').prop('readonly', true)
+        $('#pilih_pelanggan').remove()
+        $('.pilih_pelanggan').html('<input type="text" name="pilih_pelanggan" class="form-control" id="pilih_pelanggan" value="pelanggan lama" readonly>')
     })
 
-    function update(id) {
-        $('#form-create .alert').remove()
+    function change_pelanggan() {
         $.ajax({
-            url: '<?= route('pemasangan.store') ?>',
+            url: '<?= route('pemasangan.get_pemasangan') ?>?id_pelanggan=' + $('#nama_pelanggan').val(),
+            success: function(response) {
+                $('#no_telepon').val(response.no_telepon).prop('readonly', true)
+                $('#no_identitas').val(response.no_identitas).prop('readonly', true)
+                $('#alamat').val(response.alamat).prop('readonly', true)
+            }
+        })
+    }
+
+    function update(id) {
+        $.ajax({
+            url: '<?= route('pemasangan.update') ?>/' +id,
             dataType: 'json',
             type: 'post',
-            data: $('#form-create').serialize(),
+            data: $('#form-edit').serialize(),
             success: function(response) {
                 if(response.success) {
                     $.growl.notice({
                         title : 'success',
-                        message : 'Data Berhasil di Update'
+                        message : response.message
                     });
+                    return document.location.href='<?= route('pemasangan') ?>'
                 } else {
-                    $.growl.notice({
-                        title : 'false',
-                        message : 'Data Gagal di Update'
+                    $.growl.error({
+                        title : 'failed',
+                        message : response.message
                     });
                 }
-                bootbox.hideAll()
-                dataTable.ajax.reload()
-            },
-            error: function(xhr) {
-                let response = JSON.parse(xhr.responseText);
-                $('#form-create').prepend(validation(response));
             }
         })
     }
