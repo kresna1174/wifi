@@ -60,7 +60,7 @@ class PembayaranController extends Controller
         foreach($pemasangan as $row) {
             $pemasangan->id_pelanggan = $row->id_pelanggan;
         }
-        return view('pembayaran.create', ['pelanggan' => $pelanggan, 'pemasangan' => $pemasangan]);
+        return view('pembayaran.create', ['pelanggan' => $pelanggan, 'pemasangan' => $pemasangan, 'title' => 'Pembayaran']);
     }
 
     public function store(Request $request) {

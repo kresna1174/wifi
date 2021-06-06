@@ -2,14 +2,14 @@
 @section('content')
 <h1 class="page-header">
         Pembayaran
-        <div class="pull-right">
-            <div class="form-inline">
-                <div class="form-group">
-                    <button type="button" id="btn-create" class="btn btn-primary" onclick="document.location.href='<?= route('pembayaran.create') ?>'">Create</button>
-                </div>
+    <div class="pull-right">
+        <div class="form-inline">
+            <div class="form-group">
+                <button type="button" id="btn-create" class="btn btn-primary" onclick="document.location.href='<?= route('pembayaran.create') ?>'">Create</button>
             </div>
         </div>
-    </h1>
+    </div>
+</h1>
 <div class="panel panel-default">
     <div class="panel-body">
         <table id="table" class="table table-consoned table-bordered" width="100%">

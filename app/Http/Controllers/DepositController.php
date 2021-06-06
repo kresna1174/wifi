@@ -14,7 +14,7 @@ class DepositController extends Controller
 {
     public function index() {
         $title = 'Master Deposit';
-        return view('deposit.index', ['title' => $title]);
+        return view('deposit.index', ['title' => $title, 'title' => 'Deposit']);
     }
 
     public function get() {

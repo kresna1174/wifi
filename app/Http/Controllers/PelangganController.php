@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Validator;
 class PelangganController extends Controller
 {
     public function index() {
-        return view('pelanggan.index');
+        return view('pelanggan.index', ['title' => 'Pelanggan']);
     }
 
     public function get() {
@@ -23,13 +23,6 @@ class PelangganController extends Controller
         ->make(true);
         return view('pelanggan.index');
     }
-
-    // public function get_pemasangan($id) {
-    //     return pelanggan::join('pemasangan', 'pelanggan.id', '=', 'pemasangan.id_pelanggan')
-    //         ->join('tagihan', 'pemasangan.id', '=', 'tagihan.id_pemasangan')
-    //         ->where('pemasangan.id_pemasangan', $id)
-    //         ->get();
-    // }
 
     public function create() {
         return view('pelanggan.create');
