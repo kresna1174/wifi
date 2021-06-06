@@ -30,6 +30,9 @@ Route::middleware(['auth'])->group(function() {
         Route::post('store', 'PelangganController@store')->name('pelanggan.store');
         Route::get('get', 'PelangganController@get')->name('pelanggan.get');
         Route::get('view/{id?}', 'PelangganController@view')->name('pelanggan.view');
+        Route::get('detail', 'PelangganController@detail')->name('pelanggan.detail');
+        Route::get('riwayat', 'PelangganController@riwayat')->name('pelanggan.riwayat');
+        Route::get('get_pemasangan', 'PelangganController@get_pemasangan')->name('pelanggan.get_pemasangan');
     });
     
     Route::group(['prefix' => 'deposit'], function() {

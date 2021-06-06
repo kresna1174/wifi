@@ -10,4 +10,8 @@ class pembayaran extends Model
     protected $primary_key = 'id';
     protected $guarded = [];
     public $timestamps = true;
+
+    public function pemasangan() {
+        return $this->hasMany(pemasangan::class, 'id', 'id_pemasangan');
+    }
 }

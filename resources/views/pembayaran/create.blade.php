@@ -56,7 +56,7 @@
                         }
                         $.each(response, function(data, row) {
                             $('#alamat_pemasangan').val(row.alamat_pemasangan)
-                            $('#total_bayar').val(pop(row.tarif))
+                            $('#total_bayar').val(row.tarif)
                             $('#id_tagihan').val(row.tagihan_id)
                             if($('#bayar').val() == '') {
                                 $('#store_bayar').prop('disabled', true)
@@ -91,7 +91,7 @@
                         }
                         $.each(response, function(data, row) {
                             $('#alamat_pemasangan').val(row.alamat_pemasangan)
-                            $('#total_bayar').val(pop(row.tarif))
+                            $('#total_bayar').val(row.tarif)
                             $('#id_tagihan').val(row.tagihan_id)
                             if($('#bayar').val() == '') {
                                 $('#store_bayar').prop('disabled', true)
@@ -124,7 +124,7 @@
                         }
                         $.each(response, function(data, row) {
                             $('#alamat_pemasangan').val(row.alamat_pemasangan)
-                            $('#total_bayar').val(pop(row.tarif))
+                            $('#total_bayar').val(row.tarif)
                             $('#id_tagihan').val(row.tagihan_id)
                             if($('#bayar').val() == '') {
                                 $('#store_bayar').prop('disabled', true)

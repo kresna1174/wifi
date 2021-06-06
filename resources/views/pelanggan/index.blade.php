@@ -144,6 +144,32 @@
             })
         }
 
+        function detail(id, id_pelanggan) {
+            $.ajax({
+                url: '<?= route('pelanggan.detail') ?>?id_pemasangan='+id + '&id_pelanggan=' + id_pelanggan,
+                success: function(response) {
+                    bootbox.dialog({
+                        size: 'large',
+                        title: 'Detail Pemasangan',
+                        message: response
+                    })
+                }
+            })
+        }
+
+        function riwayat(id, id_pelanggan) {
+            $.ajax({
+                url: '<?= route('pelanggan.riwayat') ?>?id_pemasangan='+id + '&id_pelanggan=' + id_pelanggan,
+                success: function(response) {
+                    bootbox.dialog({
+                        size: 'large',
+                        title: 'History Pembayaran',
+                        message: response
+                    })
+                }
+            })
+        }
+
         function destroy(id){
             Swal.fire({
             title: 'Delete',

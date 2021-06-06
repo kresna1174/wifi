@@ -4,11 +4,11 @@
 </div>
 <div class="form-group">
     <label>No Telepon</label>
-    {!! Form::text('no_telepon', null, ['class' => 'form-control', 'id' => "no_telepon"]) !!}
+    {!! Form::number('no_telepon', null, ['class' => 'form-control', 'id' => "no_telepon"]) !!}
 </div>
 <div class="form-group">
     <label>No Indentitas</label>
-    {!! Form::text('no_identitas', null, ['class' => 'form-control', 'id' => "no_identitas"]) !!}
+    {!! Form::number('no_identitas', null, ['class' => 'form-control', 'id' => "no_identitas"]) !!}
 </div>
 <div class="form-group">
     <label>Alamat</label>

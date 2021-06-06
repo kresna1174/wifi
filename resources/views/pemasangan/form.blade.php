@@ -25,7 +25,7 @@
 </div>
 <div class='form-group'>
     <label>No Identitas</label>
-    {!! Form::text('no_identitas', isset($pelanggan->no_identitas) ? $pelanggan->no_identitas : null, ['class' => 'form-control', 'id' => 'no_identitas']) !!}
+    {!! Form::number('no_identitas', isset($pelanggan->no_identitas) ? $pelanggan->no_identitas : null, ['class' => 'form-control', 'id' => 'no_identitas']) !!}
 </div>
 <div class='form-group'>
     <label>Alamat</label>
@@ -33,11 +33,11 @@
 </div>
 <div class='form-group'>
     <label>Tarif</label>
-    {!! Form::text('tarif', isset($pelanggan->tarif) ? $pelanggan->tarif : null, ['class' => 'form-control', 'id' => 'tarif']) !!}
+    {!! Form::number('tarif', isset($pelanggan->tarif) ? $pelanggan->tarif : null, ['class' => 'form-control', 'id' => 'tarif']) !!}
 </div>
 <div class='form-group'>
     <label>Tanggal Pemasangan</label>
-    {!! Form::text('tanggal_pemasangan', isset($pelanggan->tanggal_pemasangan) ? $pelanggan->tanggal_pemasangan : null, ['class' => 'form-control', 'id' => 'tanggal_pemasangan']) !!}
+    {!! Form::text('tanggal_pemasangan', isset($pelanggan->tanggal_pemasangan) ? $pelanggan->tanggal_pemasangan : null, ['class' => 'form-control', 'id' => 'tanggal_pemasangan', 'autocomplete' => 'off']) !!}
 </div>
 
 <div class='form-group'>

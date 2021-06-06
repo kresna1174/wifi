@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Libraries\BulanIndo;
 use Illuminate\Http\Request;
 use DataTables;
 use App\pelanggan;
+use App\pemasangan;
+use App\pembayaran;
+use App\tagihan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -20,6 +24,13 @@ class PelangganController extends Controller
         return view('pelanggan.index');
     }
 
+    // public function get_pemasangan($id) {
+    //     return pelanggan::join('pemasangan', 'pelanggan.id', '=', 'pemasangan.id_pelanggan')
+    //         ->join('tagihan', 'pemasangan.id', '=', 'tagihan.id_pemasangan')
+    //         ->where('pemasangan.id_pemasangan', $id)
+    //         ->get();
+    // }
+
     public function create() {
         return view('pelanggan.create');
     }
@@ -30,8 +41,43 @@ class PelangganController extends Controller
     }
 
     public function view($id) {
-        $model = pelanggan::findOrFail($id);
+        $model = pelanggan::with(['pemasangan' => function($data) use($id) {
+            $data->join('tagihan', 'pemasangan.id', '=', 'tagihan.id_pemasangan')
+            ->join('pelanggan', 'pemasangan.id_pelanggan', 'pelanggan.id')
+            ->where('id_pelanggan', $id)
+            ->select('pemasangan.id', 'pemasangan.tarif', 'pelanggan.id as id_pelanggan', 'pemasangan.tanggal_akhir_bayar', 'pemasangan.alamat_pemasangan')
+            ->groupBy('pemasangan.id', 'pemasangan.tarif', 'pelanggan.id', 'pemasangan.tanggal_akhir_bayar', 'pemasangan.alamat_pemasangan')
+            ->get();
+        }])->where('pelanggan.id', $id)->first();
         return view('pelanggan.view', ['model' => $model]);
+    }
+
+    public function detail(Request $request) {
+        $model = pemasangan::with(['tagihan' => function($data) use($request) {
+            $data->join('pemasangan', 'tagihan.id_pemasangan', '=', 'pemasangan.id')
+                ->where('id_pemasangan', $request->id_pemasangan)->get();
+        }])
+            ->where('id_pelanggan', $request->id_pelanggan)
+            ->where('id', $request->id_pemasangan)
+            ->first();
+        foreach($model->tagihan as $row) {
+            $row->tanggal_tagihan = BulanIndo::tanggal_indo($row->tanggal_tagihan);
+        }
+        return view('pelanggan.detail', ['model' => $model]);
+    }
+
+    public function riwayat(Request $request) {
+        $data = pemasangan::join('pembayaran', 'pemasangan.id', '=', 'pembayaran.id_pemasangan')
+            ->leftjoin('deposit', 'pemasangan.id_pelanggan', '=', 'deposit.id_pelanggan')
+            ->where('pemasangan.id', $request->id_pemasangan)
+            ->where('pemasangan.id_pelanggan', $request->id_pelanggan)
+            ->select('pembayaran.tanggal_bayar', 'pemasangan.tarif', 'pembayaran.bayar', 'deposit.jumlah_deposit')
+            ->groupBy('pembayaran.tanggal_bayar', 'pemasangan.tarif', 'pembayaran.bayar', 'deposit.jumlah_deposit')
+            ->get();
+        foreach($data as $row) {
+            $row->tanggal_bayar = BulanIndo::tanggal_indo($row->tanggal_bayar);   
+        }
+        return view('pelanggan.riwayat', ['data' => $data]);
     }
 
     public function store(Request $request) {
