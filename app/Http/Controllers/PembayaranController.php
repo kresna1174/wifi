@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\deposit;
+use App\Libraries\BulanIndo;
 use App\pelanggan;
 use App\pemasangan;
 use Illuminate\Http\Request;
@@ -20,20 +21,21 @@ class PembayaranController extends Controller
     }
 
     public function get() {
-        $pelanggan = DB::table('pembayaran')
-        ->join('pemasangan', 'pembayaran.id_pemasangan', '=', 'pemasangan.id')
+        $pelanggan = pembayaran::join('pemasangan', 'pembayaran.id_pemasangan', '=', 'pemasangan.id')
         ->join('tagihan', 'pembayaran.id_tagihan', '=', 'tagihan.id')
         ->join('pelanggan', 'pemasangan.id_pelanggan', '=', 'pelanggan.id')
         ->select('pelanggan.nama_pelanggan', 'pembayaran.bayar', 'pembayaran.tanggal_bayar', 'pemasangan.tarif', 'pemasangan.alamat_pemasangan')
         ->groupBy('pelanggan.nama_pelanggan', 'pembayaran.bayar', 'pembayaran.tanggal_bayar', 'pemasangan.tarif', 'pemasangan.alamat_pemasangan')
         ->get();
+        foreach($pelanggan as $row) {
+            $row->tanggal_bayar = BulanIndo::tanggal_indo($row->tanggal_bayar);
+        }
         return DataTables::of($pelanggan)
             ->make(true);
     }
 
     public function get_pembayaran(Request $request) {
-            $pemasangan = DB::table('pemasangan')
-            ->leftjoin('pelanggan', 'pemasangan.id_pelanggan', '=', 'pemasangan.id_pelanggan')
+        $pemasangan = pemasangan::leftjoin('pelanggan', 'pemasangan.id_pelanggan', '=', 'pemasangan.id_pelanggan')
             ->leftjoin('tagihan', 'pemasangan.id', '=', 'tagihan.id_pemasangan')
             ->where('tagihan.status_bayar', 0)
             ->where('pemasangan.id_pelanggan', $request->id_pelanggan)
@@ -41,13 +43,15 @@ class PembayaranController extends Controller
             ->select(['pemasangan.id_pelanggan', 'pemasangan.tarif', 'tagihan.tanggal_tagihan', 'pemasangan.alamat_pemasangan', 'tagihan.id as tagihan_id', 'pemasangan.id as pemasangan_id', 'pelanggan.id as pelanggan_id'])
             ->groupBy(['pemasangan.id_pelanggan', 'pemasangan.tarif', 'tagihan.tanggal_tagihan', 'pemasangan.alamat_pemasangan', 'tagihan.id', 'pemasangan.id', 'pelanggan.id'])
             ->get();
+        foreach($pemasangan as $row) {
+            $row->tanggal_tagihan = BulanIndo::tanggal_indo($row->tanggal_tagihan);
+        }
         return $pemasangan;
     }
 
     public function create() {
         $pelanggan = pelanggan::pluck('nama_pelanggan', 'id');
-        $pemasangan =  DB::table('pemasangan')
-        ->leftjoin('pelanggan', 'pemasangan.id_pelanggan', '=', 'pemasangan.id_pelanggan')
+        $pemasangan =  pemasangan::leftjoin('pelanggan', 'pemasangan.id_pelanggan', '=', 'pemasangan.id_pelanggan')
         ->leftjoin('tagihan', 'pemasangan.id', '=', 'tagihan.id_pemasangan')
         ->where('tagihan.status_bayar', 0)
         ->select(['pemasangan.id_pelanggan', 'pemasangan.tarif', 'tagihan.tanggal_tagihan', 'pemasangan.alamat_pemasangan', 'tagihan.id', 'pemasangan.id as pemasangan_id'])
@@ -75,9 +79,14 @@ class PembayaranController extends Controller
             'bayar' => $request->bayar,
             'tanggal_bayar' => date('Y-m-d'),
             'deleted' => 0,
-            'created_at' => date('Y-m-d'),
+            'created_at' => date('Y-m-d H:i:s'),
             'created_by' => Auth::user()->name,
         ];
+        $deposit = deposit::where('id_pelanggan', $request->nama_pelanggan)->first();
+        $total_deposit = $deposit->jumlah_deposit - $request->bayar;
+        if($deposit != null) {
+            $deposit->update(['jumlah_deposit' => $total_deposit]);
+        }
         if(pembayaran::create($data)) {
             if($request->deposit != null) {
                 $deposit = [
@@ -85,7 +94,7 @@ class PembayaranController extends Controller
                     'jumlah_deposit' => $request->deposit,
                     'tanggal' => date('Y-m-d'),
                     'deleted' => 0,
-                    'created_at' => date('Y-m-d'),
+                    'created_at' => date('Y-m-d H:i:s'),
                     'created_by' => Auth::user()->name,
                 ];
                 deposit::create($deposit);
@@ -107,7 +116,7 @@ class PembayaranController extends Controller
     public function validation() {
         return [
             'nama_pelanggan' => 'required',
-            'no_pemasangan' => 'required|numeric|max:12',
+            'no_pemasangan' => 'required|numeric',
             'alamat_pemasangan' => 'required',
             'total_bayar' => 'required',
             'bayar' => 'required',

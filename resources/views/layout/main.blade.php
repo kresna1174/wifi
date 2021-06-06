@@ -98,15 +98,10 @@
 						</ul>
 					</li>
 					<li class="has-sub">
-						<a href="javascript:;">
-							<b class="caret"></b>
-							<i class="fa fa-exchange-alt"></i>
-							<span>Transaksi</span> 
+						<a href="{!! route('pembayaran') !!}">
+							<i class="material-icons">toys</i>
+							<span>Pembayaran</span> 
 						</a>
-						<ul class="sub-menu">
-							<li><a href="{!! route('pembayaran') !!}">Pembayaran</a></li>
-							<li><a href="{!! route('pelanggan') !!}">Tagihan</a></li>
-						</ul>
 					</li>
 					<li>
                         <a href="{!! route('pemasangan') !!}">

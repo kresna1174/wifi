@@ -45,17 +45,5 @@
                 ]
             })
         })
-        
-        function view(id) {
-            $.ajax({
-                url: '<?= route('pelanggan.view') ?>/'+id,
-                success: function(response) {
-                    bootbox.dialog({
-                        title: 'View Pelanggan',
-                        message: response
-                    })
-                }
-            })
-        }
     </script>
 @endsection

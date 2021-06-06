@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\deposit;
+use App\Libraries\BulanIndo;
 use App\pelanggan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -17,9 +18,12 @@ class DepositController extends Controller
     }
 
     public function get() {
-        $pelanggan = DB::table('deposit')
-            ->join('pelanggan', 'deposit.id_pelanggan', '=', 'pelanggan.id')
+        $pelanggan = deposit::join('pelanggan', 'deposit.id_pelanggan', '=', 'pelanggan.id')
             ->get();
+
+        foreach($pelanggan as $row) {
+            $row->tanggal = BulanIndo::tanggal_indo($row->tanggal);
+        }
         return DataTables::of($pelanggan)
             ->make(true);
     }
@@ -40,6 +44,7 @@ class DepositController extends Controller
         $data = [];
         foreach($model->deposit as $key => $row) {
             $data = [$row];
+            $row->tanggal = BulanIndo::tanggal_indo($row->tanggal);
         }
         return view('deposit.view', ['model' => $model, 'data' => $data]);
     }

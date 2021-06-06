@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Libraries\BulanIndo;
 use Illuminate\Http\Request;
 use App\pemasangan;
 use App\pelanggan;
@@ -19,21 +20,17 @@ class PemasanganController extends Controller
     }
     
     public function get() {
-        $pelanggan = DB::table('pemasangan')
-           ->join('pelanggan', 'pemasangan.id_pelanggan', '=', 'pelanggan.id')
+        $pelanggan = pemasangan::join('pelanggan', 'pemasangan.id_pelanggan', '=', 'pelanggan.id')
            ->select('pelanggan.nama_pelanggan', 'pemasangan.alamat_pemasangan', 'pemasangan.tarif', 'pemasangan.tanggal_pemasangan', 'pemasangan.id')
            ->get();
+        foreach($pelanggan as $row) {
+            $row->tanggal_pemasangan = BulanIndo::tanggal_indo($row->tanggal_pemasangan);
+        }
         return DataTables::of($pelanggan)
            ->make(true); 
     } 
 
     public function get_pemasangan(Request $request) {
-        // $pelanggan = DB::table('pelanggan')
-        // ->join('pemasangan', 'pelanggan.id', 'pemasangan.id')
-        // ->join('tagihan', 'pemasangan.id', 'tagihan.id_pemasangan')
-        // ->where('pelanggan.id', $request->id_pelanggan)
-        // ->get();
-        // return $pelanggan;
         if(isset($request->id_pelanggan)) {
             return pelanggan::findOrFail($request->id_pelanggan);
         } else {
@@ -41,29 +38,14 @@ class PemasanganController extends Controller
         }
     }
 
-    // public function get_id_pemasangan(Request $request) {
-    //     $pelanggan = DB::table('pemasangan')
-    //         ->join('pelanggan', 'pemasangan.id_pelanggan', 'pelanggan.id')
-    //         ->join('tagihan', 'pemasangan.id', 'tagihan.id_pemasangan')
-    //         ->where('pemasangan.id', $request->id_pemasangan)
-    //         ->first();
-    //     return response()->json($pelanggan);
-    // }
-
     public function create() {
         $pelanggan = pelanggan::with('pemasangan')->get();
         $pelanggan->data = pelanggan::get();
-        // $pelanggan->data = DB::table('pemasangan')
-        // ->join('pelanggan', 'pemasangan.id_pelanggan', 'pelanggan.id')
-        // ->join('tagihan', 'pemasangan.id', 'tagihan.id_pemasangan')
-        // ->get();
-        // $pelanggan->nama_pelanggan = pelanggan::pluck('nama_pelanggan', 'id');
         return view('pemasangan.create', ['pelanggan' => $pelanggan]); 
     } 
 
     public function edit($id) {
-        $pelanggan = DB::table('pemasangan')
-            ->join('pelanggan', 'pemasangan.id_pelanggan', 'pelanggan.id')
+        $pelanggan = pemasangan::join('pelanggan', 'pemasangan.id_pelanggan', 'pelanggan.id')
             ->join('tagihan', 'pemasangan.id', 'tagihan.id_pemasangan')
             ->where('pemasangan.id', $id)
             ->first();
@@ -88,6 +70,7 @@ class PemasanganController extends Controller
                 'tarif' => $request->tarif,
                 'tanggal_pemasangan' => $request->tanggal_pemasangan,
                 'deleted' => 0,
+                'tanggal_akhir_bayar' => date("Y-m-d", strtotime( date( "Y-m-d", strtotime( $request->tanggal_pemasangan ) ) . "+1 month" ) ),
                 'created_at'  => date('Y-m-d H:i:s'),
                 'created_by' => Auth::user()->name,
             ];
@@ -126,7 +109,7 @@ class PemasanganController extends Controller
                     'id_pelanggan' => $pelanggan->id, 
                     'alamat_pemasangan' => $request->alamat_pemasangan,
                     'tarif' => $request->tarif,
-                    'tanggal_pemasangan' => $request->tanggal_pemasangan,
+                    'tanggal_pemasangan' => date("Y-m-d", strtotime( date( "Y-m-d", strtotime( $request->tanggal_pemasangan ) ) . "+1 month" ) ),
                     'deleted' => 0,
                     'created_at' => date('Y-m-d H:i:s'),
                     'created_by' => Auth::user()->name
@@ -170,6 +153,7 @@ class PemasanganController extends Controller
                 'tarif' => $request->tarif,
                 'tanggal_pemasangan' => $request->tanggal_pemasangan,
                 'deleted' => 0,
+                'tanggal_akhir_bayar' => date("Y-m-d", strtotime( date( "Y-m-d", strtotime( $request->tanggal_pemasangan ) ) . "+1 month" ) ),
                 'updated_at'  => date('Y-m-d H:i:s'),
                 'updated_by' => Auth::user()->name,
             ];

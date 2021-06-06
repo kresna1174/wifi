@@ -18,6 +18,10 @@
 
 @section('script')
     <script>
+    $('#tanggal_pemasangan').datepicker({
+        format: 'yyyy-mm-dd'
+    })
+    
     $(function() {
         $('#pilih_pelanggan').prop('readonly', true)
         $('#no_telepon').prop('readonly', true)

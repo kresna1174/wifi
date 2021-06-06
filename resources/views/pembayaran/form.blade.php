@@ -33,11 +33,11 @@
     <div class="col-6">
         <div class="form-group">
             <label>Total Bayar</label>
-            {!! Form::text('total_bayar', null, ['class' => 'form-control text-right', 'id' => 'total_bayar', 'readonly']) !!}
+            {!! Form::number('total_bayar', null, ['class' => 'form-control text-right', 'id' => 'total_bayar', 'readonly']) !!}
         </div>
         <div class="form-group">
             <label>Tunai</label>
-            {!! Form::text('bayar', null, ['class' => 'form-control text-right', 'id' => 'bayar', 'onkeyup' => 'unblock()']) !!}
+            {!! Form::number('bayar', null, ['class' => 'form-control text-right', 'id' => 'bayar', 'onkeyup' => 'unblock()']) !!}
             {!! Form::hidden('deposit', null, ['class' => 'form-control text-right', 'id' => 'deposit']) !!}
         </div>
     </div>
