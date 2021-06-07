@@ -83,8 +83,8 @@ class PembayaranController extends Controller
             'created_by' => Auth::user()->name,
         ];
         $deposit = deposit::where('id_pelanggan', $request->nama_pelanggan)->first();
-        $total_deposit = $deposit->jumlah_deposit - $request->bayar;
         if($deposit != null) {
+            $total_deposit = $deposit->jumlah_deposit - $request->bayar;
             $deposit->update(['jumlah_deposit' => $total_deposit]);
         }
         if(pembayaran::create($data)) {

@@ -9,6 +9,7 @@ use App\pelanggan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use Auth;
 
 class DepositController extends Controller
 {
@@ -64,6 +65,8 @@ class DepositController extends Controller
             'jumlah_deposit' => $request->jumlah_deposit,
             'deleted' => 0,
             'tanggal' => date('Y-m-d'),
+            'created_at' => date('Y-m-d H:i:s'),
+            'created_by' => Auth::user()->name,
         ];
         if(deposit::create($data)) {
             return [
@@ -93,6 +96,8 @@ class DepositController extends Controller
             'jumlah_deposit' => $request->jumlah_deposit,
             'deleted' => 0,
             'tanggal' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d H:i:s'),
+            'updated_by' => Auth::user()->name,
         ];
         $pelanggan = deposit::whereid_pelanggan($id)->first();
         if($pelanggan->update($data)) {

@@ -69,7 +69,6 @@ class PemasanganController extends Controller
                 'tarif' => $request->tarif,
                 'tanggal_pemasangan' => $request->tanggal_pemasangan,
                 'deleted' => 0,
-                'tanggal_akhir_bayar' => date("Y-m-d", strtotime( date( "Y-m-d", strtotime( $request->tanggal_pemasangan ) ) . "+1 month" ) ),
                 'created_at'  => date('Y-m-d H:i:s'),
                 'created_by' => Auth::user()->name,
             ];
@@ -152,7 +151,6 @@ class PemasanganController extends Controller
                 'tarif' => $request->tarif,
                 'tanggal_pemasangan' => $request->tanggal_pemasangan,
                 'deleted' => 0,
-                'tanggal_akhir_bayar' => date("Y-m-d", strtotime( date( "Y-m-d", strtotime( $request->tanggal_pemasangan ) ) . "+1 month" ) ),
                 'updated_at'  => date('Y-m-d H:i:s'),
                 'updated_by' => Auth::user()->name,
             ];

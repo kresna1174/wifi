@@ -38,8 +38,8 @@ class PelangganController extends Controller
             $data->join('tagihan', 'pemasangan.id', '=', 'tagihan.id_pemasangan')
             ->join('pelanggan', 'pemasangan.id_pelanggan', 'pelanggan.id')
             ->where('id_pelanggan', $id)
-            ->select('pemasangan.id', 'pemasangan.tarif', 'pelanggan.id as id_pelanggan', 'pemasangan.tanggal_akhir_bayar', 'pemasangan.alamat_pemasangan')
-            ->groupBy('pemasangan.id', 'pemasangan.tarif', 'pelanggan.id', 'pemasangan.tanggal_akhir_bayar', 'pemasangan.alamat_pemasangan')
+            ->select('pemasangan.id', 'pemasangan.tarif', 'pelanggan.id as id_pelanggan', 'pemasangan.alamat_pemasangan')
+            ->groupBy('pemasangan.id', 'pemasangan.tarif', 'pelanggan.id', 'pemasangan.alamat_pemasangan')
             ->get();
         }])->where('pelanggan.id', $id)->first();
         return view('pelanggan.view', ['model' => $model]);

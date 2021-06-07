@@ -16,8 +16,8 @@ class Pelanggan extends Migration
         Schema::create('pelanggan', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nama_pelanggan', 255);
-            $table->integer('no_telepon');
-            $table->integer('no_identitas');
+            $table->double('no_telepon');
+            $table->double('no_identitas');
             $table->string('alamat', 255);
             $table->integer('deleted');
             $table->timestamp('created_at');
