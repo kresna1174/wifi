@@ -15,8 +15,7 @@ use Yajra\DataTables\Facades\DataTables;
 class PemasanganController extends Controller
 {
     public function index() {
-        $title = "Pemasangan";
-        return view('pemasangan.index', ['title' => $title]);
+        return view('pemasangan.index', ['title' => 'pemasangan']);
     }
     
     public function get() {
@@ -41,7 +40,7 @@ class PemasanganController extends Controller
     public function create() {
         $pelanggan = pelanggan::with('pemasangan')->get();
         $pelanggan->data = pelanggan::get();
-        return view('pemasangan.create', ['pelanggan' => $pelanggan]); 
+        return view('pemasangan.create', ['pelanggan' => $pelanggan, 'title' => 'Pemasangan']); 
     } 
 
     public function edit($id) {
@@ -50,7 +49,7 @@ class PemasanganController extends Controller
             ->where('pemasangan.id', $id)
             ->first();
         $pelanggan->nama_pelanggan = pelanggan::pluck('nama_pelanggan', 'id');
-        return view('pemasangan.edit', ['pelanggan' => $pelanggan]);
+        return view('pemasangan.edit', ['pelanggan' => $pelanggan, 'title' => 'Pemasangan']);
     } 
 
     public function store(Request $request) {

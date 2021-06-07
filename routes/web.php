@@ -77,8 +77,9 @@ Route::middleware(['auth'])->group(function() {
         Route::get('delete/{id?}', 'UserServiceController@delete')->name('UserService.delete');
         Route::post('update/{id?}', 'UserServiceController@update')->name('UserService.update');
         Route::post('store', 'UserServiceController@store')->name('UserService.store');
-        Route::get('change-password', 'UserServiceController@showChangePassword');
-        Route::post('change-password', 'UserServiceController@changePassword')->name('change.password');
+        Route::get('setting/{id?}', 'UserServiceController@setting')->name('setting');
+        Route::post('change-password', 'UserServiceController@changePassword')->name('setting.change-password');
+        Route::post('change-username', 'UserServiceController@changeUsername')->name('setting.change-username');
     });
 
 });

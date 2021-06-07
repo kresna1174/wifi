@@ -1,7 +1,7 @@
 @extends('layout.main')
 @section('content')
 <h1 class="page-header">
-        userService
+        User Service
         <div class="pull-right">
             <div class="form-inline">
                 <div class="form-group">

@@ -1,3 +1,7 @@
+<?php
+
+use Illuminate\Support\Facades\Auth;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,15 +61,15 @@
 				</a>
 			</div>
 
-			
-
 			<ul class="navbar-nav navbar-right">
 				<li class="dropdown navbar-user">
 					<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+					<img src="<?= asset('storage') ?>/file/<?= Auth::user()->foto ?? null ?>" alt="">
 						{!! Auth::user()->name !!}
+						<b class="caret"></b>
 					</a>
 					<div class="dropdown-menu dropdown-menu-right">
-						<a href="{!! route('change.password') !!}" class="dropdown-item">Changepassword</a>
+						<a href="<?= route('setting', Auth::user()->id) ?>" class="dropdown-item">Setting</a>
 						<div class="dropdown-divider"></div>
 						<a href="{!! route('logout') !!}" class="dropdown-item">Log Out</a>
 					</div>
@@ -73,10 +77,7 @@
 			</ul>
 		</div>
 
-		
-
 		<div id="sidebar" class="sidebar" data-disable-slide-animation="true">
-
 			<div data-scrollbar="true" data-height="100%">
 				<ul class="nav">
 					<li class="nav-header">Navigation</li>
@@ -116,9 +117,7 @@
 						</a>
 					</li>
 					<li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>
-
 				</ul>
-
 			</div>
 
 		</div>

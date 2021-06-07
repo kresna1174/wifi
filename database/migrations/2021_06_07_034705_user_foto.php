@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Users extends Migration
+class UserFoto extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,7 @@ class Users extends Migration
     public function up()
     {
         Schema::table('users', function($table) {
-            $table->string('created_by');
-            $table->string('updated_by');
+            $table->string('foto')->nullable();
         });
     }
 
@@ -27,8 +26,7 @@ class Users extends Migration
     public function down()
     {
         Schema::table('users', function($table) {
-            $table->dropColumn('created_by');
-            $table->dropColumn('updated_by');
+            $table->dropColumn('foto');
         });
     }
 }
