@@ -8,6 +8,7 @@ use App\pelanggan;
 use App\pemasangan;
 use Illuminate\Http\Request;
 use App\pembayaran;
+use App\pembayaran_detail;
 use App\tagihan;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -24,8 +25,8 @@ class PembayaranController extends Controller
         $pelanggan = pembayaran::join('pemasangan', 'pembayaran.id_pemasangan', '=', 'pemasangan.id')
         ->join('tagihan', 'pembayaran.id_tagihan', '=', 'tagihan.id')
         ->join('pelanggan', 'pemasangan.id_pelanggan', '=', 'pelanggan.id')
-        ->select('pelanggan.nama_pelanggan', 'pembayaran.bayar', 'pembayaran.tanggal_bayar', 'pemasangan.tarif', 'pemasangan.alamat_pemasangan')
-        ->groupBy('pelanggan.nama_pelanggan', 'pembayaran.bayar', 'pembayaran.tanggal_bayar', 'pemasangan.tarif', 'pemasangan.alamat_pemasangan')
+        ->select('pelanggan.nama_pelanggan', 'pembayaran.bayar', 'pembayaran.tanggal_bayar', 'pemasangan.tarif', 'pemasangan.alamat_pemasangan', 'tagihan.tagihan')
+        ->groupBy('pelanggan.nama_pelanggan', 'pembayaran.bayar', 'pembayaran.tanggal_bayar', 'pemasangan.tarif', 'pemasangan.alamat_pemasangan', 'tagihan.tagihan')
         ->get();
         foreach($pelanggan as $row) {
             $row->tanggal_bayar = BulanIndo::tanggal_indo($row->tanggal_bayar);
@@ -39,9 +40,9 @@ class PembayaranController extends Controller
             ->leftjoin('tagihan', 'pemasangan.id', '=', 'tagihan.id_pemasangan')
             ->where('tagihan.status_bayar', 0)
             ->where('pemasangan.id_pelanggan', $request->id_pelanggan)
-            ->where('pemasangan.id', $request->id_pemasangan)
-            ->select(['pemasangan.id_pelanggan', 'pemasangan.tarif', 'tagihan.tanggal_tagihan', 'pemasangan.alamat_pemasangan', 'tagihan.id as tagihan_id', 'pemasangan.id as pemasangan_id', 'pelanggan.id as pelanggan_id'])
-            ->groupBy(['pemasangan.id_pelanggan', 'pemasangan.tarif', 'tagihan.tanggal_tagihan', 'pemasangan.alamat_pemasangan', 'tagihan.id', 'pemasangan.id', 'pelanggan.id'])
+            ->where('pemasangan.no_pemasangan', $request->no_pemasangan)
+            ->select(['pemasangan.id_pelanggan', 'pemasangan.tarif', 'tagihan.tanggal_tagihan', 'pemasangan.alamat_pemasangan', 'tagihan.id as tagihan_id', 'pemasangan.id as pemasangan_id', 'pelanggan.id as pelanggan_id', 'tagihan.tagihan'])
+            ->groupBy(['pemasangan.id_pelanggan', 'pemasangan.tarif', 'tagihan.tanggal_tagihan', 'pemasangan.alamat_pemasangan', 'tagihan.id', 'pemasangan.id', 'pelanggan.id', 'tagihan.tagihan'])
             ->get();
         foreach($pemasangan as $row) {
             $row->tanggal_tagihan = BulanIndo::tanggal_indo($row->tanggal_tagihan);
@@ -73,8 +74,9 @@ class PembayaranController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         }
+        $model = pemasangan::where('no_pemasangan', $request->no_pemasangan)->first();
         $data = [
-            'id_pemasangan' => $request->no_pemasangan,
+            'id_pemasangan' => $model->id,
             'id_tagihan' => $request->id_tagihan,
             'bayar' => $request->bayar,
             'tanggal_bayar' => date('Y-m-d'),
@@ -87,7 +89,7 @@ class PembayaranController extends Controller
             $total_deposit = $deposit->jumlah_deposit - $request->bayar;
             $deposit->update(['jumlah_deposit' => $total_deposit]);
         }
-        if(pembayaran::create($data)) {
+        if($pembayaran = pembayaran::create($data)) {
             if($request->deposit != null) {
                 $deposit = [
                     'id_pelanggan' => $request->nama_pelanggan,
@@ -100,7 +102,24 @@ class PembayaranController extends Controller
                 deposit::create($deposit);
             }
             $tagihan = tagihan::where('id', $request->id_tagihan)->first();
-            $tagihan->update(['status_bayar' => 1, 'updated_at' => date('Y-m-d'), 'updated_by' => Auth::user()->name]);
+            $tagihan->update([
+                'status_bayar' => 1,
+                'sisa_tagihan' => $request->sisa,
+                'updated_at' => date('Y-m-d H:i:s'), 
+                'updated_by' => Auth::user()->name
+            ]);
+            tagihan::create([
+                'id_pemasangan' => $tagihan->id_pemasangan,
+                'tanggal_tagihan' => $tagihan->tanggal_tagihan,
+                'status_bayar' => 0,
+                'deleted' => 0,
+                'tagihan' => $request->sisa,
+                'sisa_tagihan' => 0,
+                'tanggal_tagihan_terakhir' => $tagihan->tanggal_tagihan_terakhir,
+                'created_at' => date('Y-m-d H:i:s'),
+                'created_by' => Auth::user()->name
+            ]);
+            pembayaran_detail::create(['id_pembayaran' => $pembayaran->id, 'id_tagihan' => $tagihan->id]);
             return [
                 'success' => true,
                 'message' => 'Data Berhasil di Tambahkan'
@@ -116,7 +135,7 @@ class PembayaranController extends Controller
     public function validation() {
         return [
             'nama_pelanggan' => 'required',
-            'no_pemasangan' => 'required|numeric',
+            'no_pemasangan' => 'required',
             'alamat_pemasangan' => 'required',
             'total_bayar' => 'required',
             'bayar' => 'required',

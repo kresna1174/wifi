@@ -1,23 +1,33 @@
 <table width="100%">
     <tr>
-        <th>Nama Pelanggan</th>
-        <th class="text-center">:</th>
-        <th class="text-center">{!! $model->nama_pelanggan !!}</th>
+        <th width="150px"><h6>No Pelanggan</h6></th>
+        <th class="text-left">{!! $model->no_pelanggan !!}</th>
     </tr>
     <tr>
-        <th>No Telepon</th>
-        <th class="text-center">:</th>
-        <th class="text-center">{!! $model->no_telepon !!}</th>
+        <th width="150px"><h6>Nama Pelanggan</h6></th>
+        <th class="text-left">{!! $model->nama_pelanggan !!}</th>
     </tr>
     <tr>
-        <th>No Identitas</th>
-        <th class="text-center">:</th>
-        <th class="text-center">{!! $model->no_identitas !!}</th>
+        <th width="150px"><h6>No Telepon</h6></th>
+        <th class="text-left">{!! $model->no_telepon !!}</th>
     </tr>
     <tr>
-        <th>Alamat</th>
-        <th class="text-center">:</th>
-        <th class="text-center">{!! $model->alamat !!}</th>
+        <th width="150px"><h6>Jenis Identitas</h6></th>
+        @if($model->identitas == 1)
+            <th class="text-left">{!! 'KTP' !!}</th>
+        @elseif($model->identitas == 2)
+            <th class="text-left">{!! 'SIM' !!}</th>
+        @elseif($model->identitas == 3)
+            <th class="text-left">{!! 'KARTU PELAJAR' !!}</th>
+        @endif
+    </tr>
+    <tr>
+        <th width="150px"><h6>No Identitas</h6></th>
+        <th class="text-left">{!! $model->no_identitas !!}</th>
+    </tr>
+    <tr>
+        <th  width="150px"><h6>Alamat</h6></th>
+        <th class="text-left">{!! $model->alamat !!}</th>
         {!! Form::hidden('id_pelanggan', $model->id, ['id' => 'id_pelanggan']) !!}
     </tr>
 </table>
@@ -33,8 +43,8 @@
     <?php $total = 0 ?>
         @foreach($model->pemasangan as $key => $row)
             <tr>
-                <td>{!! $row->id !!}</td>
-                <td>{!! $row->tarif !!}</td>
+                <td>{!! $row->no_pemasangan !!}</td>
+                <td>{!! number_format($row->tagihan, 2, ',', '.') !!}</td>
                 <td class="text-center">
                     <button type="button" class="btn btn-info btn-sm" onclick="detail('<?= $row->id ?>', '<?= $model->id; ?>')">Detail</button>
                     <button type="button" class="btn btn-warning btn-sm" onclick="riwayat('<?= $row->id ?>', '<?= $model->id; ?>')">Histori</button>

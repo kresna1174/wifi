@@ -133,6 +133,7 @@ use Illuminate\Support\Facades\Auth;
 	
 
 	<script src="{{ asset('assets') }}/plugins/jquery/jquery-3.3.1.min.js"></script>
+	<script src="{{ asset('assets') }}/plugins/numeric/jquery.number.min.js"></script>
 	<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap.min.js"></script>
 	<script src="{{ asset('assets') }}/plugins/jquery-ui/jquery-ui.min.js"></script>

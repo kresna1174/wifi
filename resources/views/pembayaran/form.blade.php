@@ -6,7 +6,7 @@
         </div>
         <div class="form-group">
             <label>No Pemasangan</label>
-            {!! Form::select('no_pemasangan', ['' => 'select'] + \App\pemasangan::pluck('id', 'id')->toArray(), null, ['class' => 'form-control', 'id' => 'no_pemasangan']) !!}
+            {!! Form::select('no_pemasangan', ['' => 'select'] + \App\pemasangan::pluck('no_pemasangan', 'no_pemasangan')->toArray(), null, ['class' => 'form-control', 'id' => 'no_pemasangan']) !!}
         </div>
     </div>
     <div class="col-6">
@@ -33,12 +33,13 @@
     <div class="col-6">
         <div class="form-group">
             <label>Total Bayar</label>
-            {!! Form::number('total_bayar', null, ['class' => 'form-control text-right', 'id' => 'total_bayar', 'readonly']) !!}
+            {!! Form::text('total_bayar', null, ['class' => 'form-control text-right', 'id' => 'total_bayar', 'readonly']) !!}
         </div>
         <div class="form-group">
             <label>Tunai</label>
-            {!! Form::number('bayar', null, ['class' => 'form-control text-right', 'id' => 'bayar', 'onkeyup' => 'unblock()']) !!}
+            {!! Form::text('bayar', null, ['class' => 'form-control text-right', 'id' => 'bayar', 'onkeyup' => 'unblock()']) !!}
             {!! Form::hidden('deposit', null, ['class' => 'form-control text-right', 'id' => 'deposit']) !!}
+            {!! Form::hidden('sisa', null, ['class' => 'form-control text-right', 'id' => 'sisa']) !!}
         </div>
     </div>
 </div>

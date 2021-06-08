@@ -9,6 +9,7 @@ use App\pelanggan;
 use App\pemasangan;
 use App\pembayaran;
 use App\tagihan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -25,7 +26,8 @@ class PelangganController extends Controller
     }
 
     public function create() {
-        return view('pelanggan.create');
+        $pelanggan = 'NP-'.str_pad(pelanggan::orderBy('created_at', 'DESC')->first()->id + 1, 7, "0", STR_PAD_LEFT);
+        return view('pelanggan.create', ['pelanggan' => $pelanggan]);
     }
 
     public function edit($id) {
@@ -34,15 +36,30 @@ class PelangganController extends Controller
     }
 
     public function view($id) {
+        // $model = pelanggan::with(['pemasangan' => function($data) use($id) {
+        //     $data->join('tagihan', 'pemasangan.id', '=', 'tagihan.id_pemasangan')
+        //     ->join('pelanggan', 'pemasangan.id_pelanggan', 'pelanggan.id')
+        //     ->where('id_pelanggan', $id)
+        //     ->select('pemasangan.id', 'pemasangan.tarif', 'pelanggan.id as id_pelanggan', 'pemasangan.alamat_pemasangan', 'tagihan.tagihan')
+        //     ->groupBy('pemasangan.id', 'pemasangan.tarif', 'pelanggan.id', 'pemasangan.alamat_pemasangan', 'tagihan.tagihan')
+        //     ->get();
+        // }])->where('pelanggan.id', $id)->first();
+        $a = pemasangan::where('id_pelanggan', $id)->get();
         $model = pelanggan::with(['pemasangan' => function($data) use($id) {
             $data->join('tagihan', 'pemasangan.id', '=', 'tagihan.id_pemasangan')
-            ->join('pelanggan', 'pemasangan.id_pelanggan', 'pelanggan.id')
-            ->where('id_pelanggan', $id)
-            ->select('pemasangan.id', 'pemasangan.tarif', 'pelanggan.id as id_pelanggan', 'pemasangan.alamat_pemasangan')
-            ->groupBy('pemasangan.id', 'pemasangan.tarif', 'pelanggan.id', 'pemasangan.alamat_pemasangan')
+            // ->join('pembayaran_detail', 'tagihan.id', '=', 'pembayaran_detail.id_tagihan')
+            ->where('pemasangan.id_pelanggan', $id)
+            ->where('tagihan.status_bayar', 0)
             ->get();
         }])->where('pelanggan.id', $id)->first();
-        return view('pelanggan.view', ['model' => $model]);
+        foreach($model->pemasangan as $row) {
+            $p = pemasangan::with('tagihan')->where('no_pemasangan', $row->no_pemasangan)->get();
+            foreach($a as $b) {
+                $model->total_tagihan += $row->tagihan;
+            }
+        }
+        // dump($model->total_tagihan);
+        // return view('pelanggan.view', ['model' => $model]);
     }
 
     public function detail(Request $request) {
@@ -88,6 +105,8 @@ class PelangganController extends Controller
             'no_telepon' => $request->no_telepon,
             'no_identitas' => $request->no_identitas,
             'alamat' => $request->alamat,
+            'no_pelanggan' => $request->no_pelanggan,
+            'identitas' => $request->identitas,
             'deleted' => 0,
             'created_at' => date('Y-m-d H:i:s'),
             'created_by' => Auth::user()->name
@@ -120,6 +139,8 @@ class PelangganController extends Controller
             'no_telepon' => $request->no_telepon,
             'no_identitas' => $request->no_identitas,
             'alamat' => $request->alamat,
+            'no_pelanggan' => $request->no_pelanggan,
+            'identitas' => $request->identitas,
             'deleted' => 0,
             'updated_at' => date('Y-m-d H:i:s'),
             'updated_by' => Auth::user()->name

@@ -19,6 +19,8 @@
 @section('script')
     <script>
     $(function() {
+        $('#bayar').number(true, 2, ',', '.');
+        $('#total_bayar').number(true, 2, ',', '.');
         if($('#bayar').val() == '') {
             $('#store_bayar').prop('disabled', true)
         } else {
@@ -38,7 +40,7 @@
         $('#nama_pelanggan').change(function() {
             $('#no_pemasangan').change(function() {
                 $.ajax({
-                    url: '<?= route('pembayaran.get_pembayaran') ?>?id_pelanggan=' + $('#nama_pelanggan').val() + '&id_pemasangan=' + $('#no_pemasangan').val(),
+                    url: '<?= route('pembayaran.get_pembayaran') ?>?id_pelanggan=' + $('#nama_pelanggan').val() + '&no_pemasangan=' + $('#no_pemasangan').val(),
                     success: function(response) {
                         if(!$.trim(response)) {
                             $('#table tbody').html('')
@@ -49,14 +51,14 @@
                             $.each(response, function(data, row) {
                                 let html = '<tr>'
                                 html += '<td>'+row.tanggal_tagihan+'</td>'
-                                html += '<td class="text-right">'+pop(row.tarif)+'</td>'
+                                html += '<td class="text-right">'+pop(row.tagihan)+'</td>'
                                 html += '</tr>'
                                 $('#table tbody').html(html)
                             })
                         }
                         $.each(response, function(data, row) {
                             $('#alamat_pemasangan').val(row.alamat_pemasangan)
-                            $('#total_bayar').val(row.tarif)
+                            $('#total_bayar').val(row.tagihan)
                             $('#id_tagihan').val(row.tagihan_id)
                             if($('#bayar').val() == '') {
                                 $('#store_bayar').prop('disabled', true)
@@ -73,7 +75,7 @@
     if($('#nama_pelanggan').val() == '') {
         $('#nama_pelanggan').change(function() {
             $.ajax({
-                    url: '<?= route('pembayaran.get_pembayaran') ?>?id_pelanggan=' + $('#nama_pelanggan').val() + '&id_pemasangan=' + $('#no_pemasangan').val(),
+                    url: '<?= route('pembayaran.get_pembayaran') ?>?id_pelanggan=' + $('#nama_pelanggan').val() + '&no_pemasangan=' + $('#no_pemasangan').val(),
                     success: function(response) {
                         if(!$.trim(response)) {
                             $('#table tbody').html('')
@@ -84,14 +86,14 @@
                             $.each(response, function(data, row) {
                                 let html = '<tr>'
                                 html += '<td>'+row.tanggal_tagihan+'</td>'
-                                html += '<td class="text-right">'+pop(row.tarif)+'</td>'
+                                html += '<td class="text-right">'+pop(row.tagihan)+'</td>'
                                 html += '</tr>'
                                 $('#table tbody').html(html)
                             })
                         }
                         $.each(response, function(data, row) {
                             $('#alamat_pemasangan').val(row.alamat_pemasangan)
-                            $('#total_bayar').val(row.tarif)
+                            $('#total_bayar').val(row.tagihan)
                             $('#id_tagihan').val(row.tagihan_id)
                             if($('#bayar').val() == '') {
                                 $('#store_bayar').prop('disabled', true)
@@ -106,7 +108,7 @@
     if($('#no_pemasangan').val() == '') {
         $('#no_pemasangan').change(function() {
             $.ajax({
-                    url: '<?= route('pembayaran.get_pembayaran') ?>?id_pelanggan=' + $('#nama_pelanggan').val() + '&id_pemasangan=' + $('#no_pemasangan').val(),
+                    url: '<?= route('pembayaran.get_pembayaran') ?>?id_pelanggan=' + $('#nama_pelanggan').val() + '&no_pemasangan=' + $('#no_pemasangan').val(),
                     success: function(response) {
                         if(!$.trim(response)) {
                             $('#table tbody').html('')
@@ -117,14 +119,14 @@
                             $.each(response, function(data, row) {
                                 let html = '<tr>'
                                 html += '<td>'+row.tanggal_tagihan+'</td>'
-                                html += '<td class="text-right">'+pop(row.tarif)+'</td>'
+                                html += '<td class="text-right">'+pop(row.tagihan)+'</td>'
                                 html += '</tr>'
                                 $('#table tbody').html(html)
                             })
                         }
                         $.each(response, function(data, row) {
                             $('#alamat_pemasangan').val(row.alamat_pemasangan)
-                            $('#total_bayar').val(row.tarif)
+                            $('#total_bayar').val(row.tagihan)
                             $('#id_tagihan').val(row.tagihan_id)
                             if($('#bayar').val() == '') {
                                 $('#store_bayar').prop('disabled', true)
@@ -138,8 +140,8 @@
     }
 
         function store() {
-            if($('#bayar').val() > $('#total_bayar').val().replace('.', '')) {
-                let total_bayar = $('#bayar').val() - $('#total_bayar').val().replace('.', '');
+            if($('#bayar').val() - $('#total_bayar').val() != 0 && $('#bayar').val() - $('#total_bayar').val() > 0) {
+                let total_bayar = $('#bayar').val() - $('#total_bayar').val();
                 let bayar = $('#bayar').val() - total_bayar
                 Swal.fire({
                     title: 'Perhatian!',
@@ -175,6 +177,29 @@
                     })
                 }
             });
+            } if($('#total_bayar').val() - $('#bayar').val() != 0 && $('#total_bayar').val() - $('#bayar').val() > 0) {
+                let total_bayar = $('#total_bayar').val() - $('#bayar').val();
+                $('#sisa').val(total_bayar)
+                $.ajax({
+                        url: '<?= route('pembayaran.store') ?>',
+                        dataType: 'json',
+                        type: 'post',
+                        data: $('#form-create').serialize(),
+                        success: function(response) {
+                            if(response.success) {
+                                $.growl.notice({
+                                    title : 'success',
+                                    message : response.message
+                                });
+                                return document.location.href='<?= route('pembayaran') ?>'
+                            } else {
+                                $.growl.error({
+                                    title : 'failed',
+                                    message : response.message
+                                });
+                            }
+                        }
+                    })
             } else {
                 $.ajax({
                     url: '<?= route('pembayaran.store') ?>',

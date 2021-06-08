@@ -21,6 +21,11 @@
     $('#tanggal_pemasangan').datepicker({
         format: 'yyyy-mm-dd'
     })
+    $('#tanggal_tagihan').datepicker({
+        format: 'yyyy-mm-dd'
+    })
+    $('#tarif').number(true, 2, ',', '.');
+
     
     $(function() {
         $('#pilih_pelanggan').prop('readonly', true)
@@ -28,6 +33,8 @@
         $('#nama_pelanggan').prop('readonly', true)
         $('#no_identitas').prop('readonly', true)
         $('#alamat').prop('readonly', true)
+        $('#no_pelanggan').prop('readonly', true)
+        $('#identitas').prop('disabled', true)
         $('#pilih_pelanggan').remove()
         $('.pilih_pelanggan').html('<input type="text" name="pilih_pelanggan" class="form-control" id="pilih_pelanggan" value="pelanggan lama" readonly>')
     })
@@ -39,6 +46,8 @@
                 $('#no_telepon').val(response.no_telepon).prop('readonly', true)
                 $('#no_identitas').val(response.no_identitas).prop('readonly', true)
                 $('#alamat').val(response.alamat).prop('readonly', true)
+                $('#identitas').val(response.identitas).prop('readonly', true)
+                $('#no_pelanggan').val(response.no_pelanggan).prop('readonly', true)
             }
         })
     }

@@ -1,3 +1,7 @@
+<div class='form-group'>
+    <label>No Pemasangan</label>
+    {!! Form::text('no_pemasangan', isset($pemasangan->no_pemasangan) ? $pemasangan->no_pemasangan == null ? 'NPM-0000001' : $pemasangan->no_pemasangan : 'NPM-0000001', ['class' => 'form-control', 'id' => 'no_pemasangan', 'readonly']) !!}
+</div>
 <div class="row">
     <div class="col-6">
         <div class='form-group'>
@@ -13,7 +17,6 @@
         </div>
     </div>
 </div>
-
 <div class='form-group'>
     <label>Nama Pelanggan</label>
     <div class="nama_pelanggan"></div>
@@ -22,6 +25,14 @@
     <?php } else { ?>
         {!! Form::text('nama_pelanggan', null, ['class' => 'form-control', 'id' => 'nama_pelanggan']) !!}
     <?php } ?>
+</div>
+<div class='form-group'>
+    <label>No Pelanggan</label>
+    {!! Form::text('no_pelanggan', $no_pemasangan ?? null, ['class' => 'form-control', 'id' => 'no_pelanggan']) !!}
+</div>
+<div class='form-group'>
+    <label>Jenis Identitas</label>
+    {!! Form::select('identitas', ['' => 'select', '1' => 'KTP', '2' => 'SIM', '3' => 'KARTU PELAJAR'], null, ['class' => 'form-control', 'id' => 'identitas']) !!}
 </div>
 <div class='form-group'>
     <label>No Identitas</label>
@@ -33,13 +44,16 @@
 </div>
 <div class='form-group'>
     <label>Tarif</label>
-    {!! Form::number('tarif', isset($pelanggan->tarif) ? $pelanggan->tarif : null, ['class' => 'form-control', 'id' => 'tarif']) !!}
+    {!! Form::text('tarif', isset($pelanggan->tarif) ? $pelanggan->tarif : null, ['class' => 'form-control text-right', 'id' => 'tarif']) !!}
 </div>
 <div class='form-group'>
     <label>Tanggal Pemasangan</label>
     {!! Form::text('tanggal_pemasangan', isset($pelanggan->tanggal_pemasangan) ? $pelanggan->tanggal_pemasangan : null, ['class' => 'form-control', 'id' => 'tanggal_pemasangan', 'autocomplete' => 'off']) !!}
 </div>
-
+<div class='form-group'>
+    <label>Tanggal Tagihan</label>
+    {!! Form::text('tanggal_tagihan', isset($pelanggan->tanggal_tagihan) ? $pelanggan->tanggal_tagihan : null, ['class' => 'form-control', 'id' => 'tanggal_tagihan', 'autocomplete' => 'off']) !!}
+</div>
 <div class='form-group'>
     <label>Alamat Pemasangan</label>
     {!! Form::textarea('alamat_pemasangan', isset($pelanggan->alamat_pemasangan) ? $pelanggan->alamat_pemasangan : null, ['class' => 'form-control', 'id' => 'alamat_pemasangan']) !!}

@@ -21,6 +21,10 @@
     $('#tanggal_pemasangan').datepicker({
         format: 'yyyy-mm-dd'
     })
+    $('#tanggal_tagihan').datepicker({
+        format: 'yyyy-mm-dd'
+    })
+    $('#tarif').number(true, 2, ',', '.');
     
     let pelanggan = '<?= json_encode($pelanggan->data) ?>'
     function pilih() {
@@ -47,12 +51,16 @@
             $('#no_telepon').val('').prop('readonly', false)
             $('#no_identitas').val('').prop('readonly', false)
             $('#alamat').val('').prop('readonly', false)
+            $('#identitas').val('').prop('disabled', false)
+            $('#no_pelanggan').val('').prop('readonly', false)
         }
 
         if($('#pilih_pelanggan').val() == '') {
             $('#no_telepon').val('').prop('readonly', false)
             $('#no_identitas').val('').prop('readonly', false)
             $('#alamat').val('').prop('readonly', false)
+            $('#identitas').val('').prop('disabled', false)
+            $('#no_pelanggan').val('').prop('readonly', false)
         }
     }
 
@@ -63,6 +71,8 @@
                 $('#no_telepon').val(response.no_telepon).prop('readonly', true)
                 $('#no_identitas').val(response.no_identitas).prop('readonly', true)
                 $('#alamat').val(response.alamat).prop('readonly', true)
+                $('#identitas').val(response.identitas).prop('disabled', true)
+                $('#no_pelanggan').val(response.no_pelanggan).prop('readonly', true)
             }
         })
     }
