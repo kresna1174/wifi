@@ -25,7 +25,7 @@
         format: 'yyyy-mm-dd'
     })
     $('#tarif').number(true, 2, ',', '.');
-    
+    let no_pelanggan = '<?= json_encode($pelanggan->no_pelanggan) ?>'
     let pelanggan = '<?= json_encode($pelanggan->data) ?>'
     function pilih() {
         if($('#pilih_pelanggan').val() == 1) {
@@ -52,7 +52,7 @@
             $('#no_identitas').val('').prop('readonly', false)
             $('#alamat').val('').prop('readonly', false)
             $('#identitas').val('').prop('disabled', false)
-            $('#no_pelanggan').val('').prop('readonly', false)
+            $('#no_pelanggan').val(JSON.parse(no_pelanggan)).prop('readonly', true)
         }
 
         if($('#pilih_pelanggan').val() == '') {
@@ -60,7 +60,7 @@
             $('#no_identitas').val('').prop('readonly', false)
             $('#alamat').val('').prop('readonly', false)
             $('#identitas').val('').prop('disabled', false)
-            $('#no_pelanggan').val('').prop('readonly', false)
+            $('#no_pelanggan').val(JSON.parse(no_pelanggan)).prop('readonly', true)
         }
     }
 

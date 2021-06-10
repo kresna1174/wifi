@@ -91,10 +91,8 @@ class UserServiceController extends Controller
                 ];
             }
         }
-
-        
     }
-
+    
     public function store(Request $request) {
         $rules = self::validation($request->all());
         $messages = self::validation_message($request->all());
@@ -107,10 +105,11 @@ class UserServiceController extends Controller
         }
         $data = [
             'name' => $request->name,
-            'password' => bcrypt($request->password),
+            'password' => $request->password,
             'created_at' => date('Y-m-d H:i:s'),
             'created_by' => Auth::user()->name,
         ];
+        $data['password'] = bcrypt($data['password']);
         if(userServices::create($data)) {
             return [
                 'success' => true,
@@ -136,11 +135,15 @@ class UserServiceController extends Controller
         }
         $data = [
             'name' => $request->name,
-            'password' => bcrypt($request->password),
+            'password' => $request->password,
             'updated_at'  => date('Y-m-d H:i:s'),
             'updated_by' => Auth::user()->name,
         ];
+      
         $userSurvices = userServices::findOrFail($id);
+        if(!empty($data['password'])){ 
+            $data['password'] = bcrypt($data['password']);     
+        }
         if($userSurvices->update($data)) {
             return [
                  'success' => true,
@@ -179,7 +182,7 @@ class UserServiceController extends Controller
     public function validation() {
         return [
             'name' => 'required',
-            'password' => 'required',
+            'password' => 'required|same:konfirmasi_password',
         ];
     } 
 
@@ -187,6 +190,7 @@ class UserServiceController extends Controller
         $messages = [];
         $messages['name.required'] = 'Username Harus Di Isi';
         $messages['password.required'] = 'Password Harus Di Isi';
+        $messages['password.same:komfirmasi_password'] = 'Konfirmasi Password Harus Sama';
         return $messages;
     }
 

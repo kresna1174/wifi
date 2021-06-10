@@ -20,9 +20,9 @@ use Illuminate\Support\Facades\Auth;
 	<link href="{{ asset('assets') }}/plugins/animate/animate.min.css" rel="stylesheet" />
 	<link href="{{ asset('assets') }}/css/material/style.min.css" rel="stylesheet" />
 	<link rel="stylesheet" href="{{ asset('assets') }}/plugins/jquery.growl/css/jquery.growl.css">
-	<link rel="stylesheet" href="{{ asset('assets') }}/plugins/sweetalert-dark/dark.css">
+	<link rel="stylesheet" href="{{ asset('assets') }}/plugins/DataTables/media/css/dataTables.bootstrap.min.css">
+	<link rel="stylesheet" href="{{ asset('assets') }}/plugins/sweetalert/dark.css">
 	<link href="{{ asset('assets') }}/css/material/style-responsive.min.css" rel="stylesheet" />
-	<link href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 	<link href="{{ asset('assets') }}/css/material/theme/default.css" rel="stylesheet" id="theme" />
 	<link href="{{ asset('assets') }}/plugins/jquery-jvectormap/jquery-jvectormap.css" rel="stylesheet" />
 	<link href="{{ asset('assets') }}/plugins/bootstrap-datepicker/css/bootstrap-datepicker.css" rel="stylesheet" />
@@ -134,8 +134,8 @@ use Illuminate\Support\Facades\Auth;
 
 	<script src="{{ asset('assets') }}/plugins/jquery/jquery-3.3.1.min.js"></script>
 	<script src="{{ asset('assets') }}/plugins/numeric/jquery.number.min.js"></script>
-	<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-	<script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap.min.js"></script>
+	<script src="{{ asset('assets') }}/plugins/DataTables/media/js/jquery.dataTables.min.js"></script>
+	<script src="{{ asset('assets') }}/plugins/DataTables/media/js/dataTables.bootstrap.min.js"></script>
 	<script src="{{ asset('assets') }}/plugins/jquery-ui/jquery-ui.min.js"></script>
 	<script src="{{ asset('assets') }}/plugins/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
 	<script src="{{ asset('assets') }}/plugins/slimscroll/jquery.slimscroll.min.js"></script>
@@ -152,7 +152,7 @@ use Illuminate\Support\Facades\Auth;
 	<script src="{{ asset('assets') }}/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 	<script src="{{ asset('assets') }}/plugins/bootbox/bootbox.all.min.js"></script>
 	<script src="{{ asset('assets') }}/plugins/jquery.growl/js/jquery.growl.js"></script>
-	<script src="{{ asset('assets') }}/plugins/sweetalert-dark/sweetalert.min.js"></script>
+	<script src="{{ asset('assets') }}/plugins/sweetalert/sweetalert.min.js"></script>
 	<script src="{{ asset('assets') }}/js/demo/dashboard.min.js"></script>
 
 	

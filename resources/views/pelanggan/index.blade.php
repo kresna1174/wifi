@@ -79,6 +79,7 @@
                 url: '<?= route('pelanggan.view') ?>/'+id,
                 success: function(response) {
                     bootbox.dialog({
+                        size: 'large',
                         title: 'View Pelanggan',
                         message: response
                     })

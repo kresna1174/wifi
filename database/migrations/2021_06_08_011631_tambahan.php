@@ -14,11 +14,11 @@ class Tambahan extends Migration
     public function up()
     {
         Schema::table('pelanggan', function($table) {
-            $table->double('no_pelanggan');
+            $table->string('no_pelanggan');
             $table->integer('identitas');
         });
         Schema::table('pemasangan', function($table) {
-            $table->double('no_pemasangan');
+            $table->string('no_pemasangan');
         });
         Schema::table('tagihan', function($table) {
             $table->double('tagihan');

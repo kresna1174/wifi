@@ -1,6 +1,6 @@
 <div class='form-group'>
     <label>No Pemasangan</label>
-    {!! Form::text('no_pemasangan', isset($pemasangan->no_pemasangan) ? $pemasangan->no_pemasangan == null ? 'NPM-0000001' : $pemasangan->no_pemasangan : 'NPM-0000001', ['class' => 'form-control', 'id' => 'no_pemasangan', 'readonly']) !!}
+    {!! Form::text('no_pemasangan', $no_pemasangan ?? null, ['class' => 'form-control', 'id' => 'no_pemasangan', 'readonly']) !!}
 </div>
 <div class="row">
     <div class="col-6">
@@ -28,7 +28,7 @@
 </div>
 <div class='form-group'>
     <label>No Pelanggan</label>
-    {!! Form::text('no_pelanggan', $no_pemasangan ?? null, ['class' => 'form-control', 'id' => 'no_pelanggan']) !!}
+    {!! Form::text('no_pelanggan', $pelanggan->no_pelanggan ?? null, ['class' => 'form-control', 'id' => 'no_pelanggan', 'readonly']) !!}
 </div>
 <div class='form-group'>
     <label>Jenis Identitas</label>

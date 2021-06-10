@@ -82,4 +82,8 @@ Route::middleware(['auth'])->group(function() {
         Route::post('change-username', 'UserServiceController@changeUsername')->name('setting.change-username');
     });
 
+    Route::group(['prefix' => 'tagihan'], function() {
+
+    });
+
 });
