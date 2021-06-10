@@ -38,12 +38,20 @@
                 ajax: '<?= route('pembayaran.get') ?>',
                 columns: [
                     {data: 'nama_pelanggan', name: 'nama_pelanggan'},
-                    {data: 'bayar', name: 'bayar'},
-                    {data: 'tarif', name: 'tarif'},
+                    {data: 'bayar', name: 'bayar', render: function(data) {
+                        return pop(data)
+                    }},
+                    {data: 'tagihan', name: 'tagihan', render: function(data) {
+                        return pop(data)
+                    }},
                     {data: 'alamat_pemasangan', name: 'alamat_pemasangan'},
                     {data: 'tanggal_bayar', name: 'tanggal_bayar'},
                 ]
             })
         })
+
+        function pop(data) {
+            return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
     </script>
 @endsection

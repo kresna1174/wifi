@@ -37,7 +37,9 @@
                 ajax: '<?= route('deposit.get') ?>',
                 columns: [
                     {data: 'nama_pelanggan', name: 'nama_pelanggan'},
-                    {data: 'jumlah_deposit', name: 'jumlah_deposit'},
+                    {data: 'jumlah_deposit', name: 'jumlah_deposit', render: function(data) {
+                        return pop(data)
+                    }},
                     {data: 'tanggal', name: 'tanggal'},
                     {data: 'id', name: 'deposit.id', width: '200px', searchable: false, orderable: false, class: 'text-center nowrap',mRender: function(data){
                     return '<button id="btn-view" type="button" class="btn btn-info btn-sm" onclick="view('+data+')">view</button> \n\
@@ -150,6 +152,10 @@
                 }
             })
             dataTable.ajax.reload()
+        }
+
+        function pop(data) {
+            return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
 
         function validation(errors) {

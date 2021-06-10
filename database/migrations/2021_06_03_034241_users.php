@@ -15,7 +15,7 @@ class Users extends Migration
     {
         Schema::table('users', function($table) {
             $table->string('created_by');
-            $table->string('updated_by');
+            $table->string('updated_by')->nullable();
         });
     }
 

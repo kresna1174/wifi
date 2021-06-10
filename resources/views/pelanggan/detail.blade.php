@@ -1,18 +1,15 @@
 <table width="100%">
     <tr>
-        <th>No Pemasangan</th>
-        <th class="text-center">:</th>
-        <th class="text-center">{!! $model->id !!}</th>
+        <th width="200px"><h6>No Pemasangan</h6></th>
+        <th class="text-left">{!! $pemasangan->no_pemasangan !!}</th>
     </tr>
     <tr>
-        <th>Tarif/bulan</th>
-        <th class="text-center">:</th>
-        <th class="text-center">{!! $model->tarif !!}</th>
+        <th width="200px"><h6>Tarif/bulan</h6></th>
+        <th class="text-left">{!! number_format($pemasangan->tarif, 2, ',', '.') !!}</th>
     </tr>
     <tr>
-        <th>Alamat Pemasangan</th>
-        <th class="text-center">:</th>
-        <th class="text-center">{!! $model->alamat_pemasangan !!}</th>
+        <th width="200px"><h6>Alamat Pemasangan</h6></th>
+        <th class="text-left">{!! $pemasangan->alamat_pemasangan !!}</th>
     </tr>
 </table>
 <div class="form-group mt-2">
@@ -26,10 +23,10 @@
     </thead>
     <tbody>
     <?php $total = 0 ?>
-        @foreach($model->tagihan as $row)
+        @foreach($model as $row)
             <tr>
                 <td><b>{!! $row->tanggal_tagihan !!}</b></td>
-                <td class="text-right"><b>{!! $row->tarif !!}</b></td>
+                <td class="text-right"><b>{!! number_format($row->tarif, 2, ',', '.') !!}</b></td>
             </tr>
         <?php $total += $row->tarif ?>
         @endforeach
@@ -37,7 +34,7 @@
     <tfoot>
         <tr>
             <th>Total Tagihan</th>
-            <th class="text-right">{!! $total !!}</th>
+            <th class="text-right">{!! number_format($total, 2, ',', '.') !!}</th>
         </tr>
     </tfoot>
 </table>

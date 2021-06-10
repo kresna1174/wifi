@@ -39,8 +39,10 @@ class PemasanganController extends Controller
 
     public function create() {
         $pelanggan = pelanggan::with('pemasangan')->get();
+        $no_pemasangan = 'NPM-'.str_pad(pemasangan::max('id') + 1, 7, "0", STR_PAD_LEFT);
+        $pelanggan->no_pelanggan = 'NP-'.str_pad(pelanggan::max('id') + 1, 7, "0", STR_PAD_LEFT);
         $pelanggan->data = pelanggan::get();
-        return view('pemasangan.create', ['pelanggan' => $pelanggan, 'title' => 'Pemasangan']); 
+        return view('pemasangan.create', ['pelanggan' => $pelanggan, 'title' => 'Pemasangan', 'no_pemasangan' => $no_pemasangan]); 
     } 
 
     public function edit($id) {
@@ -65,6 +67,7 @@ class PemasanganController extends Controller
         if($request->pilih_pelanggan == 1) {
             $data = [
                 'id_pelanggan' => $request->nama_pelanggan,
+                'no_pemasangan' => $request->no_pemasangan,
                 'alamat_pemasangan' => $request->alamat_pemasangan,
                 'tarif' => $request->tarif,
                 'tanggal_pemasangan' => $request->tanggal_pemasangan,
@@ -75,7 +78,10 @@ class PemasanganController extends Controller
             if($pemasangan = pemasangan::create($data)) {
                 if(tagihan::create([
                     'id_pemasangan' => $pemasangan->id,
-                    'tanggal_tagihan' => $request->tanggal_pemasangan,
+                    'tanggal_tagihan' => $request->tanggal_tagihan,
+                    'tanggal_tagihan_terakhir' => $request->tanggal_tagihan,
+                    'tagihan' => $request->tarif,
+                    'sisa_tagihan' => 0,
                     'status_bayar' => 0,
                     'deleted' => 0,
                     'created_at'  => date('Y-m-d H:i:s'),
@@ -97,6 +103,8 @@ class PemasanganController extends Controller
                 'nama_pelanggan' => $request->nama_pelanggan,
                 'no_telepon' => $request->no_telepon,
                 'no_identitas' => $request->no_identitas,
+                'identitas' => $request->identitas,
+                'no_pelanggan' => $request->no_pelanggan,
                 'alamat' => $request->alamat,
                 'deleted' => 0,
                 'created_at' => date('Y-m-d H:i:s'),
@@ -105,6 +113,7 @@ class PemasanganController extends Controller
             if($pelanggan = pelanggan::create($data)) {
                 if($pemasangan = pemasangan::create([
                     'id_pelanggan' => $pelanggan->id, 
+                    'no_pemasangan' => $request->no_pemasangan, 
                     'alamat_pemasangan' => $request->alamat_pemasangan,
                     'tarif' => $request->tarif,
                     'tanggal_pemasangan' => date("Y-m-d", strtotime( date( "Y-m-d", strtotime( $request->tanggal_pemasangan ) ) . "+1 month" ) ),
@@ -114,7 +123,10 @@ class PemasanganController extends Controller
                 ])) {
                     if(tagihan::create([
                         'id_pemasangan' => $pemasangan->id,
-                        'tanggal_tagihan' => $request->tanggal_pemasangan,
+                        'tanggal_tagihan' => $request->tanggal_tagihan,
+                        'tanggal_tagihan_terakhir' => $request->tanggal_tagihan,
+                        'tagihan' => $request->tarif,
+                        'sisa_tagihan' => 0,
                         'status_bayar' => 0,
                         'deleted' => 0,
                         'created_at'  => date('Y-m-d H:i:s'),
@@ -148,6 +160,7 @@ class PemasanganController extends Controller
             $data = [
                 'id_pelanggan' => $request->nama_pelanggan,
                 'alamat_pemasangan' => $request->alamat_pemasangan,
+                'no_pemasangan' => $request->no_pemasangan,
                 'tarif' => $request->tarif,
                 'tanggal_pemasangan' => $request->tanggal_pemasangan,
                 'deleted' => 0,
@@ -158,7 +171,10 @@ class PemasanganController extends Controller
             if($pemasangan->update($data)) {
                 if(tagihan::where('id_pemasangan', $pemasangan->id)->update([
                     'id_pemasangan' => $pemasangan->id,
-                    'tanggal_tagihan' => $request->tanggal_pemasangan,
+                    'tanggal_tagihan' => $request->tanggal_tagihan,
+                    'tanggal_tagihan_terakhir' => $request->tanggal_tagihan,
+                    'tagihan' => $request->tarif,
+                    'sisa_tagihan' => 0,
                     'status_bayar' => 0,
                     'deleted' => 0,
                     'updated_at'  => date('Y-m-d H:i:s'),
