@@ -104,6 +104,12 @@ use Illuminate\Support\Facades\Auth;
 							<span>Pembayaran</span> 
 						</a>
 					</li>
+					<li class="has-sub">
+						<a href="{!! route('tagihan') !!}">
+							<i class="material-icons">receipt</i>
+							<span>Tagihan</span> 
+						</a>
+					</li>
 					<li>
                         <a href="{!! route('pemasangan') !!}">
 							<i class="fa fa-shopping-cart"></i>
