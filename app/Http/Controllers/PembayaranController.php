@@ -36,14 +36,6 @@ class PembayaranController extends Controller
     }
 
     public function get_pembayaran(Request $request) {
-        // $pemasangan = pemasangan::leftjoin('pelanggan', 'pemasangan.id_pelanggan', '=', 'pemasangan.id_pelanggan')
-        //     ->leftjoin('tagihan', 'pemasangan.id', '=', 'tagihan.id_pemasangan')
-        //     ->where('tagihan.status_bayar', 0)
-        //     ->where('pemasangan.id_pelanggan', $request->id_pelanggan)
-        //     ->where('pemasangan.no_pemasangan', $request->no_pemasangan)
-        //     ->select(['pemasangan.id_pelanggan', 'pemasangan.tarif', 'tagihan.tanggal_tagihan', 'pemasangan.alamat_pemasangan', 'tagihan.id as tagihan_id', 'pemasangan.id as pemasangan_id', 'pelanggan.id as pelanggan_id', 'tagihan.tagihan'])
-        //     ->groupBy(['pemasangan.id_pelanggan', 'pemasangan.tarif', 'tagihan.tanggal_tagihan', 'pemasangan.alamat_pemasangan', 'tagihan.id', 'pemasangan.id', 'pelanggan.id', 'tagihan.tagihan'])
-        //     ->get();
         $find_pemasangan = pemasangan::where('no_pemasangan', $request->no_pemasangan)->first();
         $pemasangan = pemasangan::with(['tagihan' => function($p) use($find_pemasangan) {
             $p->join('pemasangan', 'tagihan.id_pemasangan', 'pemasangan.id')

@@ -15,7 +15,7 @@
 <?php } ?>    
 <div class="panel panel-default">
     <div class="panel-body">
-    {!! Form::open(['id' => 'form-create']) !!}
+    {!! Form::model(['id' => 'form-create']) !!}
         @include('pembayaran.form')
         <div class="float-right">
             <button type="button" class="btn btn-secondary" onclick="document.location.href='<?= route('pembayaran') ?>'">Cancel</button>
@@ -35,6 +35,36 @@
             $('#store_bayar').prop('disabled', true)
         } else {
             $('#store_bayar').prop('disabled', false)
+        }
+
+        if($('#nama_pelanggan').val() != null && $('#no_pemasangan').val() != null) {
+            $.ajax({
+                url: '<?= route('pembayaran.get_pembayaran') ?>?id_pelanggan=' + $('#nama_pelanggan').val() + '&no_pemasangan=' + $('#no_pemasangan').val(),
+                success: function(response) {
+                    let html;
+                    let tagihan;
+                    $.each(response, function(data, row) {
+                        html += '<tr>'
+                        html += '<td>'+row.tanggal_tagihan+'</td>'
+                        html += '<td class="text-right">'+row.tagihan+'</td>'
+                        html += '</tr>'
+                        $('#table tbody').html(html)
+                        if(data > 0) {
+                            tagihan += row.tagihan       
+                        } else {
+                            tagihan = row.tagihan
+                        }
+                        $('#alamat_pemasangan').val(row.alamat_pemasangan)
+                        $('#total_bayar').val(tagihan)
+                        $('#id_tagihan').val(row.tagihan_id)
+                        if($('#bayar').val() == '') {
+                            $('#store_bayar').prop('disabled', true)
+                        } else {
+                            $('#store_bayar').prop('disabled', false)
+                        }
+                    })
+                }
+            })
         }
     })
 
