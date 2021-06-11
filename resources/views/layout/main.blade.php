@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Auth;
 	<link href="{{ asset('assets') }}/css/material/style-responsive.min.css" rel="stylesheet" />
 	<link href="{{ asset('assets') }}/css/material/theme/default.css" rel="stylesheet" id="theme" />
 	<link href="{{ asset('assets') }}/plugins/jquery-jvectormap/jquery-jvectormap.css" rel="stylesheet" />
+	<link href="{{ asset('assets') }}/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
 	<link href="{{ asset('assets') }}/plugins/bootstrap-datepicker/css/bootstrap-datepicker.css" rel="stylesheet" />
 	<script src="{{ asset('assets') }}/plugins/pace/pace.min.js"></script>
 </head>
@@ -145,6 +146,7 @@ use Illuminate\Support\Facades\Auth;
 	<script src="{{ asset('assets') }}/plugins/jquery-ui/jquery-ui.min.js"></script>
 	<script src="{{ asset('assets') }}/plugins/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
 	<script src="{{ asset('assets') }}/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	<script src="{{ asset('assets') }}/plugins/select2/dist/js/select2.min.js"></script>
 	<script src="{{ asset('assets') }}/plugins/js-cookie/js.cookie.js"></script>
 	<script src="{{ asset('assets') }}/js/theme/material.min.js"></script>
 	<script src="{{ asset('assets') }}/js/apps.min.js"></script>

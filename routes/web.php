@@ -85,6 +85,7 @@ Route::middleware(['auth'])->group(function() {
     Route::group(['prefix' => 'tagihan'], function() {
         Route::get('/', 'TagihanController@index')->name('tagihan');
         Route::get('get_tagihan', 'TagihanController@get_tagihan')->name('tagihan.get_tagihan');
+        Route::get('generate', 'TagihanController@generate')->name('tagihan.generate');
     });
 
 });

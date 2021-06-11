@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Libraries\BulanIndo;
+use App\pelanggan;
 use App\pemasangan;
 use App\tagihan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Calculation\Database\DMax;
 
 class TagihanController extends Controller
 {
@@ -29,10 +32,32 @@ class TagihanController extends Controller
             foreach($row->tagihan as $rs_tagihan) {
                 $rs_tagihan->tanggal_tagihan = BulanIndo::tanggal_indo($rs_tagihan->tanggal_tagihan); 
                 $rs_tagihan->tarif = number_format($rs_tagihan->tarif, 2, ',', '.'); 
-                $rs_tagihan->sisa_tagihan = number_format($rs_tagihan->sisa_tagihan, 2, ',', '.'); 
+                $rs_tagihan->tagihan = number_format($rs_tagihan->tagihan, 2, ',', '.'); 
                 $tagihan[] = $rs_tagihan;
             }
         }
         return $tagihan;
+    }
+
+    public function generate() {
+        $pemasangan = pemasangan::get();
+        $data = [];
+        foreach($pemasangan as $row) {
+            $data = $tagihan = tagihan::where('id_pemasangan', $row->id)->get();
+        }
+        foreach($data as $row) {
+            $ins = [
+                'id_pemasangan' => $row->id_pemasangan,
+                'tanggal_tagihan' => date('Y-m-d', strtotime(date('Y-m-d', strtotime($row->tanggal_tagihan)) . '+ 1 month')),
+                'status_bayar' => 0,
+                'deleted' => 0,
+                'created_at' => date('Y-m-d H:i:s'),
+                'created_by' => Auth::user()->name,
+                'tagihan' => $row->tagihan,
+                'sisa_tagihan' => 0,
+                'tanggal_tagihan_terakhir' => date('Y-m-d', strtotime(date('Y-m-d', strtotime($row->tanggal_tagihan_terakhir)) . '+ 1 month'))
+            ];
+            tagihan::create($ins);
+        }
     }
 }

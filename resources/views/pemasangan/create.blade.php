@@ -40,6 +40,7 @@
                     html +='</select>'
                     $('#nama_pelanggan').remove()
                     $('.nama_pelanggan').html(html)
+                    $('#nama_pelanggan').select2()
                 }
             })
         } 

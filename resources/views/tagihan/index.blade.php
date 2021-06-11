@@ -2,6 +2,13 @@
 @section('content')
 <h1 class="page-header">
     Generate Tagihan
+<div class="pull-right">
+        <div class="form-inline">
+            <div class="form-group">
+                <button type="button" id="btn-create" class="btn btn-primary" onclick="generate()">Generate Tagihan</button>
+            </div>
+        </div>
+    </div>
 </h1>
 <div class="panel panel-default">
     <div class="panel-body">
@@ -40,7 +47,7 @@
                         html +=                     '<th>Tanggal Tagihan</th>'
                         html +=                     '<th>No Pemasangan</th>'
                         html +=                     '<th class="text-center">Tarif</th>'
-                        html +=                     '<th class="text-center">Sisa Tagihan</th>'
+                        html +=                     '<th class="text-center">Tagihan</th>'
                         html +=                     '<th></th>'
                         html +=                 '</tr>'
                         html +=             '</thead>'
@@ -61,21 +68,23 @@
                         html +=                     '<th>Tanggal Tagihan</th>'
                         html +=                     '<th>No Pemasangan</th>'
                         html +=                     '<th class="text-center">Tarif</th>'
-                        html +=                     '<th class="text-center">Sisa Tagihan</th>'
+                        html +=                     '<th class="text-center">Tagihan</th>'
                         html +=                     '<th></th>'
                         html +=                 '</tr>'
                         html +=             '</thead>'
                         html +=             '<tbody>'
                         $.each(response, function(data, row) {
-                            html +=             '<td>'+row.nama_pelanggan+'</td>'
-                            html +=             '<td>'+row.no_pelanggan+'</td>'
-                            html +=             '<input type="hidden" id="pelanggan_id" value="'+row.pelanggan_id+'">'
-                            html +=             '<input type="hidden" id="no_pemasangan" value="'+row.no_pemasangan+'">'
-                            html +=             '<td>'+row.tanggal_tagihan+'</td>'
-                            html +=             '<td>'+row.no_pemasangan+'</td>'
-                            html +=             '<td class="text-right">'+row.tarif+'</td>'
-                            html +=             '<td class="text-right">'+row.sisa_tagihan+'</td>'
-                            html +=             '<td class="text-center"><button type="button" class="btn btn-primary" onclick="bayar()">bayar</button></td>'
+                            html +=             '<tr>'
+                            html +=                 '<td>'+row.nama_pelanggan+'</td>'
+                            html +=                 '<td>'+row.no_pelanggan+'</td>'
+                            html +=                 '<input type="hidden" id="pelanggan_id" value="'+row.pelanggan_id+'">'
+                            html +=                 '<input type="hidden" id="no_pemasangan" value="'+row.no_pemasangan+'">'
+                            html +=                 '<td>'+row.tanggal_tagihan+'</td>'
+                            html +=                 '<td>'+row.no_pemasangan+'</td>'
+                            html +=                 '<td class="text-right">'+row.tarif+'</td>'
+                            html +=                 '<td class="text-right">'+row.tagihan+'</td>'
+                            html +=                 '<td class="text-center"><a href="<?= route('pembayaran.create') ?>?id_pelanggan='+row.pelanggan_id+'&no_pemasangan='+row.no_pemasangan+'" role="button" class="btn btn-primary">bayar</a></td>'
+                            html +=             '</tr>'
                         });
                         html +=             '</tbody>'
                         html +=         '</table>'
@@ -87,8 +96,32 @@
             })
         }
 
-        function bayar(no_pemasangan) {
-            document.location.href='<?= route('pembayaran.create') ?>?id_pelanggan=' + $('#pelanggan_id').val() + '&no_pemasangan=' + $('#no_pemasangan').val()
+        function generate() {
+            Swal.fire({
+                title: 'Perhatian!',
+                text: 'Apakah Anda Ingin Mengenerate Tagihan ?',
+                icon: 'warning',
+                showCancelButton: true,
+            }).then((result) => {
+                if(result.value) {
+                    $.ajax({
+                        url: '<?= route('tagihan.generate') ?>',
+                        success: function(response) {
+                            if(response.success) {
+                                $.growl.notice({
+                                    title : 'success',
+                                    message : response.message
+                                });
+                            } else {
+                                $.growl.notice({
+                                    title : 'failed',
+                                    message : response.message
+                                });
+                            }
+                        }
+                    })
+                }
+            })
         }
     </script>
 @endsection

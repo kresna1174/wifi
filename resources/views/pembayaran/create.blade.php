@@ -29,6 +29,8 @@
 @section('script')
     <script>
     $(function() {
+        $('#nama_pelanggan').select2()
+        $('#no_pemasangan').select2()
         $('#bayar').number(true, 2, ',', '.');
         $('#total_bayar').number(true, 2, ',', '.');
         if($('#bayar').val() == '') {
