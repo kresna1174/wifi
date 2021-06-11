@@ -46,13 +46,19 @@
     <label>Tarif</label>
     {!! Form::text('tarif', isset($pelanggan->tarif) ? $pelanggan->tarif : null, ['class' => 'form-control text-right', 'id' => 'tarif']) !!}
 </div>
-<div class='form-group'>
-    <label>Tanggal Pemasangan</label>
-    {!! Form::text('tanggal_pemasangan', isset($pelanggan->tanggal_pemasangan) ? $pelanggan->tanggal_pemasangan : null, ['class' => 'form-control', 'id' => 'tanggal_pemasangan', 'autocomplete' => 'off']) !!}
-</div>
-<div class='form-group'>
-    <label>Tanggal Tagihan</label>
-    {!! Form::text('tanggal_tagihan', isset($pelanggan->tanggal_tagihan) ? $pelanggan->tanggal_tagihan : null, ['class' => 'form-control', 'id' => 'tanggal_tagihan', 'autocomplete' => 'off']) !!}
+<div class="row">
+    <div class="col-6">
+        <div class='form-group'>
+            <label>Tanggal Pemasangan</label>
+            {!! Form::text('tanggal_pemasangan', isset($pelanggan->tanggal_pemasangan) ? $pelanggan->tanggal_pemasangan : null, ['class' => 'form-control', 'id' => 'tanggal_pemasangan', 'autocomplete' => 'off']) !!}
+        </div>
+    </div>
+    <div class="col-6">
+        <div class='form-group'>
+            <label>Tanggal Tagihan</label>
+            {!! Form::select('tanggal_tagihan', $tanggal, null, ['class' => 'form-control', 'id' => 'tanggal_tagihan', 'autocomplete' => 'off']) !!}
+        </div>
+    </div>
 </div>
 <div class='form-group'>
     <label>Alamat Pemasangan</label>

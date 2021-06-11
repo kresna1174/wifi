@@ -42,7 +42,12 @@ class PemasanganController extends Controller
         $no_pemasangan = 'NPM-'.str_pad(pemasangan::max('id') + 1, 7, "0", STR_PAD_LEFT);
         $pelanggan->no_pelanggan = 'NP-'.str_pad(pelanggan::max('id') + 1, 7, "0", STR_PAD_LEFT);
         $pelanggan->data = pelanggan::get();
-        return view('pemasangan.create', ['pelanggan' => $pelanggan, 'title' => 'Pemasangan', 'no_pemasangan' => $no_pemasangan]); 
+        for($i = 1; $i <= 32; $i++) {
+            $tanggal[$i] = $i;
+        }
+        $tanggal[32] = "tanggal akhir";
+
+        return view('pemasangan.create', ['pelanggan' => $pelanggan, 'title' => 'Pemasangan', 'no_pemasangan' => $no_pemasangan, 'tanggal' => $tanggal]); 
     } 
 
     public function edit($id) {
@@ -51,7 +56,11 @@ class PemasanganController extends Controller
             ->where('pemasangan.id', $id)
             ->first();
         $pelanggan->nama_pelanggan = pelanggan::pluck('nama_pelanggan', 'id');
-        return view('pemasangan.edit', ['pelanggan' => $pelanggan, 'title' => 'Pemasangan']);
+        for($i = 1; $i <= 32; $i++) {
+            $tanggal[$i] = $i;
+        }
+        $tanggal[32] = "tanggal akhir";
+        return view('pemasangan.edit', ['pelanggan' => $pelanggan, 'title' => 'Pemasangan', 'tanggal' => $tanggal]);
     } 
 
     public function store(Request $request) {
@@ -64,6 +73,16 @@ class PemasanganController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         }
+        $t = date('t', strtotime($request->tanggal_pemasangan));
+        $tanggal = $request->tanggal_tagihan;
+        $tanggal_pemasangan = explode('-', $request->tanggal_pemasangan);
+        if($request->tanggal_tagihan == 32) {
+            $tanggal = $t;
+        }
+
+        if($request->tanggal > $t) {
+            $tanggal = $t;
+        }
         if($request->pilih_pelanggan == 1) {
             $data = [
                 'id_pelanggan' => $request->nama_pelanggan,
@@ -71,6 +90,7 @@ class PemasanganController extends Controller
                 'alamat_pemasangan' => $request->alamat_pemasangan,
                 'tarif' => $request->tarif,
                 'tanggal_pemasangan' => $request->tanggal_pemasangan,
+                'tanggal_generate' => $request->tanggal_pemasangan,
                 'deleted' => 0,
                 'created_at'  => date('Y-m-d H:i:s'),
                 'created_by' => Auth::user()->name,
@@ -78,8 +98,8 @@ class PemasanganController extends Controller
             if($pemasangan = pemasangan::create($data)) {
                 if(tagihan::create([
                     'id_pemasangan' => $pemasangan->id,
-                    'tanggal_tagihan' => $request->tanggal_tagihan,
-                    'tanggal_tagihan_terakhir' => $request->tanggal_tagihan,
+                    'tanggal_tagihan' => $tanggal,
+                    'tanggal_tagihan_terakhir' => $tanggal_pemasangan[0].'-'.$tanggal_pemasangan[1].'-'.$tanggal,
                     'tagihan' => $request->tarif,
                     'sisa_tagihan' => 0,
                     'status_bayar' => 0,
@@ -116,7 +136,8 @@ class PemasanganController extends Controller
                     'no_pemasangan' => $request->no_pemasangan, 
                     'alamat_pemasangan' => $request->alamat_pemasangan,
                     'tarif' => $request->tarif,
-                    'tanggal_pemasangan' => date("Y-m-d", strtotime( date( "Y-m-d", strtotime( $request->tanggal_pemasangan ) ) . "+1 month" ) ),
+                    'tanggal_generate' => $request->tanggal_pemasangan,
+                    'tanggal_pemasangan' => $request->tanggal_pemasangan,
                     'deleted' => 0,
                     'created_at' => date('Y-m-d H:i:s'),
                     'created_by' => Auth::user()->name
@@ -124,7 +145,7 @@ class PemasanganController extends Controller
                     if(tagihan::create([
                         'id_pemasangan' => $pemasangan->id,
                         'tanggal_tagihan' => $request->tanggal_tagihan,
-                        'tanggal_tagihan_terakhir' => $request->tanggal_tagihan,
+                        'tanggal_tagihan_terakhir' => $tanggal_pemasangan[0].'-'.$tanggal_pemasangan[1].'-'.$tanggal,
                         'tagihan' => $request->tarif,
                         'sisa_tagihan' => 0,
                         'status_bayar' => 0,
@@ -157,12 +178,23 @@ class PemasanganController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         }
+        $t = date('t', strtotime($request->tanggal_pemasangan));
+        $tanggal = $request->tanggal_pemasangan;
+        $tanggal_pemasangan = explode('-', $request->tanggal_pemasangan);
+        if($request->tanggal_tagihan == 32) {
+            $tanggal = $t;
+        }
+
+        if($request->tanggal > $t) {
+            $tanggal = $t;
+        }
             $data = [
                 'id_pelanggan' => $request->nama_pelanggan,
                 'alamat_pemasangan' => $request->alamat_pemasangan,
                 'no_pemasangan' => $request->no_pemasangan,
                 'tarif' => $request->tarif,
                 'tanggal_pemasangan' => $request->tanggal_pemasangan,
+                'tanggal_generate' => $request->tanggal_pemasangan,
                 'deleted' => 0,
                 'updated_at'  => date('Y-m-d H:i:s'),
                 'updated_by' => Auth::user()->name,
@@ -172,7 +204,7 @@ class PemasanganController extends Controller
                 if(tagihan::where('id_pemasangan', $pemasangan->id)->update([
                     'id_pemasangan' => $pemasangan->id,
                     'tanggal_tagihan' => $request->tanggal_tagihan,
-                    'tanggal_tagihan_terakhir' => $request->tanggal_tagihan,
+                    'tanggal_tagihan_terakhir' => $tanggal_pemasangan[0].'-'.$tanggal_pemasangan[1].'-'.$request->tanggal_tagihan,
                     'tagihan' => $request->tarif,
                     'sisa_tagihan' => 0,
                     'status_bayar' => 0,

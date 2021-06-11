@@ -16,8 +16,8 @@
             <thead>
                 <tr>
                     <th>Nama Pelanggan</th>
-                    <th>Bayar</th>
-                    <th>Tarif</th>
+                    <th class="text-center">Bayar</th>
+                    <th class="text-center">Tarif</th>
                     <th>Alamat Pemasangan</th>
                     <th>Tanggal Bayar</th>
                 </tr>
@@ -38,10 +38,10 @@
                 ajax: '<?= route('pembayaran.get') ?>',
                 columns: [
                     {data: 'nama_pelanggan', name: 'nama_pelanggan'},
-                    {data: 'bayar', name: 'bayar', render: function(data) {
+                    {data: 'bayar', name: 'bayar', class: 'text-right', render: function(data) {
                         return pop(data)
                     }},
-                    {data: 'tagihan', name: 'tagihan', render: function(data) {
+                    {data: 'tagihan', name: 'tagihan', class: 'text-right', render: function(data) {
                         return pop(data)
                     }},
                     {data: 'alamat_pemasangan', name: 'alamat_pemasangan'},
@@ -51,7 +51,7 @@
         })
 
         function pop(data) {
-            return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ',00';
         }
     </script>
 @endsection

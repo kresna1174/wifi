@@ -37,6 +37,7 @@
         $('#identitas').prop('disabled', true)
         $('#pilih_pelanggan').remove()
         $('.pilih_pelanggan').html('<input type="text" name="pilih_pelanggan" class="form-control" id="pilih_pelanggan" value="pelanggan lama" readonly>')
+        $('#nama_pelanggan').select2()
     })
 
     function change_pelanggan() {

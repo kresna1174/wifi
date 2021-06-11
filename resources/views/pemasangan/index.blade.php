@@ -39,7 +39,7 @@
                 columns: [
                     {data: 'nama_pelanggan', name: 'nama_pelanggan'},
                     {data: 'alamat_pemasangan', name: 'pemasangan.alamat_pemasangan'},
-                    {data: 'tarif', name: 'pemasangan.tarif', render: function(data) {
+                    {data: 'tarif', name: 'pemasangan.tarif', class: 'text-right', render: function(data) {
                         return pop(data)
                     }},
                     {data: 'tanggal_pemasangan', name: 'pemasangan.tanggal_pemasangan'},
@@ -84,7 +84,7 @@
         }
 
         function pop(data) {
-            return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ',00';
         }
     </script>
 @endsection

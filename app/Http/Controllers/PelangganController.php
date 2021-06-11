@@ -62,12 +62,16 @@ class PelangganController extends Controller
         $model = pemasangan::join('tagihan', 'pemasangan.id', '=', 'tagihan.id_pemasangan')
             ->where('pemasangan.id_pelanggan', $request->id_pelanggan)
             ->where('pemasangan.id', $request->id_pemasangan)
-            ->select('pemasangan.tarif', 'tagihan.tanggal_tagihan')
-            ->groupBy('pemasangan.tarif', 'tagihan.tanggal_tagihan')
+            ->select('pemasangan.tarif', 'pemasangan.tanggal_pemasangan', 'tagihan.tanggal_tagihan')
+            ->groupBy('pemasangan.tarif', 'pemasangan.tanggal_pemasangan', 'tagihan.tanggal_tagihan')
             ->get();
         $total = 0;
         foreach($model as $row) {
-            $row->tanggal_tagihan = BulanIndo::tanggal_indo($row->tanggal_tagihan);
+            $tanggal_pemasangan = explode('-', $row->tanggal_pemasangan);
+            if($row->tanggal_tagihan == 32) {
+                $row->tanggal_tagihan = date('t', strtotime($row->tanggal_pemasangan));
+            }
+            $row->tanggal_tagihan = BulanIndo::tanggal_indo($tanggal_pemasangan[0].'-'.$tanggal_pemasangan[1].'-'.$row->tanggal_tagihan);
         }
         return view('pelanggan.detail', ['model' => $model, 'total' => $total, 'pemasangan' => $pemasangan]);
     }

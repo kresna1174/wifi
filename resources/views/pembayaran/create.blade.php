@@ -15,7 +15,7 @@
 <?php } ?>    
 <div class="panel panel-default">
     <div class="panel-body">
-    {!! Form::model(['id' => 'form-create']) !!}
+    {!! Form::open(['id' => 'form-create']) !!}
         @include('pembayaran.form')
         <div class="float-right">
             <button type="button" class="btn btn-secondary" onclick="document.location.href='<?= route('pembayaran') ?>'">Cancel</button>
@@ -48,7 +48,7 @@
                     $.each(response, function(data, row) {
                         html += '<tr>'
                         html += '<td>'+row.tanggal_tagihan+'</td>'
-                        html += '<td class="text-right">'+row.tagihan+'</td>'
+                        html += '<td class="text-right">'+pop(JSON.parse(row.tagihan))+'</td>'
                         html += '</tr>'
                         $('#table tbody').html(html)
                         if(data > 0) {
@@ -94,7 +94,7 @@
                             $.each(response, function(data, row) {
                                 html += '<tr>'
                                 html += '<td>'+row.tanggal_tagihan+'</td>'
-                                html += '<td class="text-right">'+row.tagihan+'</td>'
+                                html += '<td class="text-right">'+pop(JSON.parse(row.tagihan))+'</td>'
                                 html += '</tr>'
                                 $('#table tbody').html(html)
                             })
@@ -136,7 +136,7 @@
                             $.each(response, function(data, row) {
                                 html += '<tr>'
                                 html += '<td>'+row.tanggal_tagihan+'</td>'
-                                html += '<td class="text-right">'+row.tagihan+'</td>'
+                                html += '<td class="text-right">'+pop(JSON.parse(row.tagihan))+'</td>'
                                 html += '</tr>'
                                 $('#table tbody').html(html)
                             })
@@ -176,7 +176,7 @@
                             $.each(response, function(data, row) {
                                 html += '<tr>'
                                 html += '<td>'+row.tanggal_tagihan+'</td>'
-                                html += '<td class="text-right">'+row.tagihan+'</td>'
+                                html += '<td class="text-right">'+pop(JSON.parse(row.tagihan))+'</td>'
                                 html += '</tr>'
                                 $('#table tbody').html(html)
                             })
@@ -297,7 +297,7 @@
         }
 
         function pop(data) {
-            // return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ',00';
         }
     </script>
 @endsection

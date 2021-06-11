@@ -16,7 +16,6 @@ class Pembayaran extends Migration
         Schema::create('pembayaran', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('id_pemasangan');
-            $table->integer('id_tagihan');
             $table->double('bayar', 16);
             $table->date('tanggal_bayar');
             $table->integer('deleted');

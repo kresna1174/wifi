@@ -21,9 +21,6 @@
     $('#tanggal_pemasangan').datepicker({
         format: 'yyyy-mm-dd'
     })
-    $('#tanggal_tagihan').datepicker({
-        format: 'yyyy-mm-dd'
-    })
     $('#tarif').number(true, 2, ',', '.');
     let no_pelanggan = '<?= json_encode($pelanggan->no_pelanggan) ?>'
     let pelanggan = '<?= json_encode($pelanggan->data) ?>'

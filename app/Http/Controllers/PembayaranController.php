@@ -23,7 +23,8 @@ class PembayaranController extends Controller
 
     public function get() {
         $pelanggan = pembayaran::join('pemasangan', 'pembayaran.id_pemasangan', '=', 'pemasangan.id')
-        ->join('tagihan', 'pembayaran.id_tagihan', '=', 'tagihan.id')
+        ->join('pembayaran_detail', 'pembayaran.id', '=', 'pembayaran_detail.id_pembayaran')
+        ->join('tagihan', 'pembayaran_detail.id_tagihan', '=', 'tagihan.id')
         ->join('pelanggan', 'pemasangan.id_pelanggan', '=', 'pelanggan.id')
         ->select('pelanggan.nama_pelanggan', 'pembayaran.bayar', 'pembayaran.tanggal_bayar', 'pemasangan.tarif', 'pemasangan.alamat_pemasangan', 'tagihan.tagihan')
         ->groupBy('pelanggan.nama_pelanggan', 'pembayaran.bayar', 'pembayaran.tanggal_bayar', 'pemasangan.tarif', 'pemasangan.alamat_pemasangan', 'tagihan.tagihan')
@@ -49,8 +50,12 @@ class PembayaranController extends Controller
             ->get();
         $data = [];
         foreach($pemasangan as $row) {
+            $tanggal_pemasangan = explode('-', $row->tanggal_pemasangan);
             foreach($row->tagihan as $p) {
-                $p->tanggal_tagihan = BulanIndo::tanggal_indo($p->tanggal_tagihan);
+                if($p->tanggal_tagihan == 32) {
+                    $p->tanggal_tagihan = date('t', strtotime($row->tanggal_pemasangan));
+                }
+                $p->tanggal_tagihan = BulanIndo::tanggal_indo($tanggal_pemasangan[0].'-'.$tanggal_pemasangan[1].'-'.$p->tanggal_tagihan);
                 $data[] = $p;
             }
         }
@@ -114,7 +119,6 @@ class PembayaranController extends Controller
         foreach($model as $row) {
             $pembayaran = [
                 'id_pemasangan' => $row->id_pemasangan,
-                'id_tagihan' => $request->id_tagihan,
                 'bayar' => $request->bayar,
                 'tanggal_bayar' => date('Y-m-d'),
                 'deleted' => 0,
@@ -145,6 +149,15 @@ class PembayaranController extends Controller
                     ];
                     $ins_tagihan = tagihan::create($in_tagihan);
                 }
+                return [
+                    'success' => true,
+                    'message' => 'Pembayaran Berhasil'
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'Pembayaran Gagal'
+                ];
             }
         }
     }
