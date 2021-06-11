@@ -179,7 +179,7 @@ class PemasanganController extends Controller
             ], 400);
         }
         $t = date('t', strtotime($request->tanggal_pemasangan));
-        $tanggal = $request->tanggal_pemasangan;
+        $tanggal = $request->tanggal_tagihan;
         $tanggal_pemasangan = explode('-', $request->tanggal_pemasangan);
         if($request->tanggal_tagihan == 32) {
             $tanggal = $t;
@@ -203,7 +203,7 @@ class PemasanganController extends Controller
             if($pemasangan->update($data)) {
                 if(tagihan::where('id_pemasangan', $pemasangan->id)->update([
                     'id_pemasangan' => $pemasangan->id,
-                    'tanggal_tagihan' => $request->tanggal_tagihan,
+                    'tanggal_tagihan' => $tanggal,
                     'tanggal_tagihan_terakhir' => $tanggal_pemasangan[0].'-'.$tanggal_pemasangan[1].'-'.$request->tanggal_tagihan,
                     'tagihan' => $request->tarif,
                     'sisa_tagihan' => 0,
