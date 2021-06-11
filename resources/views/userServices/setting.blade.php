@@ -75,7 +75,7 @@
                     title : 'Terjadi Kesalahan Input',
                     message : 'Username Harus di Isi'
                 });
-                return false;
+                return;
             }
             let form = $('#form-name')[0];
             let formData = new FormData(form);
@@ -109,25 +109,28 @@
                     title : 'Terjadi Kesalahan Input',
                     message : 'Old Password Harus di Isi'
                 });
+                return;
             }
             if($('#new_password').val() == '') {
                 $.growl.error({
                     title : 'Terjadi Kesalahan Input',
                     message : 'New Password Harus di Isi'
                 });
+                return;
             }
             if($('#konfirmasi_password').val() == '') {
                 $.growl.error({
                     title : 'Terjadi Kesalahan Input',
                     message : 'Konfirmasi Password Harus di Isi'
                 });
+                return;
             }
             if($('#new_password').val() != $('#konfirmasi_password').val()) {
                 $.growl.error({
                     title : 'Terjadi Kesalahan Input',
                     message : 'Konfirmasi Harus Sama'
                 });
-                return false;
+                return;
             }
             $.ajax({
                 url: '<?= route('setting.change-password') ?>',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 use DataTables;
 use Illuminate\Support\Facades\Hash;
@@ -44,10 +45,16 @@ class UserServiceController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         }
-        $file = $request->file('foto');
-        $file_name = sha1($file->getClientOriginalName()).'.'.$file->getClientOriginalExtension();
-        $file->move('../storage/app/public/file', $file_name);
-        $user = userServices::findOrFail(Auth::user()->id);
+        if($request->foto != null) {
+            $file = $request->file('foto');
+            $file_name = sha1($file->getClientOriginalName()).'.'.$file->getClientOriginalExtension();
+            $file->move('../storage/app/public/file', $file_name);
+        }
+        if(isset($request->id_pelanggan)) {
+            $user = userServices::findOrFail($request->id_pelanggan);
+        } else {
+            $user = userServices::findOrFail(Auth::user()->id);
+        }
         if($user->update(['name' => $request->name, 'foto' => $file_name ?? null])) {
             return [
                 'success' => true,
@@ -71,12 +78,31 @@ class UserServiceController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         }
-        $user = Auth::user();
-        if (!Hash::check($request->old_password, $user->password)) {
-            return [
-                'success' => false,
-                'message' => 'Old Password Salah'
-            ];
+        if(isset($request->id_pelanggan)) {
+            $user = userServices::findOrFail($request->id_pelanggan);
+        } else {
+            $user = userServices::findOrFail(Auth::user()->id);
+        }
+        if(isset($request->old_password)) {
+            if (!Hash::check($request->old_password, $user->password)) {
+                return [
+                    'success' => false,
+                    'message' => 'Old Password Salah'
+                ];
+            } else {
+                $user->password = Hash::make($request->new_password);
+                if($user->save()) {
+                    return [
+                        'success' => true,
+                        'message' => 'Password Berhasil di Update'
+                    ];
+                } else {
+                    return [
+                        'success' => false,
+                        'message' => 'Password Gagal di Update'
+                    ];
+                }
+            }
         } else {
             $user->password = Hash::make($request->new_password);
             if($user->save()) {
@@ -194,20 +220,32 @@ class UserServiceController extends Controller
         return $messages;
     }
 
-    public function setting_validation_message() {
+    public function setting_validation_message($data) {
         $messages = [];
-        $messages['old_password.required'] = 'Old Password Harus Di Isi';
-        $messages['new_password.required'] = 'New Password Harus Di Isi';
-        $messages['konfirmasi_password.required'] = 'Konfirmasi Password Harus Di Isi';
+        if(isset($data['old_password'])) {
+            $messages['old_password.required'] = 'Old Password Harus Di Isi';
+            $messages['new_password.required'] = 'New Password Harus Di Isi';
+            $messages['konfirmasi_password.required'] = 'Konfirmasi Password Harus Di Isi';
+        } else {
+            $messages['new_password.required'] = 'New Password Harus Di Isi';
+            $messages['konfirmasi_password.required'] = 'Konfirmasi Password Harus Di Isi';
+        }
         return $messages;
     }
 
-    public function setting_validate() {
-        return [
-            'old_password' => 'required',
-            'new_password' => 'required',
-            'konfirmasi_password' => 'required',
-        ];
+    public function setting_validate($data) {
+        if(isset($data['old_password'])) {
+            return [
+                'old_password' => 'required',
+                'new_password' => 'required',
+                'konfirmasi_password' => 'required',
+            ];
+        } else {
+            return [
+                'new_password' => 'required',
+                'konfirmasi_password' => 'required',
+            ];
+        }
     }
 
     public function username_validate() {
