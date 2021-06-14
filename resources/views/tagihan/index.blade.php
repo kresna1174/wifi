@@ -74,17 +74,19 @@
                         html +=             '</thead>'
                         html +=             '<tbody>'
                         $.each(response, function(data, row) {
-                            html +=             '<tr>'
-                            html +=                 '<td>'+row.nama_pelanggan+'</td>'
-                            html +=                 '<td>'+row.no_pelanggan+'</td>'
-                            html +=                 '<input type="hidden" id="pelanggan_id" value="'+row.pelanggan_id+'">'
-                            html +=                 '<input type="hidden" id="no_pemasangan" value="'+row.no_pemasangan+'">'
-                            html +=                 '<td>'+row.tanggal_tagihan+'</td>'
-                            html +=                 '<td>'+row.no_pemasangan+'</td>'
-                            html +=                 '<td class="text-right">'+row.tarif+'</td>'
-                            html +=                 '<td class="text-right">'+row.tagihan+'</td>'
-                            html +=                 '<td class="text-center"><a href="<?= route('pembayaran.create') ?>?id_pelanggan='+row.pelanggan_id+'&no_pemasangan='+row.no_pemasangan+'" role="button" class="btn btn-primary">bayar</a></td>'
-                            html +=             '</tr>'
+                            $.each(row.tagihan, function(a, result) {
+                                html +=             '<tr>'
+                                html +=                 '<td>'+result.nama_pelanggan+'</td>'
+                                html +=                 '<td>'+result.no_pelanggan+'</td>'
+                                html +=                 '<input type="hidden" id="pelanggan_id" value="'+result.pelanggan_id+'">'
+                                html +=                 '<input type="hidden" id="no_pemasangan" value="'+row.no_pemasangan+'">'
+                                html +=                 '<td>'+result.tanggal_tagihan+'</td>'
+                                html +=                 '<td>'+row.no_pemasangan+'</td>'
+                                html +=                 '<td class="text-right">'+pop(row.tarif)+'</td>'
+                                html +=                 '<td><p class="templates"></p></td>'
+                                html +=                 '<td class="text-center"><a href="<?= route('pembayaran.create') ?>?id_pelanggan='+result.pelanggan_id+'&no_pemasangan='+row.no_pemasangan+'" role="button" class="btn btn-primary">bayar</a></td>'
+                                html +=             '</tr>'
+                            })
                         });
                         html +=             '</tbody>'
                         html +=         '</table>'
@@ -92,6 +94,14 @@
                         html += '</div>'
                     }
                     $('#page-content').html(html)
+                    $.ajax({
+                        url: '<?= route('tagihan.get_total') ?>?periode=' + $('#tahun').val() + '-' + $('#bulan').val(),
+                        success: function(response) {
+                            $.each(response, function(a, b) {
+                                $('.templates').text(pop(b.total))
+                            })
+                        }
+                    })
                 }
             })
         }
@@ -122,6 +132,10 @@
                     })
                 }
             })
+        }
+
+        function pop(data) {
+            return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ',00';
         }
     </script>
 @endsection

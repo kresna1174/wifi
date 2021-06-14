@@ -67,11 +67,11 @@ class PelangganController extends Controller
             ->get();
         $total = 0;
         foreach($model as $row) {
-            $tanggal_pemasangan = explode('-', $row->tanggal_pemasangan);
+            $tanggal_generate = explode('-', $row->tanggal_generate);
             if($row->tanggal_tagihan == 32) {
                 $row->tanggal_tagihan = date('t', strtotime($row->tanggal_pemasangan));
             }
-            $row->tanggal_tagihan = BulanIndo::tanggal_indo($tanggal_pemasangan[0].'-'.$tanggal_pemasangan[1].'-'.$row->tanggal_tagihan);
+            $row->tanggal_tagihan = BulanIndo::tanggal_indo($tanggal_generate[0].'-'.$tanggal_generate[1].'-'.$row->tanggal_tagihan);
         }
         return view('pelanggan.detail', ['model' => $model, 'total' => $total, 'pemasangan' => $pemasangan]);
     }

@@ -50,12 +50,12 @@ class PembayaranController extends Controller
             ->get();
         $data = [];
         foreach($pemasangan as $row) {
-            $tanggal_pemasangan = explode('-', $row->tanggal_pemasangan);
+            $tanggal_generate = explode('-', $row->tanggal_generate);
             foreach($row->tagihan as $p) {
                 if($p->tanggal_tagihan == 32) {
                     $p->tanggal_tagihan = date('t', strtotime($row->tanggal_pemasangan));
                 }
-                $p->tanggal_tagihan = BulanIndo::tanggal_indo($tanggal_pemasangan[0].'-'.$tanggal_pemasangan[1].'-'.$p->tanggal_tagihan);
+                $p->tanggal_tagihan = BulanIndo::tanggal_indo($tanggal_generate[0].'-'.$tanggal_generate[1].'-'.$p->tanggal_tagihan);
                 $data[] = $p;
             }
         }
