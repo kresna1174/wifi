@@ -21,6 +21,7 @@ Route::post('login', 'AuthController@login')->name('login');
 
 Route::middleware(['auth'])->group(function() {
     Route::get('dashboard', 'DashboardController@index')->name('dashboard');
+    Route::get('dashboard/get', 'DashboardController@get')->name('dashboard.get');
     Route::group(['prefix' => 'pelanggan'], function() {
         Route::get('/', 'PelangganController@index')->name('pelanggan');
         Route::get('create', 'PelangganController@create')->name('pelanggan.create');
@@ -66,7 +67,6 @@ Route::middleware(['auth'])->group(function() {
         Route::post('store', 'PemasanganController@store')->name('pemasangan.store');
         Route::get('get', 'PemasanganController@get')->name('pemasangan.get');
         Route::get('get_pemasangan', 'PemasanganController@get_pemasangan')->name('pemasangan.get_pemasangan');
-        Route::get('get_id_pemasangan', 'PemasanganController@get_id_pemasangan')->name('pemasangan.get_id_pemasangan');
     });
     
     Route::group(['prefix' => 'UserService'], function() {
@@ -84,9 +84,6 @@ Route::middleware(['auth'])->group(function() {
 
     Route::group(['prefix' => 'tagihan'], function() {
         Route::get('/', 'TagihanController@index')->name('tagihan');
-        Route::get('get_tagihan', 'TagihanController@get_tagihan')->name('tagihan.get_tagihan');
-        Route::get('get_total', 'TagihanController@get_total')->name('tagihan.get_total');
-        Route::get('generate', 'TagihanController@generate')->name('tagihan.generate');
     });
 
 });

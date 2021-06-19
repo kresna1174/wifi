@@ -19,7 +19,7 @@ class DepositController extends Controller
     }
 
     public function get() {
-        $pelanggan = deposit::join('pelanggan', 'deposit.id_pelanggan', '=', 'pelanggan.id')
+        $pelanggan = deposit::where('deposit.deleted', 0)->join('pelanggan', 'deposit.id_pelanggan', '=', 'pelanggan.id')
             ->get();
 
         foreach($pelanggan as $row) {
@@ -30,13 +30,13 @@ class DepositController extends Controller
     }
 
     public function create() {
-        $pelanggan = pelanggan::pluck('nama_pelanggan', 'id');
+        $pelanggan = pelanggan::where('deleted', 0)->pluck('nama_pelanggan', 'id');
         return view('deposit.create', ['pelanggan' => $pelanggan]);
     }
 
     public function edit($id) {
         $model = deposit::where('id_pelanggan', $id)->first();
-        $pelanggan = pelanggan::pluck('nama_pelanggan', 'id');
+        $pelanggan = pelanggan::where('deleted', 0)->pluck('nama_pelanggan', 'id');
         return view('deposit.edit', ['model' => $model, 'pelanggan' => $pelanggan]);
     }
 
@@ -116,7 +116,7 @@ class DepositController extends Controller
     public function delete($id) {
         $model = deposit::findOrFail($id);
         if($model) {
-            if($model->delete()) {
+            if($model->update(['deleted' => 1])) {
                 return [
                     'success' => true,
                     'message' => 'Data Berhasil Di Hapus'

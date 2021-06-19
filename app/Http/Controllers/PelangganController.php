@@ -21,7 +21,7 @@ class PelangganController extends Controller
     }
 
     public function get() {
-        return Datatables::of(pelanggan::orderBy('id', 'ASC')->get())
+        return Datatables::of(pelanggan::orderBy('id', 'ASC')->where('deleted', 0)->get())
         ->make(true);
         return view('pelanggan.index');
     }
@@ -48,9 +48,9 @@ class PelangganController extends Controller
             foreach($pelanggan->pemasangan as $row) {
                 foreach($row->tagihan as $p) {
                     if(isset($data[$row->no_pemasangan]['total'])) {
-                        $data[$row->no_pemasangan]['total'] += $p->tagihan;
+                        $data[$row->no_pemasangan]['total'] += $p->sisa_tagihan;
                     } else {
-                        $data[$row->no_pemasangan]['total'] = $p->tagihan;
+                        $data[$row->no_pemasangan]['total'] = $p->sisa_tagihan;
                     }
                 } 
             }
@@ -62,16 +62,15 @@ class PelangganController extends Controller
         $model = pemasangan::join('tagihan', 'pemasangan.id', '=', 'tagihan.id_pemasangan')
             ->where('pemasangan.id_pelanggan', $request->id_pelanggan)
             ->where('pemasangan.id', $request->id_pemasangan)
-            ->select('pemasangan.tarif', 'pemasangan.tanggal_pemasangan', 'tagihan.tanggal_tagihan')
+            ->select('pemasangan.tarif', 'pemasangan.tanggal_pemasangan', 'tagihan.tanggal_tagihan', 'pemasangan.tanggal_tagihan as pemasangan_tagihan')
             ->groupBy('pemasangan.tarif', 'pemasangan.tanggal_pemasangan', 'tagihan.tanggal_tagihan')
             ->get();
         $total = 0;
         foreach($model as $row) {
-            $tanggal_generate = explode('-', $row->tanggal_generate);
-            if($row->tanggal_tagihan == 32) {
+            if($row->pemasangan_tagihan == 32) {
                 $row->tanggal_tagihan = date('t', strtotime($row->tanggal_pemasangan));
             }
-            $row->tanggal_tagihan = BulanIndo::tanggal_indo($tanggal_generate[0].'-'.$tanggal_generate[1].'-'.$row->tanggal_tagihan);
+            $row->tanggal_tagihan = BulanIndo::tanggal_indo($row->tanggal_tagihan);
         }
         return view('pelanggan.detail', ['model' => $model, 'total' => $total, 'pemasangan' => $pemasangan]);
     }
@@ -161,7 +160,7 @@ class PelangganController extends Controller
     public function delete($id) {
         $model = pelanggan::findOrFail($id);
         if($model) {
-            if($model->delete()) {
+            if($model->update(['deleted' => 1])) {
                 return [
                     'success' => true,
                     'message' => 'Data Berhasil Di Hapus'

@@ -16,7 +16,7 @@ class Tagihan extends Migration
         Schema::create('tagihan', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('id_pemasangan');
-            $table->integer('tanggal_tagihan');
+            $table->date('tanggal_tagihan');
             $table->integer('status_bayar');
             $table->integer('deleted');
             $table->timestamp('created_at');

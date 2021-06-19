@@ -6,7 +6,7 @@
     <tr>
     @foreach($data as $row)
         <th width="150px"><h6>Jumlah Deposit</h6></th>
-        <th class="text-left">{!! $row->jumlah_deposit !!}</th>
+        <th class="text-left">{!! number_format($row->jumlah_deposit, 2, ',', '.') !!}</th>
     </tr>
     <tr>
         <th width="150px"><h6>Tanggal</h6></th>

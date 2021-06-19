@@ -19,7 +19,7 @@ class PemasanganController extends Controller
     }
     
     public function get() {
-        $pelanggan = pemasangan::join('pelanggan', 'pemasangan.id_pelanggan', '=', 'pelanggan.id')
+        $pelanggan = pemasangan::where('pemasangan.deleted', 0)->join('pelanggan', 'pemasangan.id_pelanggan', '=', 'pelanggan.id')
            ->select('pelanggan.nama_pelanggan', 'pemasangan.alamat_pemasangan', 'pemasangan.tarif', 'pemasangan.tanggal_pemasangan', 'pemasangan.id')
            ->get();
         foreach($pelanggan as $row) {
@@ -31,17 +31,17 @@ class PemasanganController extends Controller
 
     public function get_pemasangan(Request $request) {
         if(isset($request->id_pelanggan)) {
-            return pelanggan::findOrFail($request->id_pelanggan);
+            return pelanggan::where('deleted', 0)->findOrFail($request->id_pelanggan);
         } else {
-            return pelanggan::get();
+            return pelanggan::where('deleted', 0)->get();
         }
     }
 
     public function create() {
-        $pelanggan = pelanggan::with('pemasangan')->get();
+        $pelanggan = pelanggan::where('deleted', 0)->with('pemasangan')->get();
         $no_pemasangan = 'NPM-'.str_pad(pemasangan::max('id') + 1, 7, "0", STR_PAD_LEFT);
         $pelanggan->no_pelanggan = 'NP-'.str_pad(pelanggan::max('id') + 1, 7, "0", STR_PAD_LEFT);
-        $pelanggan->data = pelanggan::get();
+        $pelanggan->data = pelanggan::where('deleted', 0)->get();
         for($i = 1; $i <= 32; $i++) {
             $tanggal[$i] = $i;
         }
@@ -51,16 +51,16 @@ class PemasanganController extends Controller
     } 
 
     public function edit($id) {
-        $pelanggan = pemasangan::join('pelanggan', 'pemasangan.id_pelanggan', 'pelanggan.id')
-            ->join('tagihan', 'pemasangan.id', 'tagihan.id_pemasangan')
-            ->where('pemasangan.id', $id)
-            ->first();
-        $pelanggan->nama_pelanggan = pelanggan::pluck('nama_pelanggan', 'id');
+        $pemasangan = pemasangan::with('pelanggan')->findOrFail($id);
+        foreach($pemasangan->pelanggan as $pelanggan) {
+            $rs_pemasangan = $pelanggan;
+        }
+        $pemasangan->nama_pelanggan = pelanggan::where('deleted', 0)->pluck('nama_pelanggan', 'id');
         for($i = 1; $i <= 32; $i++) {
             $tanggal[$i] = $i;
         }
         $tanggal[32] = "tanggal akhir";
-        return view('pemasangan.edit', ['pelanggan' => $pelanggan, 'title' => 'Pemasangan', 'tanggal' => $tanggal]);
+        return view('pemasangan.edit', ['pemasangan' => $pemasangan, 'title' => 'Pemasangan', 'tanggal' => $tanggal, 'rs_pemasangan' => $rs_pemasangan]);
     } 
 
     public function store(Request $request) {
@@ -73,22 +73,13 @@ class PemasanganController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         }
-        $t = date('t', strtotime($request->tanggal_pemasangan));
-        $tanggal = $request->tanggal_tagihan;
-        $tanggal_pemasangan = explode('-', $request->tanggal_pemasangan);
-        if($request->tanggal_tagihan == 32) {
-            $tanggal = $t;
-        }
-
-        if($request->tanggal > $t) {
-            $tanggal = $t;
-        }
         if($request->pilih_pelanggan == 1) {
             $data = [
                 'id_pelanggan' => $request->nama_pelanggan,
                 'no_pemasangan' => $request->no_pemasangan,
                 'alamat_pemasangan' => $request->alamat_pemasangan,
                 'tarif' => $request->tarif,
+                'tanggal_tagihan' => $request->tanggal_tagihan,
                 'tanggal_pemasangan' => $request->tanggal_pemasangan,
                 'tanggal_generate' => $request->tanggal_pemasangan,
                 'deleted' => 0,
@@ -96,22 +87,10 @@ class PemasanganController extends Controller
                 'created_by' => Auth::user()->name,
             ];
             if($pemasangan = pemasangan::create($data)) {
-                if(tagihan::create([
-                    'id_pemasangan' => $pemasangan->id,
-                    'tanggal_tagihan' => $tanggal,
-                    'tanggal_tagihan_terakhir' => $tanggal_pemasangan[0].'-'.$tanggal_pemasangan[1].'-'.$tanggal,
-                    'tagihan' => $request->tarif,
-                    'sisa_tagihan' => 0,
-                    'status_bayar' => 0,
-                    'deleted' => 0,
-                    'created_at'  => date('Y-m-d H:i:s'),
-                    'created_by' => Auth::user()->name,
-                    ])) {
-                        return [
-                            'success' => true,
-                            'message' => 'Data Berhasil di Tambahkan'
-                        ];
-                    }
+                return [
+                    'success' => true,
+                    'message' => 'Data Berhasil di Tambahkan'
+                ];
             } else {
                 return [
                     'success' => false,
@@ -136,28 +115,17 @@ class PemasanganController extends Controller
                     'no_pemasangan' => $request->no_pemasangan, 
                     'alamat_pemasangan' => $request->alamat_pemasangan,
                     'tarif' => $request->tarif,
+                    'tanggal_tagihan' => $request->tanggal_tagihan,
                     'tanggal_generate' => $request->tanggal_pemasangan,
                     'tanggal_pemasangan' => $request->tanggal_pemasangan,
                     'deleted' => 0,
                     'created_at' => date('Y-m-d H:i:s'),
                     'created_by' => Auth::user()->name
                 ])) {
-                    if(tagihan::create([
-                        'id_pemasangan' => $pemasangan->id,
-                        'tanggal_tagihan' => $request->tanggal_tagihan,
-                        'tanggal_tagihan_terakhir' => $tanggal_pemasangan[0].'-'.$tanggal_pemasangan[1].'-'.$tanggal,
-                        'tagihan' => $request->tarif,
-                        'sisa_tagihan' => 0,
-                        'status_bayar' => 0,
-                        'deleted' => 0,
-                        'created_at'  => date('Y-m-d H:i:s'),
-                        'created_by' => Auth::user()->name,
-                        ])) {
-                            return [
-                                'success' => true,
-                                'message' => 'Data Berhasil di Tambahkan'
-                            ];
-                        }
+                    return [
+                        'success' => true,
+                        'message' => 'Data Berhasil di Tambahkan'
+                    ];
                 }
             } else {
                 return [
@@ -178,21 +146,12 @@ class PemasanganController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         }
-        $t = date('t', strtotime($request->tanggal_pemasangan));
-        $tanggal = $request->tanggal_tagihan;
-        $tanggal_pemasangan = explode('-', $request->tanggal_pemasangan);
-        if($request->tanggal_tagihan == 32) {
-            $tanggal = $t;
-        }
-
-        if($request->tanggal > $t) {
-            $tanggal = $t;
-        }
             $data = [
                 'id_pelanggan' => $request->nama_pelanggan,
                 'alamat_pemasangan' => $request->alamat_pemasangan,
                 'no_pemasangan' => $request->no_pemasangan,
                 'tarif' => $request->tarif,
+                'tanggal_tagihan' => $request->tanggal_tagihan,
                 'tanggal_pemasangan' => $request->tanggal_pemasangan,
                 'tanggal_generate' => $request->tanggal_pemasangan,
                 'deleted' => 0,
@@ -201,22 +160,10 @@ class PemasanganController extends Controller
             ];
             $pemasangan = pemasangan::find($id);
             if($pemasangan->update($data)) {
-                if(tagihan::where('id_pemasangan', $pemasangan->id)->update([
-                    'id_pemasangan' => $pemasangan->id,
-                    'tanggal_tagihan' => $tanggal,
-                    'tanggal_tagihan_terakhir' => $tanggal_pemasangan[0].'-'.$tanggal_pemasangan[1].'-'.$request->tanggal_tagihan,
-                    'tagihan' => $request->tarif,
-                    'sisa_tagihan' => 0,
-                    'status_bayar' => 0,
-                    'deleted' => 0,
-                    'updated_at'  => date('Y-m-d H:i:s'),
-                    'updated_by' => Auth::user()->name,
-                    ])) {
-                        return [
-                            'success' => true,
-                            'message' => 'Data Berhasil di Perbarui'
-                        ];
-                    }
+                return [
+                    'success' => true,
+                    'message' => 'Data Berhasil di Perbarui'
+                ];
             } else {
                 return [
                     'success' => false,
@@ -228,7 +175,7 @@ class PemasanganController extends Controller
      public function delete($id) {
          $model = pemasangan::findOrFail($id);
          if($model) {
-             if($model->delete()) {
+             if($model->update(['deleted' => 1])) {
                  return [
                      'success' => true,
                      'message' => 'Data Berhasil Di Hapus'

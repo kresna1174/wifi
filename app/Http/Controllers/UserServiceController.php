@@ -17,7 +17,7 @@ class UserServiceController extends Controller
     }
 
     public function get() {
-        return Datatables::of(userServices::orderBy('id', 'ASC')->get())
+        return Datatables::of(userServices::orderBy('id', 'ASC')->where('deleted', 0)->get())
         ->make(true);
     }
 
@@ -132,6 +132,7 @@ class UserServiceController extends Controller
         $data = [
             'name' => $request->name,
             'password' => $request->password,
+            'deleted' => 0,
             'created_at' => date('Y-m-d H:i:s'),
             'created_by' => Auth::user()->name,
         ];
@@ -162,6 +163,7 @@ class UserServiceController extends Controller
         $data = [
             'name' => $request->name,
             'password' => $request->password,
+            'deleted' => 0,
             'updated_at'  => date('Y-m-d H:i:s'),
             'updated_by' => Auth::user()->name,
         ];
@@ -186,7 +188,7 @@ class UserServiceController extends Controller
     public function delete($id) {
         $model = userServices::findOrFail($id);
         if($model) {
-            if($model->delete()) {
+            if($model->update(['deleted' => 1])) {
                 return [
                     'success' => true,
                     'message' => 'Data Berhasil Di Hapus'
