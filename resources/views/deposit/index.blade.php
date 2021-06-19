@@ -58,6 +58,7 @@
                         title: 'Create Pelanggan',
                         message: response,
                     })
+                    $('#jumlah_deposit').number(true, 2, ',', '.')
                 }
             })
         }
@@ -70,6 +71,7 @@
                         title: 'Edit Pelanggan',
                         message: response
                     })
+                    $('#jumlah_deposit').number(true, 2, ',', '.')
                 }
             })
         }

@@ -1,6 +1,6 @@
 <table class="table table-consoned table-bordered">
     <tr>
-        <th>Tanggal</th>
+        <th class="text-center">Tanggal</th>
         <th class="text-center">Harga</th>
         <th class="text-center">Bayar</th>
     </tr>

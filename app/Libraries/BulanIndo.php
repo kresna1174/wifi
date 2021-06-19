@@ -41,6 +41,25 @@ class BulanIndo {
         return $lists;
   }
 
+  public static function month_label($placeholder = null, $placeholder_value = ''){
+    if($placeholder) {
+      $list[$placeholder_value] = $placeholder;
+    }
+    $lists['01'] = '01';
+        $lists['02'] = '02';
+        $lists['03'] = '03';
+        $lists['04'] = '04';
+        $lists['05'] = '05';
+        $lists['06'] = '06';
+        $lists['07'] = '07';
+        $lists['08'] = '08';
+        $lists['09'] = '09';
+        $lists['10'] = '10';
+        $lists['11'] = '11';
+        $lists['12'] = '12';
+        return $lists;
+  }
+
   public static function year_list($placeholder = null, $placeholder_value = '') {
     if ($placeholder) {
         $lists[$placeholder_value] = $placeholder;

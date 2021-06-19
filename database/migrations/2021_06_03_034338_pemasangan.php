@@ -17,8 +17,9 @@ class Pemasangan extends Migration
             $table->bigIncrements('id');
             $table->integer('id_pelanggan');
             $table->string('alamat_pemasangan', 255);
-            $table->double('tarif', 16);
-            $table->date('tanggal_pemasangan', 255);
+            $table->double('tarif');
+            $table->date('tanggal_pemasangan');
+            $table->integer('tanggal_tagihan');
             $table->integer('deleted');
             $table->timestamp('created_at');
             $table->string('created_by', 255);

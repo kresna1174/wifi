@@ -15,6 +15,7 @@ class Users extends Migration
     {
         Schema::table('users', function($table) {
             $table->string('created_by');
+            $table->integer('deleted');
             $table->string('updated_by')->nullable();
         });
     }
@@ -28,6 +29,7 @@ class Users extends Migration
     {
         Schema::table('users', function($table) {
             $table->dropColumn('created_by');
+            $table->dropColumn('deleted');
             $table->dropColumn('updated_by');
         });
     }

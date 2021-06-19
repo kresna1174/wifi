@@ -48,13 +48,13 @@
                     $.each(response, function(data, row) {
                         html += '<tr>'
                         html += '<td>'+row.tanggal_tagihan+'</td>'
-                        html += '<td class="text-right">'+pop(JSON.parse(row.tagihan))+'</td>'
+                        html += '<td class="text-right">'+pop(JSON.parse(row.sisa_tagihan))+'</td>'
                         html += '</tr>'
                         $('#table tbody').html(html)
                         if(data > 0) {
-                            tagihan += row.tagihan       
+                            tagihan += row.sisa_tagihan
                         } else {
-                            tagihan = row.tagihan
+                            tagihan = row.sisa_tagihan
                         }
                         $('#alamat_pemasangan').val(row.alamat_pemasangan)
                         $('#total_bayar').val(tagihan)
@@ -94,7 +94,7 @@
                             $.each(response, function(data, row) {
                                 html += '<tr>'
                                 html += '<td>'+row.tanggal_tagihan+'</td>'
-                                html += '<td class="text-right">'+pop(JSON.parse(row.tagihan))+'</td>'
+                                html += '<td class="text-right">'+pop(JSON.parse(row.sisa_tagihan))+'</td>'
                                 html += '</tr>'
                                 $('#table tbody').html(html)
                             })
@@ -102,9 +102,9 @@
                         let tagihan;
                         $.each(response, function(data, row) {
                             if(data > 0) {
-                                tagihan += row.tagihan       
+                                tagihan += row.sisa_tagihan
                             } else {
-                                tagihan = row.tagihan
+                                tagihan = row.sisa_tagihan
                             }
                             $('#alamat_pemasangan').val(row.alamat_pemasangan)
                             $('#total_bayar').val(tagihan)
@@ -136,7 +136,7 @@
                             $.each(response, function(data, row) {
                                 html += '<tr>'
                                 html += '<td>'+row.tanggal_tagihan+'</td>'
-                                html += '<td class="text-right">'+pop(JSON.parse(row.tagihan))+'</td>'
+                                html += '<td class="text-right">'+pop(JSON.parse(row.sisa_tagihan))+'</td>'
                                 html += '</tr>'
                                 $('#table tbody').html(html)
                             })
@@ -144,9 +144,9 @@
                         let tagihan;
                         $.each(response, function(data, row) {
                             if(data > 0) {
-                                tagihan += row.tagihan       
+                                tagihan += row.sisa_tagihan
                             } else {
-                                tagihan = row.tagihan
+                                tagihan = row.sisa_tagihan
                             }
                             $('#alamat_pemasangan').val(row.alamat_pemasangan)
                             $('#total_bayar').val(tagihan)
@@ -176,7 +176,7 @@
                             $.each(response, function(data, row) {
                                 html += '<tr>'
                                 html += '<td>'+row.tanggal_tagihan+'</td>'
-                                html += '<td class="text-right">'+pop(JSON.parse(row.tagihan))+'</td>'
+                                html += '<td class="text-right">'+pop(JSON.parse(row.sisa_tagihan))+'</td>'
                                 html += '</tr>'
                                 $('#table tbody').html(html)
                             })
@@ -184,9 +184,9 @@
                         let tagihan;
                         $.each(response, function(data, row) {
                             if(data > 0) {
-                                tagihan += row.tagihan       
+                                tagihan += row.sisa_tagihan
                             } else {
-                                tagihan = row.tagihan
+                                tagihan = row.sisa_tagihan
                             }
                             $('#alamat_pemasangan').val(row.alamat_pemasangan)
                             $('#total_bayar').val(tagihan)
@@ -239,51 +239,26 @@
                     })
                 }
             });
-            } if($('#total_bayar').val() - $('#bayar').val() != 0 && $('#total_bayar').val() - $('#bayar').val() > 0) {
-                let total_bayar = $('#total_bayar').val() - $('#bayar').val();
-                $('#sisa').val(total_bayar)
-                $.ajax({
-                        url: '<?= route('pembayaran.store') ?>',
-                        dataType: 'json',
-                        type: 'post',
-                        data: $('#form-create').serialize(),
-                        success: function(response) {
-                            if(response.success) {
-                                $.growl.notice({
-                                    title : 'success',
-                                    message : response.message
-                                });
-                                return document.location.href='<?= route('pembayaran') ?>'
-                            } else {
-                                $.growl.error({
-                                    title : 'failed',
-                                    message : response.message
-                                });
-                            }
-                        }
-                    })
-            } if($('#bayar').val() - $('#total_bayar').val() == 0 && $('#total_bayar').val() - $('#bayar').val() == 0) {
-                $.ajax({
-                    url: '<?= route('pembayaran.store') ?>',
-                    dataType: 'json',
-                    type: 'post',
-                    data: $('#form-create').serialize(),
-                    success: function(response) {
-                        if(response.success) {
-                            $.growl.notice({
-                                title : 'success',
-                                message : 'Data Berhasil di Tambahkan'
-                            });
-                            return document.location.href='<?= route('pembayaran') ?>'
-                        } else {
-                            $.growl.notice({
-                                title : 'failed',
-                                message : 'Data Gagal di Tambahkan'
-                            }); 
-                        }
+            } $.ajax({
+                url: '<?= route('pembayaran.store') ?>',
+                dataType: 'json',
+                type: 'post',
+                data: $('#form-create').serialize(),
+                success: function(response) {
+                    if(response.success) {
+                        $.growl.notice({
+                            title : 'success',
+                            message : response.message
+                        });
+                        return document.location.href='<?= route('pembayaran') ?>'
+                    } else {
+                        $.growl.error({
+                            title : 'failed',
+                            message : response.message
+                        });
                     }
-                })
-            }
+                }
+            })
         }
 
         function validation(errors) {

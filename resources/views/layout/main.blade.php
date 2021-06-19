@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Auth;
 	<link rel="stylesheet" href="{{ asset('assets') }}/plugins/jquery.growl/css/jquery.growl.css">
 	<link rel="stylesheet" href="{{ asset('assets') }}/plugins/DataTables/media/css/dataTables.bootstrap.min.css">
 	<link rel="stylesheet" href="{{ asset('assets') }}/plugins/sweetalert/dark.css">
+	<link rel="stylesheet" href="{{ asset('assets') }}/plugins/treetable/css/jquery.treetable.css">
+	<link rel="stylesheet" href="{{ asset('assets') }}/plugins/treetable/css/jquery.treetable.theme.default.css">
 	<link href="{{ asset('assets') }}/css/material/style-responsive.min.css" rel="stylesheet" />
 	<link href="{{ asset('assets') }}/css/material/theme/default.css" rel="stylesheet" id="theme" />
 	<link href="{{ asset('assets') }}/plugins/jquery-jvectormap/jquery-jvectormap.css" rel="stylesheet" />
@@ -57,7 +59,7 @@ use Illuminate\Support\Facades\Auth;
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a href="{!! route('pelanggan') !!}" class="navbar-brand">
+				<a href="{!! route('dashboard') !!}" class="navbar-brand">
 					Wifiger
 				</a>
 			</div>
@@ -82,8 +84,8 @@ use Illuminate\Support\Facades\Auth;
 			<div data-scrollbar="true" data-height="100%">
 				<ul class="nav">
 					<li class="nav-header">Navigation</li>
-					<li class="has-sub active">
-						<a href="javascript:;">
+					<li class="has-sub">
+						<a href="{!! route('dashboard') !!}">
 							<i class="material-icons">home</i>
 							<span>Dashboard</span>
 						</a>
@@ -140,6 +142,7 @@ use Illuminate\Support\Facades\Auth;
 	
 
 	<script src="{{ asset('assets') }}/plugins/jquery/jquery-3.3.1.min.js"></script>
+	<script src="{{ asset('assets') }}/plugins/treetable/jquery.treetable.js"></script>
 	<script src="{{ asset('assets') }}/plugins/numeric/jquery.number.min.js"></script>
 	<script src="{{ asset('assets') }}/plugins/DataTables/media/js/jquery.dataTables.min.js"></script>
 	<script src="{{ asset('assets') }}/plugins/DataTables/media/js/dataTables.bootstrap.min.js"></script>
@@ -166,6 +169,12 @@ use Illuminate\Support\Facades\Auth;
 	
 	<script>
 		$(document).ready(function() {
+			var i = window.location.href.lastIndexOf("/");
+                if(i > 21) {
+                    $('.sidebar').find('[href="'+window.location.href.substr(0, i)+'"]').parent().addClass('active');
+                } else {
+                    $('.sidebar').find('[href="'+window.location.href.substr(0, i) + location.pathname+'"]').parent().addClass('active');
+                }
 			App.init();
 			Dashboard.init();
 		});

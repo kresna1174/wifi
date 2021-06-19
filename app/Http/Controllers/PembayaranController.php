@@ -13,6 +13,7 @@ use App\tagihan;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Pembayaran as GlobalPembayaran;
 use Yajra\DataTables\Facades\DataTables;
 
 class PembayaranController extends Controller
@@ -42,7 +43,7 @@ class PembayaranController extends Controller
             $p->join('pemasangan', 'tagihan.id_pemasangan', 'pemasangan.id')
             ->where('tagihan.id_pemasangan', $find_pemasangan->id)
             ->where('status_bayar', 0)
-            ->select('tagihan.id as tagihan_id', 'tagihan.id_pemasangan', 'pemasangan.alamat_pemasangan', 'pemasangan.tarif', 'tagihan.tanggal_tagihan', 'tagihan.tagihan')
+            ->select('tagihan.id as tagihan_id', 'tagihan.tanggal_tagihan', 'tagihan.sisa_tagihan', 'tagihan.id_pemasangan', 'tagihan.tagihan', 'pemasangan.alamat_pemasangan')
             ->get();
         }])
             ->where('no_pemasangan', $request->no_pemasangan)
@@ -50,12 +51,13 @@ class PembayaranController extends Controller
             ->get();
         $data = [];
         foreach($pemasangan as $row) {
-            $tanggal_generate = explode('-', $row->tanggal_generate);
+            $tanggal = $row->tanggal_tagihan;
+            $t = date('t', strtotime($row->tanggal_pemasangan));
+            if($tanggal == 32 || $tanggal > $t) {
+                $tanggal = $t;
+            }
             foreach($row->tagihan as $p) {
-                if($p->tanggal_tagihan == 32) {
-                    $p->tanggal_tagihan = date('t', strtotime($row->tanggal_pemasangan));
-                }
-                $p->tanggal_tagihan = BulanIndo::tanggal_indo($tanggal_generate[0].'-'.$tanggal_generate[1].'-'.$p->tanggal_tagihan);
+                $p->tanggal_tagihan = BulanIndo::tanggal_indo($p->tanggal_tagihan);
                 $data[] = $p;
             }
         }
@@ -112,43 +114,40 @@ class PembayaranController extends Controller
                 $deposit = deposit::create($ins_deposit);
             }
         }
-
-        $model = tagihan::where('id', $request->id_tagihan)
+        $pemasangan = pemasangan::where('no_pemasangan', $request->no_pemasangan)->get();
+        foreach($pemasangan as $row) {
+            $id[] = $row->id;
+        }
+        $model = tagihan::whereIn('id_pemasangan', $id)
             ->where('status_bayar', 0)
+            ->orderBy('tanggal_tagihan', 'ASC')
             ->get();
+        $total_bayar = $request->bayar;
         foreach($model as $row) {
-            $pembayaran = [
+            if($total_bayar >= $row->sisa_tagihan) {
+                $total_bayar -= $row->sisa_tagihan;
+                $bayar = $row->sisa_tagihan;
+            } else {
+                $bayar = $total_bayar;
+                $total_bayar = 0;
+            }
+            $row->sisa_tagihan -= $bayar;
+            $row->updated_at = date('Y-m-d H:i:s');
+            $row->updated_by = Auth::user()->name;
+            if($row->sisa_tagihan <= 0) {
+                $row->status_bayar = 1;
+            }
+            $arrayPembayaran = [
                 'id_pemasangan' => $row->id_pemasangan,
                 'bayar' => $request->bayar,
                 'tanggal_bayar' => date('Y-m-d'),
                 'deleted' => 0,
                 'created_at' => date('Y-m-d H:i:s'),
-                'created_by' => Auth::user()->name,
+                'created_by' => Auth::user()->name
             ];
-
-            if($insert_pembayaran = pembayaran::create($pembayaran)) {
-                pembayaran_detail::create(['id_pembayaran' => $insert_pembayaran->id, 'id_tagihan' => $row->id]);
-                $tagihan = [
-                    'status_bayar' => 1,
-                    'sisa_tagihan' => $request->sisa ?? 0,
-                    'updated_at' => date('Y-m-d H:i:s'), 
-                    'updated_by' => Auth::user()->name
-                ];
-                $update_tagihan = tagihan::findOrFail($row->id)->update($tagihan);
-                if($row->tagihan - $request->bayar !== 0 && $row->tagihan - $request->bayar > 0) {
-                    $in_tagihan = [
-                        'id_pemasangan' => $row->id_pemasangan,
-                        'tanggal_tagihan' => $row->tanggal_tagihan,
-                        'status_bayar' => 0,
-                        'deleted' => 0,
-                        'tagihan' => $request->sisa ?? 0,
-                        'sisa_tagihan' => 0,
-                        'tanggal_tagihan_terakhir' => $row->tanggal_tagihan_terakhir,
-                        'created_at' => date('Y-m-d H:i:s'),
-                        'created_by' => Auth::user()->name
-                    ];
-                    $ins_tagihan = tagihan::create($in_tagihan);
-                }
+            $pembayaran = pembayaran::create($arrayPembayaran);
+            pembayaran_detail::create(['id_pembayaran' => $pembayaran->id, 'id_tagihan' => $row->id, 'jumlah_bayar' => $request->bayar]);
+            if($row->save()) {
                 return [
                     'success' => true,
                     'message' => 'Pembayaran Berhasil'
@@ -158,6 +157,9 @@ class PembayaranController extends Controller
                     'success' => false,
                     'message' => 'Pembayaran Gagal'
                 ];
+            }
+            if($total_bayar <= 0) {
+                break;
             }
         }
     }

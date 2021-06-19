@@ -4,5 +4,5 @@
 </div>
 <div class="form-group">
     <label>Jumlah Deposit</label>
-    {!! Form::text('jumlah_deposit', null, ['class' => 'form-control', 'id' => "jumlah_deposit"]) !!}
+    {!! Form::text('jumlah_deposit', null, ['class' => 'form-control text-right', 'id' => "jumlah_deposit"]) !!}
 </div>

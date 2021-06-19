@@ -5,11 +5,11 @@
     </h1>
 <div class="panel panel-default">
     <div class="panel-body">
-{!! Form::model($pelanggan, ['id' => 'form-edit'])!!}
+{!! Form::model($pemasangan, ['id' => 'form-edit'])!!}
 @include('pemasangan.form')
 <div class="float-right">
     <button type="button" class="btn btn-secondary" onclick="document.location.href='<?= route('pemasangan') ?>'">Cancel</button>
-    <button type="button" class="btn btn-primary" onclick="update('<?= $pelanggan->id_pemasangan ?>')">Update</button>
+    <button type="button" class="btn btn-primary" onclick="update('<?= $pemasangan->id ?>')">Update</button>
 </div>
 {!! Form::close() !!}
 </div>
@@ -19,9 +19,6 @@
 @section('script')
     <script>
     $('#tanggal_pemasangan').datepicker({
-        format: 'yyyy-mm-dd'
-    })
-    $('#tanggal_tagihan').datepicker({
         format: 'yyyy-mm-dd'
     })
     $('#tarif').number(true, 2, ',', '.');

@@ -23,12 +23,12 @@ class Tambahan extends Migration
         Schema::table('tagihan', function($table) {
             $table->double('tagihan');
             $table->double('sisa_tagihan');
-            $table->date('tanggal_tagihan_terakhir');
         });
         Schema::create('pembayaran_detail', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('id_pembayaran');
             $table->integer('id_tagihan');
+            $table->double('jumlah_bayar');
         });
     }
 
