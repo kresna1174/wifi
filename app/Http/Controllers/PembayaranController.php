@@ -147,20 +147,18 @@ class PembayaranController extends Controller
             ];
             $pembayaran = pembayaran::create($arrayPembayaran);
             pembayaran_detail::create(['id_pembayaran' => $pembayaran->id, 'id_tagihan' => $row->id, 'jumlah_bayar' => $request->bayar]);
-            if($row->save()) {
-                return [
-                    'success' => true,
-                    'message' => 'Pembayaran Berhasil'
-                ];
-            } else {
-                return [
-                    'success' => false,
-                    'message' => 'Pembayaran Gagal'
-                ];
-            }
-            if($total_bayar <= 0) {
-                break;
-            }
+            $save = $row->save();
+        }
+        if($save) {
+            return [
+                'success' => true,
+                'message' => 'Pembayaran Berhasil'
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => 'Pembayaran Gagal'
+            ];
         }
     }
 
