@@ -36,6 +36,49 @@ class pemasangan extends Model
             $data->groupBy('tagihan.id_pemasangan')
             ->orderBy('tagihan.tanggal_tagihan', 'ASC')
             ->get();
+        }])->where('tanggal_generate', '<=', date('Y-m-d'))
+        ->get();
+        foreach ($pemasangan as $row) {
+            $start = new DateTime($row->tanggal_generate_terakhir);
+            $end = new DateTime($now);
+            $interval =  $start->diff($end);
+            $lastTagihan = $row->tanggal_generate_terakhir;            
+            for ($i = 1; $i<=$interval->m; $i++) {                        
+                $t = date('t', strtotime($lastTagihan));
+                if ($row->tanggal_tagihan == 32 || $row->tanggal_tagihan > $t) {
+                    $nextTagihan = date('Y-m-t', strtotime('+1 month', strtotime($lastTagihan)));                      
+                } else {
+                    $nextTagihan = date('Y-m-'.$row->tanggal_tagihan, strtotime('+1 month', strtotime($lastTagihan)));                      
+                }               
+                $nextTagihan = date('Y-m-d', strtotime('next month', strtotime($lastTagihan)));                      
+                //echo $lastTagihan.'='.$nextTagihan.'<br>';
+                if (strtotime($nextTagihan) <= strtotime($now)) {   
+                    $rs_tagihan[] = [
+                        'id_pemasangan' => $row->id,
+                        'tanggal_tagihan' => $nextTagihan,
+                        'status_bayar' => 0,
+                        'deleted' => 0,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'created_by' => \Auth::user()->name,
+                        'tagihan' => $row->tarif,
+                        'sisa_tagihan' => $row->tarif
+                    ];
+                }
+                $lastTagihan = $nextTagihan;
+            }
+        }
+    
+        if (count($rs_tagihan)) {
+            tagihan::insert($rs_tagihan);            
+        }
+    }
+
+    /*public static function generate() {
+        $now = date('Y-m-d');
+        $pemasangan = pemasangan::with(['tagihan' => function($data) {
+            $data->groupBy('tagihan.id_pemasangan')
+            ->orderBy('tagihan.tanggal_tagihan', 'ASC')
+            ->get();
         }])->where('tanggal_generate', '<', date('Y-m-d'))
         ->get();
         $rs_tagihan = [];
@@ -50,16 +93,17 @@ class pemasangan extends Model
         $tanggal_pemasangan = $row->tanggal_pemasangan;
         $exp_tanggal_pemasangan = explode('-', $lastGenerate);
         $t = date('t', strtotime($row->tanggal_pemasangan));
-        if($row->tanggal_tagihan  == 32 || $row->tanggal_tagihan > $t) {
-            $row->tanggal_tagihan = $t;
+        $tanggal_tagihan = $row->tanggal_tagihan;
+        if($tanggal_tagihan  == 32 || $tanggal_tagihan > $t) {
+            $tanggal_tagihan = $t;
         }
-        $tanggal_tagihan = $exp_tanggal_pemasangan[0].'-'.$exp_tanggal_pemasangan[1].'-'.$row->tanggal_tagihan;
+        $tanggal_tagihan = $exp_tanggal_pemasangan[0].'-'.$exp_tanggal_pemasangan[1].'-'.$tanggal_tagihan;
         $tanggal_tagihan = date('Y-m-d', strtotime('+ 1 month', strtotime($tanggal_tagihan)));
         $jumlah_hari = date('t', strtotime($tanggal_pemasangan))/2;
         $tanggal_pemasangan = new DateTime($tanggal_pemasangan);
         $tanggal_tagihan = new DateTime($tanggal_tagihan);
         $tagihan_next = $tanggal_tagihan->diff($tanggal_pemasangan);
-        $lastTagihan = $exp_tanggal_pemasangan[0].'-'.$exp_tanggal_pemasangan[1].'-'.$row->tanggal_tagihan;
+        $lastTagihan = $exp_tanggal_pemasangan[0].'-'.$exp_tanggal_pemasangan[1].'-'.$tanggal_tagihan;
         $id[] = $row->id;
         $tagihan = Arr::map($row->tagihan, 'tanggal_tagihan', 'tanggal_tagihan');
         for ($i = 1; $i<=$interval->m; $i++) {
@@ -74,6 +118,7 @@ class pemasangan extends Model
                 } else {
                     $newTagihan = date('Y-m-d', strtotime('+ 1 month', strtotime($lastTagihan)));
                 }
+                dump($newTagihan);
                 $tanggal = $row->tanggal_tagihan;
                 $t = date('t', strtotime($newTagihan));
                 if($tanggal == 32 || $tanggal > $t) {
@@ -96,9 +141,10 @@ class pemasangan extends Model
                 }
             }
         }
+        //dd($rs_tagihan);
         if (count($rs_tagihan)) {
             tagihan::insert($rs_tagihan);
             pemasangan::whereIn('id', $id)->update(['tanggal_generate' => $now]);
         }
-    }
+    }*/
 }

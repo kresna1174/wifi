@@ -73,7 +73,14 @@ class PemasanganController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         }
-        if($request->pilih_pelanggan == 1) {
+        $t = date('t', strtotime($request->tanggal_pemasangan));
+        if ($request->tanggal_tagihan == $t || $request->tanggal_tagihan > $t) {
+            $tanggal_generate = date('Y-m-t', strtotime($request->tanggal_pemasangan));
+        } else {
+            $tanggal_generate = date('Y-m-'.$request->tanggal_tagihan, strtotime($request->tanggal_pemasangan));    
+        }
+        $tanggal_generate_terakhir = date('Y-m-d', strtotime('- 1day', strtotime($request->tanggal_pemasangan)));
+        if($request->pilih_pelanggan == 1) {            
             $data = [
                 'id_pelanggan' => $request->nama_pelanggan,
                 'no_pemasangan' => $request->no_pemasangan,
@@ -81,7 +88,8 @@ class PemasanganController extends Controller
                 'tarif' => $request->tarif,
                 'tanggal_tagihan' => $request->tanggal_tagihan,
                 'tanggal_pemasangan' => $request->tanggal_pemasangan,
-                'tanggal_generate' => $request->tanggal_pemasangan,
+                'tanggal_generate' => $tanggal_generate,
+                'tanggal_generate_terakhir' => $tanggal_generate_terakhir,
                 'deleted' => 0,
                 'created_at'  => date('Y-m-d H:i:s'),
                 'created_by' => Auth::user()->name,
@@ -116,7 +124,8 @@ class PemasanganController extends Controller
                     'alamat_pemasangan' => $request->alamat_pemasangan,
                     'tarif' => $request->tarif,
                     'tanggal_tagihan' => $request->tanggal_tagihan,
-                    'tanggal_generate' => $request->tanggal_pemasangan,
+                    'tanggal_generate' => $tanggal_generate,
+                    'tanggal_generate_terakhir' => $tanggal_generate_terakhir,
                     'tanggal_pemasangan' => $request->tanggal_pemasangan,
                     'deleted' => 0,
                     'created_at' => date('Y-m-d H:i:s'),
@@ -221,4 +230,3 @@ class PemasanganController extends Controller
         return $messages;
     } 
 }
-

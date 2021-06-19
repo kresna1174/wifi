@@ -15,6 +15,7 @@ class ChangeTagihan extends Migration
     {
         Schema::table('pemasangan', function($table) {
             $table->date('tanggal_generate');
+            $table->date('tanggal_generate_terakhir');
         });
     }
 
