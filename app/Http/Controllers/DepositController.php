@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\deposit;
 use App\Libraries\BulanIndo;
 use App\pelanggan;
+use App\pemasangan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
@@ -31,17 +32,20 @@ class DepositController extends Controller
 
     public function create() {
         $pelanggan = pelanggan::where('deleted', 0)->pluck('nama_pelanggan', 'id');
+        $pelanggan->no_pemasangan = pemasangan::where('deleted', 0)->pluck('no_pemasangan', 'no_pemasangan');
         return view('deposit.create', ['pelanggan' => $pelanggan]);
     }
 
     public function edit($id) {
         $model = deposit::where('id_pelanggan', $id)->first();
         $pelanggan = pelanggan::where('deleted', 0)->pluck('nama_pelanggan', 'id');
+        $pelanggan->no_pemasangan = pemasangan::where('deleted', 0)->pluck('no_pemasangan', 'no_pemasangan');
         return view('deposit.edit', ['model' => $model, 'pelanggan' => $pelanggan]);
     }
 
     public function view($id) {
         $model = pelanggan::with('deposit')->where('pelanggan.id', $id)->first();
+        $model->no_pemasangan = pemasangan::where('id_pelanggan', $id)->where('deleted', 0)->first();
         $data = [];
         foreach($model->deposit as $key => $row) {
             $data = [$row];
@@ -63,6 +67,7 @@ class DepositController extends Controller
         $data = [
             'id_pelanggan' => $request->nama_pelanggan,
             'jumlah_deposit' => $request->jumlah_deposit,
+            'no_pemasangan' => $request->no_pemasangan,
             'deleted' => 0,
             'tanggal' => date('Y-m-d'),
             'created_at' => date('Y-m-d H:i:s'),
@@ -94,6 +99,7 @@ class DepositController extends Controller
         $data = [
             'id_pelanggan' => $request->nama_pelanggan,
             'jumlah_deposit' => $request->jumlah_deposit,
+            'no_pemasangan' => $request->no_pemasangan,
             'deleted' => 0,
             'tanggal' => date('Y-m-d'),
             'updated_at' => date('Y-m-d H:i:s'),
@@ -138,6 +144,7 @@ class DepositController extends Controller
     public function validation() {
         return [
             'nama_pelanggan' => 'required',
+            'no_pemasangan' => 'required',
             'jumlah_deposit' => 'required|numeric',
         ];
     }
@@ -145,6 +152,7 @@ class DepositController extends Controller
     public function validation_message() {
         $messages = [];
         $messages['nama_pelanggan.required'] = 'Nama Pelanggan Harus Di Isi';
+        $messages['no_pemasangan.required'] = 'No Pemasangan Harus Di Isi';
         $messages['jumlah_deposit.required'] = 'Deposit Harus Di Isi';
         $messages['jumlah_deposit.numeric'] = 'Deposit Harus Angka';
         return $messages;

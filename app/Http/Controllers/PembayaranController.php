@@ -89,7 +89,7 @@ class PembayaranController extends Controller
             ], 400);
         }
 
-        $deposit = deposit::where('id_pelanggan', $request->nama_pelanggan)->first();
+        $deposit = deposit::where('id_pelanggan', $request->nama_pelanggan)->where('no_pemasangan', $request->no_pemasangan)->first();
         if($deposit != null) {
             if($deposit->jumlah_deposit == 0) {
                 if($request->deposit != null) {
@@ -106,6 +106,7 @@ class PembayaranController extends Controller
                 $ins_deposit = [
                     'id_pelanggan' => $request->nama_pelanggan,
                     'jumlah_deposit' => $request->deposit,
+                    'no_pemasangan' => $request->no_pemasangan,
                     'tanggal' => date('Y-m-d'),
                     'deleted' => 0,
                     'created_at' => date('Y-m-d H:i:s'),

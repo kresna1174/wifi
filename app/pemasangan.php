@@ -32,7 +32,7 @@ class pemasangan extends Model
 
     public static function generate($id = null) {
         $now = date('Y-m-d');
-        $pemasanganModel = pemasangan::where('tanggal_generate', '<=', date('Y-m-d'))
+        $pemasanganModel = pemasangan::where('tanggal_generate', '<=', date('Y-m-d'));
         if ($id) {
             $pemasanganModel->where('id', $id);
         }
@@ -96,6 +96,7 @@ class pemasangan extends Model
         $totalHariBerlangganan = $intervalBerlangganan+1;          
         $tarifHarian = $this->tarif / $totalHari;
         $totalTagihan = $totalHariBerlangganan * $tarifHarian;
+        $totalTagihan = ceil($totalTagihan);
         return $totalTagihan;        
     }
 

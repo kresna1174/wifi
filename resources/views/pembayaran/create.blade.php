@@ -239,26 +239,28 @@
                     })
                 }
             });
-            } $.ajax({
-                url: '<?= route('pembayaran.store') ?>',
-                dataType: 'json',
-                type: 'post',
-                data: $('#form-create').serialize(),
-                success: function(response) {
-                    if(response.success) {
-                        $.growl.notice({
-                            title : 'success',
-                            message : response.message
-                        });
-                        return document.location.href='<?= route('pembayaran') ?>'
-                    } else {
-                        $.growl.error({
-                            title : 'failed',
-                            message : response.message
-                        });
+            } else {
+                $.ajax({
+                    url: '<?= route('pembayaran.store') ?>',
+                    dataType: 'json',
+                    type: 'post',
+                    data: $('#form-create').serialize(),
+                    success: function(response) {
+                        if(response.success) {
+                            $.growl.notice({
+                                title : 'success',
+                                message : response.message
+                            });
+                            return document.location.href='<?= route('pembayaran') ?>'
+                        } else {
+                            $.growl.error({
+                                title : 'failed',
+                                message : response.message
+                            });
+                        }
                     }
-                }
-            })
+                })
+            } 
         }
 
         function validation(errors) {
