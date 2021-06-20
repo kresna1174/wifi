@@ -73,13 +73,19 @@ class PemasanganController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         }
-        $t = date('t', strtotime($request->tanggal_pemasangan));
-        if ($request->tanggal_tagihan == $t || $request->tanggal_tagihan > $t) {
-            $tanggal_generate = date('Y-m-t', strtotime($request->tanggal_pemasangan));
+        $tanggalPasang = date('d', strtotime($request->tanggal_pemasangan));
+        if ($tanggalPasang >= $request->tanggal_tagihan) {
+            $bulanPasang = date('Y-m-01', strtotime($request->tanggal_pemasangan));
+            $tanggal_generate = date('Y-m-01', strtotime('+1 month', strtotime($bulanPasang)));
         } else {
-            $tanggal_generate = date('Y-m-'.$request->tanggal_tagihan, strtotime($request->tanggal_pemasangan));    
+            $tanggal_generate = $request->tanggal_pemasangan;
         }
-        $tanggal_generate_terakhir = date('Y-m-d', strtotime('- 1day', strtotime($request->tanggal_pemasangan)));
+        $t = date('t', strtotime($tanggal_generate));
+        if ($request->tanggal_tagihan == $t || $request->tanggal_tagihan > $t) {
+            $tanggal_generate = date('Y-m-t', strtotime($tanggal_generate));
+        } else {
+            $tanggal_generate = date('Y-m-'.$request->tanggal_tagihan, strtotime($tanggal_generate));    
+        }
         if($request->pilih_pelanggan == 1) {            
             $data = [
                 'id_pelanggan' => $request->nama_pelanggan,
@@ -89,7 +95,7 @@ class PemasanganController extends Controller
                 'tanggal_tagihan' => $request->tanggal_tagihan,
                 'tanggal_pemasangan' => $request->tanggal_pemasangan,
                 'tanggal_generate' => $tanggal_generate,
-                'tanggal_generate_terakhir' => $tanggal_generate_terakhir,
+                'tanggal_generate_terakhir' => $request->tanggal_pemasangan,
                 'deleted' => 0,
                 'created_at'  => date('Y-m-d H:i:s'),
                 'created_by' => Auth::user()->name,
@@ -125,7 +131,7 @@ class PemasanganController extends Controller
                     'tarif' => $request->tarif,
                     'tanggal_tagihan' => $request->tanggal_tagihan,
                     'tanggal_generate' => $tanggal_generate,
-                    'tanggal_generate_terakhir' => $tanggal_generate_terakhir,
+                    'tanggal_generate_terakhir' => $request->tanggal_pemasangan,
                     'tanggal_pemasangan' => $request->tanggal_pemasangan,
                     'deleted' => 0,
                     'created_at' => date('Y-m-d H:i:s'),

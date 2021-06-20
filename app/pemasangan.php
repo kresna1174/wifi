@@ -30,47 +30,73 @@ class pemasangan extends Model
         return $this->belongsToMany(pembayaran::class, 'pembayaran_detail', 'id_tagihan', 'id');
     }
 
-    public static function generate() {
+    public static function generate($id = null) {
         $now = date('Y-m-d');
-        $pemasangan = pemasangan::with(['tagihan' => function($data) {
-            $data->groupBy('tagihan.id_pemasangan')
-            ->orderBy('tagihan.tanggal_tagihan', 'ASC')
-            ->get();
-        }])->where('tanggal_generate', '<=', date('Y-m-d'))
-        ->get();
-        foreach ($pemasangan as $row) {
-            $start = new DateTime($row->tanggal_generate_terakhir);
-            $end = new DateTime($now);
-            $interval =  $start->diff($end);
-            $lastTagihan = $row->tanggal_generate_terakhir;            
-            for ($i = 1; $i<=$interval->m; $i++) {                        
-                $t = date('t', strtotime($lastTagihan));
+        $pemasanganModel = pemasangan::where('tanggal_generate', '<=', date('Y-m-d'))
+        if ($id) {
+            $pemasanganModel->where('id', $id);
+        }
+        $pemasangan = $pemasanganModel->get();
+        $rs_tagihan = [];        
+        foreach ($pemasangan as $row) {            
+            $lastTagihan = $row->tanggal_generate_terakhir;
+            $nextTagihan = $row->tanggal_generate;   
+            $next = false;         
+            while ($next == false) {
+                $bulanTagihanTerakhir = date('Y-m-01', strtotime($nextTagihan));                    
+                $t = date('t', strtotime($bulanTagihanTerakhir));
                 if ($row->tanggal_tagihan == 32 || $row->tanggal_tagihan > $t) {
-                    $nextTagihan = date('Y-m-t', strtotime('+1 month', strtotime($lastTagihan)));                      
+                    $tanggalTagihan = date('Y-m-t', strtotime($bulanTagihanTerakhir));                      
                 } else {
-                    $nextTagihan = date('Y-m-'.$row->tanggal_tagihan, strtotime('+1 month', strtotime($lastTagihan)));                      
-                }               
-                $nextTagihan = date('Y-m-d', strtotime('next month', strtotime($lastTagihan)));                      
-                //echo $lastTagihan.'='.$nextTagihan.'<br>';
-                if (strtotime($nextTagihan) <= strtotime($now)) {   
+                    $tanggalTagihan = date('Y-m-'.$row->tanggal_tagihan, strtotime($bulanTagihanTerakhir));                      
+                }         
+                $row->tanggal_generate = $tanggalTagihan;                              
+                if (strtotime($tanggalTagihan) <= strtotime($now)) {                       
                     $rs_tagihan[] = [
                         'id_pemasangan' => $row->id,
-                        'tanggal_tagihan' => $nextTagihan,
+                        'tanggal_tagihan' => $tanggalTagihan,
                         'status_bayar' => 0,
                         'deleted' => 0,
                         'created_at' => date('Y-m-d H:i:s'),
-                        'created_by' => \Auth::user()->name,
-                        'tagihan' => $row->tarif,
-                        'sisa_tagihan' => $row->tarif
+                        'created_by' => 1,
+                        'tagihan' => $row->hitungTagihan(),
+                        'sisa_tagihan' => $row->hitungTagihan()
                     ];
-                }
-                $lastTagihan = $nextTagihan;
-            }
+                    $lastTagihan = $tanggalTagihan;
+                    $row->tanggal_generate_terakhir = $tanggalTagihan;
+                    $nextTagihan = date('Y-m-01', strtotime('+1 month', strtotime($bulanTagihanTerakhir)));                                                                                                                        
+                } else {
+                    $next = true;
+                }                
+            } 
+            $row->save();                       
         }
-    
         if (count($rs_tagihan)) {
             tagihan::insert($rs_tagihan);            
         }
+    }
+    
+    public function hitungTagihan() {
+        $bulanTagihan = date('Y-m-01', strtotime($this->tanggal_generate));   
+        $tagihanBulanLalu = date('Y-m-01', strtotime('-1 month', strtotime($bulanTagihan)));
+        $tanggalTagihan = date('d', strtotime($this->tanggal_generate));
+        $jumlahHariTagihanBulanLalu = date('t', strtotime($tagihanBulanLalu));
+        if ($this->tanggal_tagihan == 32 || $this->tanggal_tagihan > $jumlahHariTagihanBulanLalu) {
+            $tagihanBulanLalu = date('Y-m-'.$jumlahHariTagihanBulanLalu, strtotime($tagihanBulanLalu));
+        } else {
+            $tagihanBulanLalu = date('Y-m-'.$this->tanggal_tagihan, strtotime($tagihanBulanLalu));
+        }                   
+        $start = new \DateTime($tagihanBulanLalu);        
+        $endDate = date('Y-m-d', strtotime('-1 day', strtotime($this->tanggal_generate)));        
+        $end = new \DateTime($endDate);
+        $interval = $start->diff($end)->format('%a');
+        $totalHari = $interval+1;                
+        $startHitung = new \DateTime($this->tanggal_generate_terakhir);    
+        $intervalBerlangganan = $startHitung->diff($end)->format('%a');
+        $totalHariBerlangganan = $intervalBerlangganan+1;          
+        $tarifHarian = $this->tarif / $totalHari;
+        $totalTagihan = $totalHariBerlangganan * $tarifHarian;
+        return $totalTagihan;        
     }
 
     /*public static function generate() {
