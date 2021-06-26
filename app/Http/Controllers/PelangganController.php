@@ -58,21 +58,13 @@ class PelangganController extends Controller
     }
 
     public function detail(Request $request) {
-        $pemasangan = pemasangan::where('id_pelanggan', $request->id_pelanggan)->where('id', $request->id_pemasangan)->first();
-        $model = pemasangan::join('tagihan', 'pemasangan.id', '=', 'tagihan.id_pemasangan')
-            ->where('pemasangan.id_pelanggan', $request->id_pelanggan)
-            ->where('pemasangan.id', $request->id_pemasangan)
-            ->select('pemasangan.tarif', 'pemasangan.tanggal_pemasangan', 'tagihan.tanggal_tagihan', 'pemasangan.tanggal_tagihan as pemasangan_tagihan')
-            ->groupBy('pemasangan.tarif', 'pemasangan.tanggal_pemasangan', 'tagihan.tanggal_tagihan')
-            ->get();
-        $total = 0;
-        foreach($model as $row) {
-            if($row->pemasangan_tagihan == 32) {
-                $row->tanggal_tagihan = date('t', strtotime($row->tanggal_pemasangan));
-            }
-            $row->tanggal_tagihan = BulanIndo::tanggal_indo($row->tanggal_tagihan);
-        }
-        return view('pelanggan.detail', ['model' => $model, 'total' => $total, 'pemasangan' => $pemasangan]);
+        $pemasangan = pemasangan::with(['tagihan' => function($query) {
+            return $query->where('status_bayar', 0);
+        }])
+            ->where('id_pelanggan', $request->id_pelanggan)
+            ->where('id', $request->id_pemasangan)
+            ->first();
+        return view('pelanggan.detail', ['pemasangan' => $pemasangan]);
     }
 
     public function riwayat(Request $request) {
@@ -198,4 +190,3 @@ class PelangganController extends Controller
         return $messages;
     }
 }
-

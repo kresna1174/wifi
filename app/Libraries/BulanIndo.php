@@ -4,7 +4,7 @@ namespace App\Libraries;
 class BulanIndo {
   public static function tanggal_indo($tanggal){
     $bulan = array (
-      1 =>   'Januari',
+      'Januari',
       'Februari',
       'Maret',
       'April',
@@ -18,8 +18,7 @@ class BulanIndo {
       'Desember'
     );
     $pecahkan = explode('-', $tanggal);
-   
-    return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
+    return $pecahkan[2] . ' ' . $bulan[$pecahkan[1]-1] . ' ' . $pecahkan[0];
   }
 
   public static function month_list($placeholder = null, $placeholder_value = ''){

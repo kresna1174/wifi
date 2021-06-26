@@ -23,12 +23,12 @@
     </thead>
     <tbody>
     <?php $total = 0 ?>
-        @foreach($model as $row)
+        @foreach($pemasangan->tagihan as $row)
             <tr>
-                <td><b>{!! $row->tanggal_tagihan !!}</b></td>
-                <td class="text-right"><b>{!! number_format($row->tarif, 2, ',', '.') !!}</b></td>
+                <td><b>{!! App\Libraries\BulanIndo::tanggal_indo($row->tanggal_tagihan) !!}</b></td>
+                <td class="text-right"><b>{!! number_format($row->sisa_tagihan, 2, ',', '.') !!}</b></td>
             </tr>
-        <?php $total += $row->tarif ?>
+        <?php $total += $row->sisa_tagihan ?>
         @endforeach
     </tbody>
     <tfoot>

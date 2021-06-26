@@ -97,8 +97,8 @@ use Illuminate\Support\Facades\Auth;
 							<span>Master</span>
 						</a>
 						<ul class="sub-menu">
-							<li><a href="{!! route('pelanggan') !!}">pelanggan</a></li>
-							<li><a href="{!! route('deposit') !!}">deposit</a></li>
+							<li><a href="{!! route('pelanggan') !!}">Pelanggan</a></li>
+							<li><a href="{!! route('deposit') !!}">Deposit</a></li>
 						</ul>
 					</li>
 					<li class="has-sub">

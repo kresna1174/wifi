@@ -3,15 +3,40 @@
 namespace App\Http\Controllers;
 
 use App\Libraries\BulanIndo;
-use App\pelanggan;
+use App\Libraries\Arr;
 use App\pemasangan;
 use App\tagihan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class TagihanController extends Controller
 {
+    public function book($year = null) {
+        pemasangan::generate();
+        if (!$year) {
+            $year = date('Y');
+        }            
+        $pemasangan = pemasangan::with('infoPelanggan')
+            ->orderBy('id_pelanggan')
+            ->orderBy('tanggal_pemasangan')
+            ->get();
+        $prevYear = $year - 1;
+        $prevTagihan = tagihan::getTagihanTahun($prevYear, '<=');
+        $prevTagihan = Arr::map($prevTagihan, 'id_pemasangan', 'sisa_tagihan');
+        $nextYear = $year + 1;
+        $nextTagihan = tagihan::getTagihanTahun($nextYear, '>=');
+        $nextTagihan = Arr::map($nextTagihan, 'id_pemasangan', 'sisa_tagihan');
+        $currentTagihan = tagihan::where(DB::raw('LEFT(tanggal_tagihan, 4)'), $year)
+            ->where('status_bayar', 0)
+            ->get();
+        $currentTagihanMap = [];        
+        foreach ($currentTagihan as $rCurrentTagihan) {
+            $currentTagihanMap[$rCurrentTagihan->id_pemasangan][substr($rCurrentTagihan->tanggal_tagihan, 0, 7)] = $rCurrentTagihan;
+        }
+        $currentTagihan = $currentTagihanMap;        
+        return view('tagihan.book', compact('pemasangan', 'prevTagihan', 'nextTagihan', 'currentTagihan', 'year'));          
+    }
+    
     public function index(Request $request) {
         pemasangan::generate();
         if($request->periode != null) {

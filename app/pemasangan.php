@@ -25,6 +25,10 @@ class pemasangan extends Model
     public function pelanggan() {
         return $this->hasMany(pelanggan::class, 'id', 'id_pelanggan');
     }
+    
+    public function infoPelanggan() {
+        return $this->belongsTo(pelanggan::class, 'id_pelanggan', 'id');
+    }
 
     public function ManyPembayaran() {
         return $this->belongsToMany(pembayaran::class, 'pembayaran_detail', 'id_tagihan', 'id');
