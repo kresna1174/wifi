@@ -16,6 +16,7 @@
             <thead>
                 <tr>
                     <th>Nama Pelanggan</th>
+                    <th>No Pemasangan</th>
                     <th class="text-center">Jumlah Deposit</th>
                     <th class="text-center">Tanggal Deposit</th>
                     <th></th>
@@ -37,6 +38,7 @@
                 ajax: '<?= route('deposit.get') ?>',
                 columns: [
                     {data: 'nama_pelanggan', name: 'nama_pelanggan'},
+                    {data: 'no_pemasangan', name: 'no_pemasangan'},
                     {data: 'jumlah_deposit', name: 'jumlah_deposit', class: 'text-center',render: function(data) {
                         return pop(data)
                     }},

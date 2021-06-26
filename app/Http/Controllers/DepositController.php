@@ -20,7 +20,9 @@ class DepositController extends Controller
     }
 
     public function get() {
-        $pelanggan = deposit::where('deposit.deleted', 0)->join('pelanggan', 'deposit.id_pelanggan', '=', 'pelanggan.id')
+        $pelanggan = deposit::where('deposit.deleted', 0)
+            ->join('pemasangan', 'pemasangan.no_pemasangan', 'deposit.no_pemasangan')
+            ->join('pelanggan', 'deposit.id_pelanggan', '=', 'pelanggan.id')
             ->get();
 
         foreach($pelanggan as $row) {

@@ -132,6 +132,12 @@ class PembayaranController extends Controller
                 $bayar = $total_bayar;
                 $total_bayar = 0;
             }
+            if($bayar == 0) {
+                break;
+            }
+            if($bayar > 0 && $row->sisa_tagihan == 0) {
+                break;
+            }
             $row->sisa_tagihan -= $bayar;
             $row->updated_at = date('Y-m-d H:i:s');
             $row->updated_by = Auth::user()->name;
@@ -147,7 +153,11 @@ class PembayaranController extends Controller
                 'created_by' => Auth::user()->name
             ];
             $pembayaran = pembayaran::create($arrayPembayaran);
-            pembayaran_detail::create(['id_pembayaran' => $pembayaran->id, 'id_tagihan' => $row->id, 'jumlah_bayar' => $request->bayar]);
+            $sisaTagihan = $row->sisa_tagihan;
+            if($sisaTagihan == 0) {
+                $sisaTagihan = $row->tagihan;
+            }
+            pembayaran_detail::create(['id_pembayaran' => $pembayaran->id, 'id_tagihan' => $row->id, 'jumlah_bayar' => $sisaTagihan]);
             $save = $row->save();
         }
         if($save) {
