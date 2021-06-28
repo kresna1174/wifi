@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\pemasangan;
 use App\pelanggan;
 use App\tagihan;
+use Illuminate\Cache\DynamoDbLock;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -96,6 +97,8 @@ class PemasanganController extends Controller
                 'tanggal_pemasangan' => $request->tanggal_pemasangan,
                 'tanggal_generate' => $tanggal_generate,
                 'tanggal_generate_terakhir' => $request->tanggal_pemasangan,
+                'replicate_tanggal_generate' => $tanggal_generate,
+                'replicate_tanggal_generate_terakhir' => $request->tanggal_pemasangan,
                 'deleted' => 0,
                 'created_at'  => date('Y-m-d H:i:s'),
                 'created_by' => Auth::user()->name,
@@ -132,6 +135,8 @@ class PemasanganController extends Controller
                     'tanggal_tagihan' => $request->tanggal_tagihan,
                     'tanggal_generate' => $tanggal_generate,
                     'tanggal_generate_terakhir' => $request->tanggal_pemasangan,
+                    'replicate_tanggal_generate' => $tanggal_generate,
+                    'replicate_tanggal_generate_terakhir' => $request->tanggal_pemasangan,
                     'tanggal_pemasangan' => $request->tanggal_pemasangan,
                     'deleted' => 0,
                     'created_at' => date('Y-m-d H:i:s'),
@@ -161,30 +166,83 @@ class PemasanganController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         }
-            $data = [
-                'id_pelanggan' => $request->nama_pelanggan,
-                'alamat_pemasangan' => $request->alamat_pemasangan,
-                'no_pemasangan' => $request->no_pemasangan,
-                'tarif' => $request->tarif,
-                'tanggal_tagihan' => $request->tanggal_tagihan,
-                'tanggal_pemasangan' => $request->tanggal_pemasangan,
-                'tanggal_generate' => $request->tanggal_pemasangan,
-                'deleted' => 0,
-                'updated_at'  => date('Y-m-d H:i:s'),
-                'updated_by' => Auth::user()->name,
-            ];
-            $pemasangan = pemasangan::find($id);
-            if($pemasangan->update($data)) {
-                return [
-                    'success' => true,
-                    'message' => 'Data Berhasil di Perbarui'
-                ];
+        $data = [
+            'id_pelanggan' => $request->nama_pelanggan,
+            'alamat_pemasangan' => $request->alamat_pemasangan,
+            'no_pemasangan' => $request->no_pemasangan,
+            'tarif' => $request->tarif,
+            'tanggal_tagihan' => $request->tanggal_tagihan,
+            'tanggal_pemasangan' => $request->tanggal_pemasangan,
+            'tanggal_generate' => $request->tanggal_pemasangan,
+            'deleted' => 0,
+            'updated_at'  => date('Y-m-d H:i:s'),
+            'updated_by' => Auth::user()->name,
+        ];
+        $tanggalPasang = date('d', strtotime($request->tanggal_pemasangan));
+        if ($tanggalPasang >= $request->tanggal_tagihan) {
+            $bulanPasang = date('Y-m-01', strtotime($request->tanggal_pemasangan));
+            $tanggal_generate = date('Y-m-01', strtotime('+1 month', strtotime($bulanPasang)));
+        } else {
+            $tanggal_generate = $request->tanggal_pemasangan;
+        }
+        $t = date('t', strtotime($tanggal_generate));
+        if ($request->tanggal_tagihan == $t || $request->tanggal_tagihan > $t) {
+            $tanggal_generate = date('Y-m-t', strtotime($tanggal_generate));
+        } else {
+            $tanggal_generate = date('Y-m-'.$request->tanggal_tagihan, strtotime($tanggal_generate));    
+        }
+        $pemasangan = pemasangan::find($id);
+        $now = date('Y-m-d');
+        $lastTagihan = $pemasangan->replicate_tanggal_generate_terakhir;
+        $nextTagihan = $pemasangan->replicate_tanggal_generate;   
+        $next = false;   
+        $rs_tagihan = [];
+        while ($next == false) {
+            $bulanTagihanTerakhir = date('Y-m-01', strtotime($nextTagihan));                    
+            $t = date('t', strtotime($bulanTagihanTerakhir));
+            if ($pemasangan->tanggal_tagihan == 32 || $pemasangan->tanggal_tagihan > $t) {
+                $tanggalTagihan = date('Y-m-t', strtotime($bulanTagihanTerakhir));                      
             } else {
-                return [
-                    'success' => false,
-                    'message' => 'Data Gagal di Perbarui'
+                $tanggalTagihan = date('Y-m-'.$pemasangan->tanggal_tagihan, strtotime($bulanTagihanTerakhir));                      
+            }         
+            $pemasangan->replicate_tanggal_generate = $tanggalTagihan;                              
+            if (strtotime($tanggalTagihan) <= strtotime($now)) {                      
+                $rs_tagihan[] = [
+                    'id_pemasangan' => $pemasangan->id,
+                    'tanggal_tagihan' => $tanggalTagihan,
+                    'status_bayar' => 0,
+                    'deleted' => 0,
+                    'updated_at' => date('Y-m-d H:i:s'),
+                    'updated_by' => auth()->user()->name,
+                    'tagihan' => $request->tarif,
+                    'sisa_tagihan' => $pemasangan->hitungTagihanPemasangan()
                 ];
-            }
+                $lastTagihan = $tanggalTagihan;
+                $pemasangan->replicate_tanggal_generate_terakhir = $tanggalTagihan;
+                $nextTagihan = date('Y-m-01', strtotime('+1 month', strtotime($bulanTagihanTerakhir)));                                                                                                                        
+            } else {
+                $next = true;
+            }                
+        } 
+        if($pemasangan->tanggal_generate <= date('Y-m-d')) {
+            $pemasangan->replicate_tanggal_generate = $tanggal_generate;
+            $pemasangan->replicate_tanggal_generate_terakhir = $request->tanggal_pemasangan;
+        }
+        if(count($rs_tagihan)) {
+            tagihan::where('id_pemasangan', $id)->where('status_bayar', 0)->delete();
+            tagihan::insert($rs_tagihan);
+        }     
+        if($pemasangan->save()) {
+            return [
+                'success' => true,
+                'message' => 'Data Berhasil di Perbarui'
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => 'Data Gagal di Perbarui'
+            ];
+        }
     } 
 
      public function delete($id) {

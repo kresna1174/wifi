@@ -44,9 +44,9 @@
                     }},
                     {data: 'tanggal', name: 'tanggal'},
                     {data: 'id', name: 'deposit.id', width: '200px', searchable: false, orderable: false, class: 'text-center nowrap',mRender: function(data){
-                    return '<button id="btn-view" type="button" class="btn btn-info btn-sm" onclick="view('+data+')">view</button> \n\
-                            <button id="btn-edit" type="button" class="btn btn-warning btn-sm" onclick="edit('+data+')">edit</button>\n\
-                            <button type="button" class="btn btn-danger btn-sm" onclick="destroy('+data+')">delete</button>';
+                    return '<button id="btn-view" type="button" class="btn btn-info btn-sm" onclick="view('+data+')">View</button> \n\
+                            <button id="btn-edit" type="button" class="btn btn-warning btn-sm" onclick="edit('+data+')">Edit</button>\n\
+                            <button type="button" class="btn btn-danger btn-sm" onclick="destroy('+data+')">Delete</button>';
                 }}
                 ]
             })
