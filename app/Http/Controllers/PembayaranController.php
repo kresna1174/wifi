@@ -115,15 +115,22 @@ class PembayaranController extends Controller
                 $deposit = deposit::create($ins_deposit);
             }
         }
-        $pemasangan = pemasangan::where('no_pemasangan', $request->no_pemasangan)->get();
-        foreach($pemasangan as $row) {
-            $id[] = $row->id;
-        }
-        $model = tagihan::whereIn('id_pemasangan', $id)
+        $pemasangan = pemasangan::where('no_pemasangan', $request->no_pemasangan)->first();
+        $model = tagihan::whereIn('id_pemasangan', [$pemasangan->id])
             ->where('status_bayar', 0)
             ->orderBy('tanggal_tagihan', 'ASC')
             ->get();
         $total_bayar = $request->bayar;
+        
+        $arrayPembayaran = [
+            'id_pemasangan' => $pemasangan->id,
+            'bayar' => $request->bayar,
+            'tanggal_bayar' => date('Y-m-d'),
+            'deleted' => 0,
+            'created_at' => date('Y-m-d H:i:s'),
+            'created_by' => Auth::user()->name
+        ];
+        $pembayaran = pembayaran::create($arrayPembayaran);
         foreach($model as $row) {
             if($total_bayar >= $row->sisa_tagihan) {
                 $total_bayar -= $row->sisa_tagihan;
@@ -144,15 +151,6 @@ class PembayaranController extends Controller
             if($row->sisa_tagihan <= 0) {
                 $row->status_bayar = 1;
             }
-            $arrayPembayaran = [
-                'id_pemasangan' => $row->id_pemasangan,
-                'bayar' => $request->bayar,
-                'tanggal_bayar' => date('Y-m-d'),
-                'deleted' => 0,
-                'created_at' => date('Y-m-d H:i:s'),
-                'created_by' => Auth::user()->name
-            ];
-            $pembayaran = pembayaran::create($arrayPembayaran);
             $sisaTagihan = $row->sisa_tagihan;
             if($sisaTagihan == 0) {
                 $sisaTagihan = $row->tagihan;

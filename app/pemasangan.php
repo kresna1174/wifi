@@ -104,6 +104,30 @@ class pemasangan extends Model
         return $totalTagihan;        
     }
 
+    public function hitungTagihanPemasangan() {
+        $bulanTagihan = date('Y-m-01', strtotime($this->replicate_tanggal_generate));  
+        $tagihanBulanLalu = date('Y-m-01', strtotime('-1 month', strtotime($bulanTagihan)));
+        $tanggalTagihan = date('d', strtotime($this->replicate_tanggal_generate));
+        $jumlahHariTagihanBulanLalu = date('t', strtotime($tagihanBulanLalu));
+        if ($this->tanggal_tagihan == 32 || $this->tanggal_tagihan > $jumlahHariTagihanBulanLalu) {
+            $tagihanBulanLalu = date('Y-m-'.$jumlahHariTagihanBulanLalu, strtotime($tagihanBulanLalu));
+        } else {
+            $tagihanBulanLalu = date('Y-m-'.$this->tanggal_tagihan, strtotime($tagihanBulanLalu));
+        }
+        $start = new \DateTime($tagihanBulanLalu);        
+        $endDate = date('Y-m-d', strtotime('-1 day', strtotime($this->replicate_tanggal_generate)));        
+        $end = new \DateTime($endDate);
+        $interval = $start->diff($end)->format('%a');
+        $totalHari = $interval+1;                
+        $startHitung = new \DateTime($this->replicate_tanggal_generate_terakhir);    
+        $intervalBerlangganan = $startHitung->diff($end)->format('%a');
+        $totalHariBerlangganan = $intervalBerlangganan+1;          
+        $tarifHarian = $this->tarif / $totalHari;
+        $totalTagihan = $totalHariBerlangganan * $tarifHarian;
+        $totalTagihan = ceil($totalTagihan);
+        return $totalTagihan;             
+    }
+
     /*public static function generate() {
         $now = date('Y-m-d');
         $pemasangan = pemasangan::with(['tagihan' => function($data) {
