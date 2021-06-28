@@ -12,7 +12,7 @@
 </h1>
 <div class="panel panel-default">
     <div class="panel-body">
-        <table id="table" class="table table-consoned table-bordered" width="100%">
+        <table id="table" class="table table-condensed table-bordered" width="100%">
             <thead>
                 <tr>
                     <th>No Pelanggan</th>
@@ -24,7 +24,6 @@
                 </tr>
             </thead>
             <tbody>
-
             </tbody>
         </table>
     </div>
@@ -43,10 +42,10 @@
                     {data: 'nama_pelanggan', name: 'nama_pelanggan'},                    
                     {data: 'no_telepon', name: 'no_telepon'},                    
                     {data: 'alamat', name: 'alamat'},
-                    {data: 'id', name: 'id', searchable: false, orderable: false, class: 'text-center nowrap',mRender: function(data){
-                    return '<button id="btn-view" type="button" class="btn btn-info btn-sm" onclick="view('+data+')">view</button> \n\
-                            <button id="btn-edit" type="button" class="btn btn-warning btn-sm" onclick="edit('+data+')">edit</button>\n\
-                            <button type="button" class="btn btn-danger btn-sm" onclick="destroy('+data+')">delete</button>';
+                    {data: 'id', name: 'id', searchable: false, orderable: false, class: 'text-center nowrap', render: function(data){
+                    return '<button id="btn-view" type="button" class="btn btn-info btn-sm" onclick="view('+data+')">View</button> \n\
+                            <button id="btn-edit" type="button" class="btn btn-warning btn-sm" onclick="edit('+data+')">Edit</button>\n\
+                            <button type="button" class="btn btn-danger btn-sm" onclick="destroy('+data+')">Delete</button>';
                 }}
                 ]
             })

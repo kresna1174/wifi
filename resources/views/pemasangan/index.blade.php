@@ -44,8 +44,8 @@
                     }},
                     {data: 'tanggal_pemasangan', name: 'pemasangan.tanggal_pemasangan'},
                     {data: 'id', name: 'id', width: '200px', searchable: false, orderable: false, class: 'text-center nowrap',mRender: function(data){
-                    return '<a role="button" href="<?= route('pemasangan.edit') ?>/'+data+'" id="btn-edit" type="button" class="btn btn-warning btn-sm">edit</a>\n\
-                            <button type="button" class="btn btn-danger btn-sm" onclick="destroy('+data+')">delete</button>';
+                    return '<a role="button" href="<?= route('pemasangan.edit') ?>/'+data+'" id="btn-edit" type="button" class="btn btn-warning btn-sm">Edit</a>\n\
+                            <button type="button" class="btn btn-danger btn-sm" onclick="destroy('+data+')">Delete</button>';
                 }}
                 ]
             })

@@ -1,7 +1,7 @@
 @extends('layout.main')
 @section('content')
 <h1 class="page-header">
-        pemasangan
+        Create Pemasangan
     </h1>
 <div class="panel panel-default">
     <div class="panel-body">
