@@ -43,7 +43,7 @@ class PelangganController extends Controller
             }])
                 ->where('id_pelanggan', $id)
                 ->get();
-            }])->where('pelanggan.id', $id)->first();
+            }, 'pemasangan.saldo'])->where('pelanggan.id', $id)->first();
             $data = [];
             foreach($pelanggan->pemasangan as $row) {
                 foreach($row->tagihan as $p) {

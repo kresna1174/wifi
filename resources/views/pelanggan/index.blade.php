@@ -15,11 +15,12 @@
         <table id="table" class="table table-consoned table-bordered" width="100%">
             <thead>
                 <tr>
-                    <th>Nama Pelanggan</th>
-                    <th>No Telepon</th>
+                    <th>No Pelanggan</th>
                     <th>No Identitas</th>
+                    <th>Nama Pelanggan</th>
+                    <th>No Telepon</th>                    
                     <th>Alamat</th>
-                    <th></th>
+                    <th width="1"></th>
                 </tr>
             </thead>
             <tbody>
@@ -37,11 +38,12 @@
             dataTable = $('#table').DataTable({
                 ajax: '<?= route('pelanggan.get') ?>',
                 columns: [
-                    {data: 'nama_pelanggan', name: 'nama_pelanggan'},
-                    {data: 'no_telepon', name: 'no_telepon'},
-                    {data: 'no_identitas', name: 'no_identitas'},
+                    {data: 'no_pelanggan', name: 'no_pelanggan'},  
+                    {data: 'no_identitas', name: 'no_identitas'},                  
+                    {data: 'nama_pelanggan', name: 'nama_pelanggan'},                    
+                    {data: 'no_telepon', name: 'no_telepon'},                    
                     {data: 'alamat', name: 'alamat'},
-                    {data: 'id', name: 'id', width: '200px', searchable: false, orderable: false, class: 'text-center nowrap',mRender: function(data){
+                    {data: 'id', name: 'id', searchable: false, orderable: false, class: 'text-center nowrap',mRender: function(data){
                     return '<button id="btn-view" type="button" class="btn btn-info btn-sm" onclick="view('+data+')">view</button> \n\
                             <button id="btn-edit" type="button" class="btn btn-warning btn-sm" onclick="edit('+data+')">edit</button>\n\
                             <button type="button" class="btn btn-danger btn-sm" onclick="destroy('+data+')">delete</button>';

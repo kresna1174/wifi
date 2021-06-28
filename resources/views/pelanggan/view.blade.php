@@ -32,13 +32,14 @@
     </tr>
 </table>
 </div>
-<table id="table-view" class="table table-consoned table-bordered">
+<table id="table-view" class="table table-condensed table-bordered">
     <thead>
         <tr>
             <th>No Pemasangan</th>
-            <th class="text-center">Tarif</th>
-            <th class="text-center">Tagihan</th>
-            <th></th>
+            <th class="text-right">Tarif</th>
+            <th class="text-right">Tagihan</th>
+            <th class="text-right">Deposit</th>
+            <th width="1px"></th>
         </tr>
     </thead>
     <tbody>
@@ -47,7 +48,14 @@
                 <td>{!! $row->no_pemasangan !!}</td>
                 <td class="text-right">{!! number_format($row->tarif, 2, ',', '.') !!}</td>
                 <td class="text-right">{!! number_format($data[$row->no_pemasangan]['total'] ?? 0, 2, ',', '.') !!}</td>
-                <td class="text-center">
+                <td class="text-right">
+                    @if (isset($row->saldo->jumlah_deposit)) 
+                        {!! number_format($row->saldo->jumlah_deposit, 2, ',', '.') !!}
+                    @else
+                        0
+                    @endif
+                </td>
+                <td class="text-center nowrap">
                     <button type="button" class="btn btn-info btn-sm" onclick="detail('<?= $row->id ?>', '<?= $pelanggan->id; ?>')">Detail</button>
                     <button type="button" class="btn btn-warning btn-sm" onclick="riwayat('<?= $row->id ?>', '<?= $pelanggan->id; ?>')">Histori</button>
                 </td>

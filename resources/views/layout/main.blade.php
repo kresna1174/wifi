@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\Auth;
 	<link href="{{ asset('assets') }}/plugins/jquery-jvectormap/jquery-jvectormap.css" rel="stylesheet" />
 	<link href="{{ asset('assets') }}/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
 	<link href="{{ asset('assets') }}/plugins/bootstrap-datepicker/css/bootstrap-datepicker.css" rel="stylesheet" />
+	<link href="{{ asset('assets') }}/css/material/app.css" rel="stylesheet" />
 	<script src="{{ asset('assets') }}/plugins/pace/pace.min.js"></script>
 </head>
 <body>
@@ -90,15 +91,32 @@ use Illuminate\Support\Facades\Auth;
 							<span>Dashboard</span>
 						</a>
 					</li>
+					<li>
+                        <a href="{!! route('pelanggan') !!}">
+							<i class="fa fa-users"></i>
+							<span>Pelanggan</span>
+						</a>
+					</li>
 					<li class="has-sub">
 						<a href="javascript:;">
                             <b class="caret"></b>
-							<i class="fa fa-database"></i>
-							<span>Master</span>
+							<i class="fa fa-wrench"></i>
+							<span>Pemasangan</span>
 						</a>
 						<ul class="sub-menu">
-							<li><a href="{!! route('pelanggan') !!}">Pelanggan</a></li>
-							<li><a href="{!! route('deposit') !!}">Deposit</a></li>
+							<li><a href="{!! route('pemasangan.create') !!}">Pemasangan Baru</a></li>
+							<li><a href="{!! route('pemasangan') !!}">Daftar Pemasangan</a></li>
+						</ul>
+					</li>
+					<li class="has-sub">
+						<a href="javascript:;">
+                            <b class="caret"></b>
+							<i class="fa fa-money"></i>
+							<span>Tagihan</span>
+						</a>
+						<ul class="sub-menu">
+							<li><a href="{!! route('tagihan.book') !!}">Buku Tagihan</a></li>
+							<li><a href="{!! route('tagihan') !!}">Daftar Tagihan</a></li>
 						</ul>
 					</li>
 					<li class="has-sub">
@@ -106,19 +124,7 @@ use Illuminate\Support\Facades\Auth;
 							<i class="material-icons">toys</i>
 							<span>Pembayaran</span> 
 						</a>
-					</li>
-					<li class="has-sub">
-						<a href="{!! route('tagihan') !!}">
-							<i class="material-icons">receipt</i>
-							<span>Tagihan</span> 
-						</a>
-					</li>
-					<li>
-                        <a href="{!! route('pemasangan') !!}">
-							<i class="fa fa-shopping-cart"></i>
-							<span>Pemasangan</span>
-						</a>
-					</li>
+					</li>				
 					<li>
                         <a href="{!! route('UserService') !!}">
 							<i class="fa fa-users"></i>
@@ -131,9 +137,7 @@ use Illuminate\Support\Facades\Auth;
 
 		</div>
 		<div class="sidebar-bg"></div>
-
 		
-
 		<div id="content" class="content">
             @yield('content')
 		</div>
@@ -164,8 +168,6 @@ use Illuminate\Support\Facades\Auth;
 	<script src="{{ asset('assets') }}/plugins/bootbox/bootbox.all.min.js"></script>
 	<script src="{{ asset('assets') }}/plugins/jquery.growl/js/jquery.growl.js"></script>
 	<script src="{{ asset('assets') }}/plugins/sweetalert/sweetalert.min.js"></script>
-	<script src="{{ asset('assets') }}/js/demo/dashboard.min.js"></script>
-
 	
 	<script>
 		$(document).ready(function() {
@@ -175,8 +177,7 @@ use Illuminate\Support\Facades\Auth;
                 } else {
                     $('.sidebar').find('[href="'+window.location.href.substr(0, i) + location.pathname+'"]').parent().addClass('active');
                 }
-			App.init();
-			Dashboard.init();
+			App.init();			
 		});
 		</script>
         @yield('script')

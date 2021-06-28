@@ -15,7 +15,7 @@ use Yajra\DataTables\Facades\DataTables;
 class PemasanganController extends Controller
 {
     public function index() {
-        return view('pemasangan.index', ['title' => 'pemasangan']);
+        return view('pemasangan.index', ['title' => 'Daftar Pemasangan']);
     }
     
     public function get() {

@@ -26,6 +26,10 @@ class pemasangan extends Model
         return $this->hasMany(pelanggan::class, 'id', 'id_pelanggan');
     }
     
+    public function saldo() {
+        return $this->hasOne(deposit::class, 'no_pemasangan', 'no_pemasangan');
+    }
+    
     public function infoPelanggan() {
         return $this->belongsTo(pelanggan::class, 'id_pelanggan', 'id');
     }
