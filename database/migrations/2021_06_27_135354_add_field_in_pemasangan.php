@@ -13,10 +13,20 @@ class AddFieldInPemasangan extends Migration
      */
     public function up()
     {
-        Schema::table('pemasangan', function (Blueprint $table) {
-            $table->date('replicate_tanggal_generate')->after('tanggal_generate');
-            $table->date('replicate_tanggal_generate_terakhir')->after('tanggal_generate_terakhir');
-        });
+        if (Schema::hasColumn('pemasangan', 'replicate_tanggal_generate'))
+        {
+            Schema::table('pemasangan', function (Blueprint $table)
+            {
+                $table->dropColumn('replicate_tanggal_generate');
+            });
+        }
+        if (Schema::hasColumn('pemasangan', 'replicate_tanggal_generate_terakhir'))
+        {
+            Schema::table('pemasangan', function (Blueprint $table)
+            {
+                $table->dropColumn('replicate_tanggal_generate_terakhir');
+            });
+        }
     }
 
     /**
@@ -26,9 +36,6 @@ class AddFieldInPemasangan extends Migration
      */
     public function down()
     {
-        Schema::table('pemasangan', function (Blueprint $table) {
-            $table->dropColumn('replicate_tanggal_generate');
-            $table->dropColumn('replicate_tanggal_generate_terakhir');
-        });
+
     }
 }
