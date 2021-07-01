@@ -87,7 +87,7 @@ use Illuminate\Support\Facades\Auth;
 					<li class="nav-header">Navigation</li>
 					<li class="has-sub">
 						<a href="{!! route('dashboard') !!}">
-							<i class="material-icons">home</i>
+							<i class="fa fa-tachometer-alt"></i>
 							<span>Dashboard</span>
 						</a>
 					</li>
@@ -111,7 +111,7 @@ use Illuminate\Support\Facades\Auth;
 					<li class="has-sub">
 						<a href="javascript:;">
                             <b class="caret"></b>
-							<i class="fa fa-money"></i>
+							<i class="fa fa-receipt"></i>
 							<span>Tagihan</span>
 						</a>
 						<ul class="sub-menu">
@@ -121,14 +121,14 @@ use Illuminate\Support\Facades\Auth;
 					</li>
 					<li class="has-sub">
 						<a href="{!! route('pembayaran') !!}">
-							<i class="material-icons">toys</i>
+							<i class="fa fa-file-invoice-dollar"></i>
 							<span>Pembayaran</span> 
 						</a>
 					</li>				
 					<li>
                         <a href="{!! route('UserService') !!}">
 							<i class="fa fa-users"></i>
-							<span>User Service</span>
+							<span>User</span>
 						</a>
 					</li>
 					<li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>

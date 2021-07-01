@@ -55,8 +55,7 @@ class PemasanganController extends Controller
         $pemasangan = pemasangan::with('pelanggan')->findOrFail($id);
         foreach($pemasangan->pelanggan as $pelanggan) {
             $rs_pemasangan = $pelanggan;
-        }
-        $pemasangan->nama_pelanggan = pelanggan::where('deleted', 0)->pluck('nama_pelanggan', 'id');
+        }        
         for($i = 1; $i <= 32; $i++) {
             $tanggal[$i] = $i;
         }

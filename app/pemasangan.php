@@ -3,9 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Libraries\Arr;
-use DateTime;
-use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\DB;
 
 class pemasangan extends Model
 {
@@ -131,6 +129,13 @@ class pemasangan extends Model
         $totalTagihan = ceil($totalTagihan);
         return $totalTagihan;             
     }
+    
+    public static function getTotalMonthlyInvoice() {    
+        $query = DB::table('pemasangan')
+            ->where('deleted', 0)
+            ->select(DB::raw('SUM(tarif) as total_tagihan'));                    
+        return $query->get();
+    }   
 
     /*public static function generate() {
         $now = date('Y-m-d');

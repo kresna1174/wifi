@@ -30,9 +30,9 @@
                 url: '<?= route('pemasangan.get_pemasangan') ?>',
                 success: function(response) {
                     let html = '<select class="form-control" name="nama_pelanggan" id="nama_pelanggan" onchange="change_pelanggan()">'
-                    html += '<option value="">select</option>'
+                    html += '<option value="">Select</option>'
                     $.each(response, function(data, row) {
-                        html += '<option value="'+row.id+'">'+row.nama_pelanggan+'</option>'
+                        html += '<option value="'+row.id+'">'+row.no_pelanggan+' - '+row.nama_pelanggan+'</option>'
                     })
                     html +='</select>'
                     $('#nama_pelanggan').remove()
